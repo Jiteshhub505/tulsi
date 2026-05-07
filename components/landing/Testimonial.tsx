@@ -178,6 +178,49 @@ const testimonials: Testimonial[] = [
   },
 ];
 
+const femaleNames = new Set([
+  "Simran Kaur",
+  "Anjali Sharma",
+  "Ritika Joshi",
+  "Priya Malhotra",
+  "Shreya Sen",
+  "Ishita Roy",
+  "Megha Choudhary",
+  "Kavya Nair",
+  "Neha Jain",
+  "Pallavi Deshmukh",
+]);
+
+const indianMalePhotos = [
+  "https://images.unsplash.com/photo-1701615004839-40d91f7eecca?auto=format&fit=crop&w=300&q=80",
+  "https://images.unsplash.com/photo-1590086782792-42dd2350140d?auto=format&fit=crop&w=300&q=80",
+  "https://images.unsplash.com/photo-1566753323558-f4e0952af115?auto=format&fit=crop&w=300&q=80",
+  "https://images.unsplash.com/photo-1628157588553-5eeea00af15c?auto=format&fit=crop&w=300&q=80",
+  "https://images.unsplash.com/photo-1615109398623-88346a601842?auto=format&fit=crop&w=300&q=80",
+  "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=300&q=80",
+  "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80",
+  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
+  "https://images.unsplash.com/photo-1521119989659-a83eee488004?auto=format&fit=crop&w=300&q=80",
+  "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=300&q=80",
+  "https://images.unsplash.com/photo-1583195764036-6dc248ac07d9?auto=format&fit=crop&w=300&q=80",
+  "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?auto=format&fit=crop&w=300&q=80",
+  "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=300&q=80",
+  "https://images.unsplash.com/photo-1600180758890-6b94519a8ba6?auto=format&fit=crop&w=300&q=80",
+];
+
+const indianFemalePhotos = [
+  "https://images.unsplash.com/photo-1607746882042-944635dfe10e?auto=format&fit=crop&w=300&q=80",
+  "https://images.unsplash.com/photo-1633432697046-a962a6a16bdb?auto=format&fit=crop&w=300&q=80",
+  "https://images.unsplash.com/photo-1619895862022-09114b41f16f?auto=format&fit=crop&w=300&q=80",
+  "https://images.unsplash.com/photo-1618375531912-867984bdfd87?auto=format&fit=crop&w=300&q=80",
+  "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=300&q=80",
+  "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=300&q=80",
+  "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80",
+  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&q=80",
+  "https://images.unsplash.com/photo-1506863530036-1efeddceb993?auto=format&fit=crop&w=300&q=80",
+  "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=300&q=80",
+];
+
 const chunkArray = (
   array: Testimonial[],
   chunkSize: number
@@ -189,9 +232,23 @@ const chunkArray = (
   return result;
 };
 
+const maleCounter = { value: 0 };
+const femaleCounter = { value: 0 };
+
+const testimonialsWithIndianPhotos = testimonials.map((item) => {
+  const isFemale = femaleNames.has(item.name);
+  const pool = isFemale ? indianFemalePhotos : indianMalePhotos;
+  const currentIndex = isFemale ? femaleCounter.value++ : maleCounter.value++;
+
+  return {
+    ...item,
+    image: pool[currentIndex],
+  };
+});
+
 const testimonialChunks = chunkArray(
-  testimonials,
-  Math.ceil(testimonials.length / 3)
+  testimonialsWithIndianPhotos,
+  Math.ceil(testimonialsWithIndianPhotos.length / 3)
 );
 
 export default function Testimonial() {

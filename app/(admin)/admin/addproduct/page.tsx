@@ -112,7 +112,7 @@ export default function App() {
               <LogoIcon />
             </Link>
             <h1 className="mb-1 mt-4 text-xl font-semibold">
-              Create a Tailark Account
+              Create a Tulsiveda Account
             </h1>
             <p className="text-sm">Welcome! Create an account to get started</p>
           </div>

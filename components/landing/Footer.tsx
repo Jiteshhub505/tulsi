@@ -175,8 +175,15 @@ export default function Footer() {
           </Link>
         </div>
         <span className="text-muted-foreground block text-center text-sm">
-          {" "}
-          © {new Date().getFullYear()} Tailark, All rights reserved
+          build by{" "}
+          <Link
+            href="https://navigateskill.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-primary underline underline-offset-4"
+          >
+            Navigate Skill
+          </Link>
         </span>
       </div>
     </footer>

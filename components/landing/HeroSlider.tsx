@@ -8,34 +8,42 @@ import Link from "next/link";
 const slides = [
   {
     id: 1,
-    title: "Advanced Healthcare Solutions",
-    subtitle: "Premium products designed for your everyday wellbeing.",
-    image: "/hero-1.jpg",
-    cta: "Shop Collection",
+    title: "Ayurvedic Wellness for Everyday Energy",
+    subtitle:
+      "Daily formulas crafted from time-tested herbs and clinically trusted ingredients.",
+    image:
+      "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=1800&q=80",
+    cta: "Shop Ayurvedic Range",
     link: "/shop/",
   },
   {
     id: 2,
-    title: "Nature Meets Science",
-    subtitle: "100% Organic ingredients with laboratory-proven results.",
-    image: "/hero-2.jpg",
-    cta: "View Organic Range",
+    title: "Nature Meets Modern Nutrition",
+    subtitle:
+      "Clean, balanced blends that support immunity, recovery, and long-term vitality.",
+    image:
+      "https://images.unsplash.com/photo-1471864190281-a93a3070b6de?auto=format&fit=crop&w=1800&q=80",
+    cta: "Explore Best Sellers",
     link: "/shop/",
   },
   {
     id: 3,
-    title: "Immunity Boosters",
-    subtitle: "Strengthen your defense with our vitamin-rich supplements.",
-    image: "/hero-3.jpg",
-    cta: "Explore Supplements",
+    title: "Real Ingredients, Real Results",
+    subtitle:
+      "Transparent sourcing and powerful plant-based nutrition made for active lives.",
+    image:
+      "https://images.unsplash.com/photo-1505576399279-565b52d4ac71?auto=format&fit=crop&w=1800&q=80",
+    cta: "Discover Supplements",
     link: "/shop/",
   },
   {
     id: 4,
-    title: "Skincare Reimagined",
-    subtitle: "Dermatologically tested formulas for sensitive skin.",
-    image: "/hero-4.jpg",
-    cta: "Shop Skincare",
+    title: "Feel Better, Live Better",
+    subtitle:
+      "Holistic support for body and mind with trusted products you can use every day.",
+    image:
+      "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=1800&q=80",
+    cta: "Start Your Wellness Journey",
     link: "/shop/",
   },
 ];
@@ -60,7 +68,7 @@ export default function HeroSlider() {
 
   return (
     <section
-      className="relative mt-20 pt-24 h-[60vh] w-full overflow-hidden bg-gray-900"
+      className="relative mt-16 h-[72vh] min-h-[520px] w-full overflow-hidden border-b border-white/10 bg-slate-950 shadow-2xl"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
@@ -79,17 +87,21 @@ export default function HeroSlider() {
             alt={slides[current].title}
             fill
             priority={current === 0}
-            className="object-cover brightness-[0.4]"
+            className="object-cover scale-105"
             sizes="100vw"
           />
 
           {/* Content Overlay */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-6">
+          <div className="absolute inset-0 bg-linear-to-r from-slate-950/85 via-slate-900/65 to-emerald-950/45" />
+          <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-white">
+            <span className="mb-4 rounded-full border border-white/30 bg-white/10 px-4 py-1 text-xs font-semibold tracking-[0.18em] text-emerald-100 uppercase backdrop-blur">
+              Trusted Ayurvedic Nutrition
+            </span>
             <motion.h1
               initial={{ y: 30, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.2, duration: 0.5 }}
-              className="text-4xl md:text-7xl font-extrabold mb-6 tracking-tight"
+              className="mb-6 max-w-5xl text-4xl font-extrabold tracking-tight md:text-6xl lg:text-7xl"
             >
               {slides[current].title}
             </motion.h1>
@@ -98,7 +110,7 @@ export default function HeroSlider() {
               initial={{ y: 30, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.4, duration: 0.5 }}
-              className="text-lg md:text-2xl mb-10 max-w-3xl font-light text-gray-200"
+              className="mb-10 max-w-3xl text-base font-normal text-slate-100 md:text-xl"
             >
               {slides[current].subtitle}
             </motion.p>
@@ -112,7 +124,7 @@ export default function HeroSlider() {
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-full font-bold text-lg shadow-lg cursor-pointer transition-colors"
+                  className="cursor-pointer rounded-full bg-emerald-500 px-10 py-4 text-lg font-bold text-emerald-950 shadow-lg shadow-emerald-700/30 transition-colors hover:bg-emerald-400"
                 >
                   {slides[current].cta}
                 </motion.div>
@@ -126,14 +138,14 @@ export default function HeroSlider() {
       <div className="absolute inset-0 flex items-center justify-between px-4 pointer-events-none">
         <button
           onClick={prevSlide}
-          className="pointer-events-auto p-3 bg-black/20 hover:bg-black/40 rounded-full text-white backdrop-blur-md transition-all active:scale-90"
+          className="pointer-events-auto rounded-full border border-white/30 bg-black/20 p-3 text-white backdrop-blur-md transition-all hover:bg-black/40 active:scale-90"
           aria-label="Previous Slide"
         >
           <ChevronLeft size={32} />
         </button>
         <button
           onClick={nextSlide}
-          className="pointer-events-auto p-3 bg-black/20 hover:bg-black/40 rounded-full text-white backdrop-blur-md transition-all active:scale-90"
+          className="pointer-events-auto rounded-full border border-white/30 bg-black/20 p-3 text-white backdrop-blur-md transition-all hover:bg-black/40 active:scale-90"
           aria-label="Next Slide"
         >
           <ChevronRight size={32} />

@@ -7,12 +7,14 @@ import Integrations from "@/components/landing/Integrations";
 import Features from "@/components/landing/Features";
 import Categories from "@/components/landing/Categories";
 import HeroSlider from "../../components/landing/HeroSlider";
+import HeroFIlterProducts from "@/components/landing/HeroFIlterProducts";
 
 export default function Home() {
   return (
     <div>
       {/* <Hero /> */}
       <HeroSlider />
+      <HeroFIlterProducts />
       <Features />
       <Products />
       <Categories />
