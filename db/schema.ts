@@ -12,8 +12,9 @@ import {
   uniqueIndex,
 } from "drizzle-orm/pg-core";
 import { drizzle } from "drizzle-orm/postgres-js";
-import type { AdapterAccountType } from "@auth/core/adapters";
 import { number } from "zod";
+
+type AdapterAccountType = string;
 
 ///////////////////ENUMS//////////////////////////////
 export const rolesEnum = pgEnum("roles", ["user", "support", "admin"]);
