@@ -1,21 +1,11 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import db from "@/db/db";
-import { users } from "@/db/schema";
-import { getServerSession } from "next-auth";
+import connectDB from "@/db/mongoose";
+import { User } from "@/db/models";
 
 export const GET = async (req: Request) => {
-  const session = await getServerSession(authOptions);
-  //@ts-ignore
-  const role = session?.user.role;
+  await connectDB();
 
-  if (!role || role != "admin")
-    return Response.json({
-      success: false,
-      message: "Is not admin!",
-      status: 401,
-    });
   try {
-    const response = await db.select().from(users);
+    const response = await User.find({});
     return Response.json({
       users: response,
       success: true,

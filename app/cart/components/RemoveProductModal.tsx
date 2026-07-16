@@ -40,8 +40,12 @@ export default function RemoveProduct({
       },
     });
 
-    if (response.data.success) console.log("DELETED SUCCESSFULLY");
-    else console.log("ERROR DELETING PRODUCTT");
+    if (response.data.success) {
+      console.log("DELETED SUCCESSFULLY");
+      window.dispatchEvent(new Event("cart-updated"));
+    } else {
+      console.log("ERROR DELETING PRODUCTT");
+    }
   };
   return (
     <div>

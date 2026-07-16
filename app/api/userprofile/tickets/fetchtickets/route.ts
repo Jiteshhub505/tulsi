@@ -1,18 +1,16 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import db from "@/db/db";
-import { ticket } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import connectDB from "@/db/mongoose";
+import { Ticket } from "@/db/models";
+import { GUEST_USER_ID } from "@/lib/constants";
 import { getServerSession } from "next-auth";
 
 export const GET = async () => {
+  await connectDB();
   const session = await getServerSession(authOptions);
   //@ts-ignore
-  const userId = session?.user.id;
+  const userId = session?.user.id || GUEST_USER_ID;
   try {
-    const response = await db
-      .select()
-      .from(ticket)
-      .where(eq(ticket.userId, userId));
+    const response = await Ticket.find({ userId });
 
     return Response.json({
       success: true,

@@ -1,14 +1,12 @@
-import db from "@/db/db";
-import schema from "@/db/schema";
+import connectDB from "@/db/mongoose";
+import { Product } from "@/db/models";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  try {
-    const rows = await db
-      .selectDistinct({ category: schema.products.category })
-      .from(schema.products);
+  await connectDB();
 
-    const categories = rows.map((row) => row.category);
+  try {
+    const categories = await Product.distinct("category");
 
     return NextResponse.json({ success: true, categories });
   } catch (error) {

@@ -1,83 +1,82 @@
 "use client";
 
+import React from "react";
 import Image from "next/image";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 export default function Categories() {
   const categories = [
     {
-      name: "Health & Fitness",
-      image:
-        "https://res.cloudinary.com/dwrp1rgdi/image/upload/v1765791589/Beige_and_Black_Illustrated_Fitness_Promotional_Instagram_Post_ho8pbl.webp",
-      link: "/categories/health",
-    },
-    {
-      name: "Suppliments",
-      image:
-        "https://res.cloudinary.com/dwrp1rgdi/image/upload/v1765793345/Blue_Modern_Kids_Multivitamin_Instagram_Post_2_noacln.webp",
-      link: "/categories/suppliments",
-    },
-    {
-      name: "Skin",
-      image:
-        "https://res.cloudinary.com/dwrp1rgdi/image/upload/v1765793742/Beige_Pink_Beauty_Skin_Care_Instagram_Post_cxic5e.webp",
-      link: "/categories/skin",
-    },
-    {
       name: "Hygiene",
-      image:
-        "https://res.cloudinary.com/dwrp1rgdi/image/upload/v1765799627/Pink_Playful_Biotechnology_Investor_Pitch_Deck_Presentation_ayeets.webp",
-      link: "/categories/hygiene",
+      image: "/womens_health.png",
+      link: "/shop?category=Hygiene",
+    },
+    {
+      name: "Skin Care",
+      image: "/skin_care.png",
+      link: "/shop?category=Skin",
+    },
+    {
+      name: "Supplements",
+      image: "/gym_foods.png",
+      link: "/shop?category=Suppliments",
+    },
+    {
+      name: "Health & Fitness",
+      image: "/mens_health.png",
+      link: "/shop?category=Health%20%26%20Fitness",
     },
   ];
 
   return (
-    <section className="w-full py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-6 space-y-10">
-        {/* Heading */}
-        <div className="text-center space-y-3">
-          <h2 className="text-4xl font-bold tracking-tight">
-            Shop by Category
-          </h2>
-          <p className="text-muted-foreground text-lg">
-            Explore our premium collection across categories.
-          </p>
-        </div>
-
-        {/* GRID */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-          {categories.map((item, idx) => (
-            <Link key={idx} href={item.link}>
-              <Card
-                key={idx}
-                className="rounded-2xl border hover:shadow-xl transition-all hover:scale-[1.02] cursor-pointer"
-              >
-                <CardContent className="p-0">
-                  <div className="h-80 relative  overflow-hidden rounded-2xl">
-                    <Image
-                      src={item.image}
-                      alt={item.name}
-                      width={300}
-                      height={100}
-                      className=" object-cover"
-                    />
-                  </div>
-
-                  <div className="p-4 text-center space-y-2">
-                    <h3 className="font-semibold text-xl">{item.name}</h3>
-                    <Button
-                      variant="outline"
-                      className="rounded-full mt-2 px-6"
-                    >
-                      Explore
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+    <section className="w-full py-20 bg-white px-6 md:px-12 lg:px-16">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_3.9fr] gap-12 lg:gap-16 items-start">
+          
+          {/* Left Column: Heading and description */}
+          <div className="flex flex-col items-center lg:items-start text-center lg:text-left max-w-md mx-auto lg:mx-0">
+            <h2 className="text-3xl md:text-4xl lg:text-[40px] font-bold text-slate-900 leading-tight tracking-tight mb-4">
+              Shop by Category
+            </h2>
+            <p className="text-slate-500 text-sm md:text-base leading-relaxed font-medium mb-6 lg:mb-8">
+              Everything you need for your best skin, hair, health, and daily energy days.
+            </p>
+            <Link 
+              href="/shop" 
+              className="inline-flex items-center text-slate-900 font-bold text-sm md:text-base hover:text-emerald-800 transition-colors group cursor-pointer"
+            >
+              <span>View All Products</span>
+              <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
             </Link>
-          ))}
+          </div>
+
+          {/* Right Column: Grid of Category Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 w-full">
+            {categories.map((item, idx) => (
+              <Link key={idx} href={item.link} className="group flex flex-col cursor-pointer">
+                <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl bg-slate-50 border border-slate-100/50 shadow-sm transition-all duration-500 group-hover:shadow-md group-hover:translate-y-[-2px]">
+                  <Image
+                    src={item.image}
+                    alt={item.name}
+                    fill
+                    sizes="(max-w-768px) 100vw, 25vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
+                <div className="mt-4 flex flex-col items-center lg:items-start text-center lg:text-left">
+                  <h3 className="font-semibold text-lg text-slate-900 group-hover:text-emerald-800 transition-colors">
+                    {item.name}
+                  </h3>
+                  <span className="inline-flex items-center text-xs font-bold text-emerald-800 tracking-wider uppercase mt-1">
+                    <span>Shop Now</span>
+                    <ArrowRight size={12} className="ml-1 group-hover:translate-x-0.5 transition-transform" />
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+
         </div>
       </div>
     </section>

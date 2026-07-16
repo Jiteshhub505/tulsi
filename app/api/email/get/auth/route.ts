@@ -1,23 +1,26 @@
-import db from "@/db/db";
-import { chats } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import connectDB from "@/db/mongoose";
+import { Chat } from "@/db/models";
 import { getServerSession } from "next-auth";
 
 export async function GET() {
+  await connectDB();
+
   const session = await getServerSession();
   try {
-    const response = await db
-      .select({
-        email: chats.userEmail,
-        content: chats.content,
-        createdAt: chats.createdAt,
-      })
-      .from(chats)
-      .where(eq(chats.userEmail, session?.user?.email!));
+    const response = await Chat.find(
+      { userEmail: session?.user?.email },
+      "userEmail content createdAt",
+    );
+
+    const chats = response.map((c: any) => ({
+      email: c.userEmail,
+      content: c.content,
+      createdAt: c.createdAt,
+    }));
 
     return Response.json({
       success: true,
-      chats: response,
+      chats,
     });
   } catch (error) {
     return Response.json({

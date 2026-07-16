@@ -8,16 +8,18 @@ import Features from "@/components/landing/Features";
 import Categories from "@/components/landing/Categories";
 import HeroSlider from "../../components/landing/HeroSlider";
 import HeroFIlterProducts from "@/components/landing/HeroFIlterProducts";
+import WavyBanner from "@/components/landing/WavyBanner";
+import PromoBanner from "@/components/landing/PromoBanner";
 
 export default function Home() {
   return (
     <div>
-      {/* <Hero /> */}
-      <HeroSlider />
-      <HeroFIlterProducts />
-      <Features />
-      <Products />
+      <Hero />
+      <WavyBanner />
       <Categories />
+      <Products />
+      <PromoBanner />
+      <Features />
       <Testimonial />
     </div>
   );

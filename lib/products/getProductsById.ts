@@ -1,6 +1,5 @@
-import db from "@/db/db";
-import { cartItems, products } from "@/db/schema";
-import { eq, inArray } from "drizzle-orm";
+import connectDB from "@/db/mongoose";
+import { CartItem, Product } from "@/db/models";
 
 /**
  * Calculates final payable amount for a cart
@@ -10,14 +9,10 @@ import { eq, inArray } from "drizzle-orm";
  * - Applies tax ONCE
  */
 export const getProductsById = async (cartId: string) => {
+  await connectDB();
+
   // 1️⃣ Fetch cart items (productId + quantity)
-  const cartRows = await db
-    .select({
-      productId: cartItems.productId,
-      quantity: cartItems.quantity,
-    })
-    .from(cartItems)
-    .where(eq(cartItems.cartId, cartId));
+  const cartRows = await CartItem.find({ cartId }).lean();
 
   if (cartRows.length === 0) return 0;
 
@@ -25,14 +20,7 @@ export const getProductsById = async (cartId: string) => {
   const productIds = cartRows.map((c) => c.productId);
 
   // 3️⃣ Fetch product prices
-  const productRows = await db
-    .select({
-      id: products.id,
-      price: products.price,
-      discountPrice: products.discountPrice,
-    })
-    .from(products)
-    .where(inArray(products.id, productIds));
+  const productRows = await Product.find({ _id: { $in: productIds } }).lean();
 
   // 4️⃣ Create quick lookup for quantity
   const quantityMap = new Map<string, number>();
@@ -42,7 +30,7 @@ export const getProductsById = async (cartId: string) => {
 
   // 5️⃣ Subtotal (after discount × quantity)
   const subtotal = productRows.reduce((sum, p) => {
-    const quantity = quantityMap.get(p.id) ?? 0;
+    const quantity = quantityMap.get(String(p._id)) ?? 0;
     const unitPrice = p.discountPrice ?? p.price;
     return sum + unitPrice * quantity;
   }, 0);

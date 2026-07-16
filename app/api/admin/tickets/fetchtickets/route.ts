@@ -1,9 +1,9 @@
-import db from "@/db/db";
-import { ticket } from "@/db/schema";
-import { asc, eq } from "drizzle-orm";
-import { NextRequest } from "next/server";
+import connectDB from "@/db/mongoose";
+import { Ticket } from "@/db/models";
 
 export const GET = async (req: Request) => {
+  await connectDB();
+
   const { searchParams } = new URL(req.url);
   const status = searchParams.get("status");
 
@@ -13,19 +13,10 @@ export const GET = async (req: Request) => {
       return Response.json({ error: "Invalid status" }, { status: 400 });
     }
 
-    const validatedStatus = status as
-      | "pending"
-      | "open"
-      | "completed"
-      | "replied";
-
-    const result = await db
-      .select()
-      .from(ticket)
-      .where(eq(ticket.status, validatedStatus))
-      .orderBy(asc(ticket.createdAt))
+    const result = await Ticket.find({ status })
+      .sort({ createdAt: 1 })
       .limit(10)
-      .offset(0);
+      .skip(0);
 
     return Response.json({
       result,

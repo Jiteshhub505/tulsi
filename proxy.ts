@@ -1,33 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
-const secret = process.env.NEXTAUTH_SECRET;
 
+// Auth verification has been disabled for now (local/dev mode).
+// Previously this redirected unauthenticated/non-admin users away from
+// /admin, /cart, /profile, and /details. Re-enable by restoring the
+// token/role checks here once auth is wired back up.
 export async function proxy(req: NextRequest) {
-  const { pathname } = req.nextUrl;
-  const token = await getToken({ req });
-
-  // 🔐 Admin routes
-  if (pathname.startsWith("/admin")) {
-    if (token?.role !== "admin") {
-      return NextResponse.redirect(new URL("/", req.url));
-    }
-  }
-
-  // 🛒 Cart route (different condition)
-  if (pathname.startsWith("/cart")) {
-    if (!token) {
-      return NextResponse.redirect(new URL("/auth/getstarted", req.url));
-    }
-  }
-
-  if (pathname.startsWith("/details") && !token) {
-    return NextResponse.redirect("/auth/getstarted");
-  }
-
-  if (pathname.startsWith("/profile") && !token) {
-    return NextResponse.redirect(new URL("/auth/getstarted", req.url));
-  }
-
   return NextResponse.next();
 }
 

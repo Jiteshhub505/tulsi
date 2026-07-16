@@ -15,6 +15,9 @@ import {
 
 import { Button } from "@/components/ui/button";
 import Integrations from "./Integrations";
+import NewArrivalMarquee from "./NewArrivalMarquee";
+import Link from "next/link";
+import { ShoppingBag } from "lucide-react";
 
 interface Feature {
   heading: string;
@@ -28,74 +31,88 @@ interface Feature43Props {
 }
 
 const Features = ({
-  title = "Ayurvedic support for weight and wellness",
+  title = "Veda Shakti: Premium Ayurvedic Ingredients",
   features = [
     {
-      heading: "Metabolism Support",
+      heading: "Ashwagandha",
       description:
-        "Formulated with traditional Ayurvedic ingredients such as Ashwagandha, Pipli, and Vidanga to support metabolism and daily energy as part of an active lifestyle.",
+        "Reduces stress and daily fatigue while supporting optimal muscle growth. Helps maintain healthy cortisol levels for better endurance.",
+      icon: <BatteryCharging className="size-6" />,
+    },
+    {
+      heading: "Amla Extract",
+      description:
+        "Boosts immunity and improves digestion with natural Vitamin C. Supports cellular health and enhances your body's natural defense.",
+      icon: <ShieldCheck className="size-6" />,
+    },
+    {
+      heading: "Gokshura",
+      description:
+        "Supports active muscle growth and boosts overall vitality. Rejuvenates the body to increase energy and healthy physical performance.",
       icon: <Flame className="size-6" />,
     },
     {
-      heading: "Nutrition for Healthy Weight",
+      heading: "Pippali",
       description:
-        "Includes Shatavari, Amla, and Gokhru to support nourishment, appetite, and overall body maintenance when combined with proper diet and training.",
-      icon: <TrendingUp className="size-6" />,
-    },
-    {
-      heading: "Ayurvedic Ingredients",
-      description:
-        "Made with carefully selected Ayurvedic herbs traditionally used to support overall wellness and daily nutrition.",
-      icon: <Leaf className="size-6" />,
-    },
-    {
-      heading: "Strength & Recovery Support",
-      description:
-        "Designed to support stamina, recovery, and physical performance as part of a consistent fitness routine.",
-      icon: <Activity className="size-6" />,
-    },
-    {
-      heading: "Digestive Support",
-      description:
-        "Traditional ingredients like Pipli and Vidanga are included to support digestion and nutrient absorption.",
+        "Enhances healthy appetite and maximizes nutrient absorption. Stimulates metabolism to help your body efficiently process nutrients.",
       icon: <HeartPulse className="size-6" />,
     },
     {
-      heading: "Clean & Transparent Formula",
+      heading: "Kaunch Beej",
       description:
-        "No steroids or synthetic additives. Designed to support long-term consistency when used responsibly.",
-      icon: <ShieldCheck className="size-6" />,
+        "Helps in rapid muscle recovery and increases energy and stamina. A natural strength booster that supports nervous system function.",
+      icon: <Activity className="size-6" />,
+    },
+    {
+      heading: "100% Natural",
+      description:
+        "30 capsules of pure Ayurvedic formulation with no synthetic additives. Rigorously tested for maximum purity and effectiveness.",
+      icon: <Leaf className="size-6" />,
     },
   ],
 }: Feature43Props) => {
   return (
-    <section className="pt-20 w-full pb-2">
+    <section className="pt-10 w-full pb-2">
       <div className="w-full">
-        {title && (
-          <div className="mx-auto mb-16 max-w-3xl text-center">
-            <h2 className="text-pretty text-4xl font-medium lg:text-5xl">
-              {title}
-            </h2>
-          </div>
-        )}
+        <NewArrivalMarquee />
+        {/* Section Title */}
+        <div className="mx-auto max-w-7xl px-6 pt-10 pb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">
+            {title}
+          </h2>
+          <p className="mt-2 text-slate-500 text-sm md:text-base">
+            A powerful blend of ancient Ayurvedic herbs, crafted for modern wellness.
+          </p>
+        </div>
+
         <img
-          className="w-full"
-          src="https://res.cloudinary.com/dwrp1rgdi/image/upload/v1765791840/Untitled-design-_76_1312_vry854.webp"
-          alt="ingredients image"
+          className="w-full object-contain"
+          src="/image-tul.png"
+          alt="Ayurvedic ingredients and Veda Shakti product"
         />
 
         {/* <Integrations /> */}
 
-        <div className="pl-15 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mx-auto max-w-7xl px-6 grid gap-0 md:grid-cols-2 lg:grid-cols-3">
           {features.map((feature, i) => (
-            <div key={i} className="flex flex-col">
-              <div className="bg-accent mb-5 flex size-16 items-center justify-center rounded-full">
+            <div key={i} className="flex flex-col bg-white dark:bg-zinc-900 p-8 border border-zinc-100 dark:border-zinc-800 transition-all hover:shadow-md hover:z-10">
+              <div className="bg-primary/10 text-primary mb-4 flex size-12 items-center justify-center rounded-full">
                 {feature.icon}
               </div>
-              <h3 className="mb-2 text-xl font-semibold">{feature.heading}</h3>
-              <p className="text-muted-foreground">{feature.description}</p>
+              <h3 className="mb-2 text-lg font-bold text-zinc-900 dark:text-zinc-100">{feature.heading}</h3>
+              <p className="text-muted-foreground leading-relaxed text-sm">{feature.description}</p>
             </div>
           ))}
+        </div>
+
+        {/* Shop CTA */}
+        <div className="flex justify-center py-10">
+          <Link href="/shop/148c338c-bf9f-49c2-8c86-1fda31b15a88">
+            <button className="inline-flex items-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-8 py-4 rounded-xl shadow-lg shadow-emerald-700/20 transition-all duration-300 hover:-translate-y-0.5 cursor-pointer text-sm tracking-wide">
+              <ShoppingBag size={18} />
+              Shop Veda Shakti
+            </button>
+          </Link>
         </div>
       </div>
     </section>

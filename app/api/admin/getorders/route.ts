@@ -1,56 +1,31 @@
-import db from "@/db/db";
-import { orders } from "@/db/schema";
-import { desc, sql, eq } from "drizzle-orm"; // 1. Import 'eq'
+import connectDB from "@/db/mongoose";
+import { Order } from "@/db/models";
 
 export const GET = async (req: Request) => {
-  const { searchParams } = new URL(req.url);
+  await connectDB();
 
+  const { searchParams } = new URL(req.url);
   const limit = Number(searchParams.get("limit")) || 5;
   const page = Number(searchParams.get("page")) || 1;
   const status = searchParams.get("statusFilter");
+  const sort = searchParams.get("sort");
   const offset = (page - 1) * limit;
-  type OrderStatus = "created" | "paid" | "failed" | "cancelled";
 
   try {
-    const whereCondition =
-      status && status !== "ALL"
-        ? eq(orders.order_status, status as OrderStatus)
-        : undefined;
+    const filter = status && status !== "ALL" ? { order_status: status } : {};
+    const sortOption: Record<string, 1 | -1> = sort === "asc" ? { createdAt: 1 } : { createdAt: -1 };
 
-    // Paginated data
-    const recentOrders = await db
-      .select()
-      .from(orders)
-      .where(whereCondition)
-      .orderBy(desc(orders.createdAt))
-      .limit(limit)
-      .offset(offset);
-
-    const [{ count }] = await db
-      .select({ count: sql<number>`count(*)` })
-      .from(orders)
-      .where(whereCondition);
-
+    const recentOrders = await Order.find(filter).sort(sortOption).skip(offset).limit(limit).lean();
+    const count = await Order.countDocuments(filter);
     const totalPages = Math.ceil(count / limit);
 
     return Response.json({
       success: true,
       recentOrders,
-      meta: {
-        page,
-        limit,
-        totalRecords: count,
-        totalPages,
-      },
+      meta: { page, limit, totalRecords: count, totalPages },
     });
   } catch (error) {
-    console.error(error); // Log error for debugging
-    return Response.json(
-      {
-        success: false,
-        message: "Error fetching orders",
-      },
-      { status: 500 },
-    );
+    console.error(error);
+    return Response.json({ success: false, message: "Error fetching orders" }, { status: 500 });
   }
 };

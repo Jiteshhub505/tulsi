@@ -1,17 +1,27 @@
-import db from "@/db/db";
-import { users } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import connectDB from "@/db/mongoose";
+import { User } from "@/db/models";
+import { GUEST_USER_ID, GUEST_USER_EMAIL } from "@/lib/constants";
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
-import { success } from "zod";
 
 export async function GET(req: NextRequest) {
+  await connectDB();
   const token = await getToken({ req });
-  const userId = token?.sub;
-  if (!userId) return new Response("Unauthorized", { status: 401 });
+  const userId = token?.sub || GUEST_USER_ID;
+
+  // Ensure guest user exists
+  const guestUser = await User.findById(GUEST_USER_ID);
+  if (!guestUser) {
+    await User.create({
+      _id: GUEST_USER_ID,
+      name: "Guest User",
+      email: GUEST_USER_EMAIL,
+      role: "user",
+    });
+  }
 
   try {
-    const user = await db.select().from(users).where(eq(users.id, userId));
+    const user = await User.find({ _id: userId });
     return NextResponse.json({ message: "Fetched details", user });
   } catch (error) {
     return NextResponse.json({

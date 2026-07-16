@@ -44,3 +44,19 @@ export const productSchema = z.object({
 });
 
 export type ProductInput = z.infer<typeof productSchema>;
+
+// Simplified schema used by the admin Add/Edit Product forms — only name,
+// title, price, description and category are required; discountPrice and
+// gallery images are handled separately (images require at least 1, up to
+// 4, enforced in the form itself rather than via zod).
+export const simpleProductSchema = z.object({
+  name: z.string().min(2, "Name is required"),
+  title: z.string().min(4, "Title is required"),
+  price: z.number().min(0, "Price is required"),
+  discountPrice: z.number().min(0).optional(),
+  description: z.string().min(10, "Description is required"),
+  category: z.enum(categories).default("Uncategorized"),
+  inStock: z.number().min(0, "Stock cannot be negative").default(1),
+});
+
+export type SimpleProductInput = z.infer<typeof simpleProductSchema>;

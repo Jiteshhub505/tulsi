@@ -1,8 +1,10 @@
-import db from "@/db/db";
-import { products } from "@/db/schema";
+import connectDB from "@/db/mongoose";
+import { Product } from "@/db/models";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
+  await connectDB();
+
   const {
     name,
     title,
@@ -12,7 +14,6 @@ export async function POST(request: Request) {
     discountPrice,
     inStock,
     galleryImages,
-    brand,
     form,
     goal,
     ingredients,
@@ -24,37 +25,34 @@ export async function POST(request: Request) {
     manufacturedDate,
     createdAt,
   } = await request.json();
-  const newExpiryDate = new Date(expiryDate);
-  const newManufacturedDate = new Date(manufacturedDate);
+  const newExpiryDate = expiryDate ? new Date(expiryDate) : undefined;
+  const newManufacturedDate = manufacturedDate ? new Date(manufacturedDate) : undefined;
 
   try {
-    const id = await db
-      .insert(products)
-      .values({
-        name,
-        title,
-        category,
-        description,
-        price,
-        discountPrice,
-        inStock,
-        galleryImages,
-        form,
-        goal,
-        ingredients,
-        allergens,
-        warnings,
-        directions,
-        certifications,
-        expiryDate: newExpiryDate,
-        manufacturedDate: newManufacturedDate,
-        createdAt,
-      })
-      .returning({ id: products.id });
+    const newProduct = await Product.create({
+      name,
+      title,
+      category,
+      description,
+      price,
+      discountPrice,
+      inStock,
+      galleryImages,
+      form,
+      goal,
+      ingredients,
+      allergens,
+      warnings,
+      directions,
+      certifications,
+      expiryDate: newExpiryDate,
+      manufacturedDate: newManufacturedDate,
+      createdAt,
+    });
 
     return NextResponse.json({
       success: true,
-      id: id,
+      id: [{ id: newProduct.id }],
       message: "Product added successfully",
     });
   } catch (error) {

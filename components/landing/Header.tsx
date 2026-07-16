@@ -1,127 +1,181 @@
 "use client";
-import Link from "next/link";
-import { Logo } from "@/components/landing/logo";
-import { Menu, ShoppingCart, User, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import React from "react";
-import { cn } from "@/lib/utils";
-import { useSession } from "next-auth/react";
 
-const menuItems = [
-  { name: "Shop", href: "/shop/categories" },
-  { name: "Solution", href: "#link" },
-  { name: "Pricing", href: "#link" },
-  { name: "About", href: "#link" },
-];
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { User, Heart, ShoppingCart, Menu, X } from "lucide-react";
+import { Sheet, SheetTrigger } from "@/components/ui/sheet";
+import CartDrawer from "./CartDrawer";
+import axios from "axios";
+import { getFavorites } from "@/lib/favorites";
 
 export const Header = () => {
-  const [menuState, setMenuState] = React.useState(false);
-  const [isScrolled, setIsScrolled] = React.useState(false);
   const { data: session, status } = useSession();
-  React.useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
+  const [favoritesCount, setFavoritesCount] = useState(0);
+
+  const updateFavoritesCount = () => {
+    setFavoritesCount(getFavorites().length);
+  };
+
+  const fetchCartCount = async () => {
+    try {
+      const response = await axios.get("/api/cart/fetchcart");
+      if (response.data.success) {
+        const count = response.data.items.reduce((sum: number, item: any) => sum + item.quantity, 0);
+        setCartCount(count);
+      } else {
+        setCartCount(0);
+      }
+    } catch {
+      setCartCount(0);
+    }
+  };
+
+  useEffect(() => {
+    fetchCartCount();
+    updateFavoritesCount();
+    window.addEventListener("cart-updated", fetchCartCount);
+    window.addEventListener("favorites-updated", updateFavoritesCount);
+    return () => {
+      window.removeEventListener("cart-updated", fetchCartCount);
+      window.removeEventListener("favorites-updated", updateFavoritesCount);
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
   return (
-    <header>
-      {/* Added 'top-0 left-0' to anchor the fixed nav to the very top */}
-      <nav
-        data-state={menuState && "active"}
-        className="fixed top-0 left-0 z-20 w-full"
-      >
-        <div
-          className={cn(
-            "mx-auto mt-2 max-w-6xl px-6 transition-all duration-300 lg:px-12 bg-white ",
-            isScrolled &&
-              "bg-background/50 max-w-4xl backdrop-blur-lg lg:px-5 border rounded-2xl",
-          )}
-        >
-          <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
-            <div className="flex w-full justify-between lg:w-auto">
-              <Link
-                href="/"
-                aria-label="home"
-                className="flex items-center space-x-2"
-              >
-                <Logo />
-              </Link>
-
-              <button
-                onClick={() => setMenuState(!menuState)}
-                aria-label={menuState == true ? "Close Menu" : "Open Menu"}
-                className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden"
-              >
-                <Menu className="in-data-[state=active]:rotate-180 in-data-[state=active]:scale-0 in-data-[state=active]:opacity-0 m-auto size-6 duration-200" />
-                <X className="in-data-[state=active]:rotate-0 in-data-[state=active]:scale-100 in-data-[state=active]:opacity-100 absolute inset-0 m-auto size-6 -rotate-180 scale-0 opacity-0 duration-200" />
-              </button>
-            </div>
-
-            <div className="absolute inset-0 m-auto hidden size-fit lg:block">
-              <ul className="flex gap-8 text-sm">
-                {menuItems.map((item, index) => (
-                  <li key={index}>
-                    <Link
-                      href={item.href}
-                      className="text-muted-foreground hover:text-accent-foreground block duration-150"
-                    >
-                      <span>{item.name}</span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="bg-background in-data-[state=active]:block lg:in-data-[state=active]:flex mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
-              <div className="lg:hidden">
-                <ul className="space-y-6 text-base">
-                  {menuItems.map((item, index) => (
-                    <li key={index}>
-                      <Link
-                        href={item.href}
-                        className="text-muted-foreground hover:text-accent-foreground block duration-150"
-                      >
-                        <span>{item.name}</span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="flex w-full flex-col items-center  space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                {status === "authenticated" ? (
-                  <Link href={"/profile"}>
-                    <User />
-                  </Link>
-                ) : (
-                  ""
-                )}
-
-                <Link
-                  href={
-                    status === "authenticated" ? "/cart" : "/auth/getstarted"
-                  }
-                >
-                  <ShoppingCart />
-                </Link>
-
-                {status === "unauthenticated" && (
-                  <Button
-                    asChild
-                    size="sm"
-                    className={cn(isScrolled && "lg:hidden")}
-                  >
-                    <Link href="/auth/getstarted">
-                      <span>Get Started</span>
-                    </Link>
-                  </Button>
-                )}
-              </div>
-            </div>
-          </div>
+    <nav className="sticky top-0 z-50 w-full bg-white/90 backdrop-blur-md border-b border-zinc-200 shadow-sm px-6 md:px-12 lg:px-16 transition-all duration-300">
+      <div className="max-w-7xl mx-auto flex items-center justify-between py-3 md:py-4">
+        
+        {/* Left: Nav Links (Desktop) */}
+        <div className="hidden lg:flex items-center gap-8">
+          <Link href="/" className="text-slate-700 font-semibold hover:text-emerald-700 transition-colors text-[14px]">
+            Home
+          </Link>
+          <Link href="/shop" className="text-slate-600 font-semibold hover:text-emerald-700 transition-colors text-[14px]">
+            Shop
+          </Link>
+          <Link href="/about-us" className="text-slate-600 font-semibold hover:text-emerald-700 transition-colors text-[14px]">
+            About Us
+          </Link>
         </div>
-      </nav>
-    </header>
+
+        {/* Left: Hamburger (Mobile) */}
+        <button 
+          onClick={() => setMobileMenuOpen(true)}
+          className="lg:hidden text-slate-700 hover:text-emerald-800 p-1 cursor-pointer"
+          aria-label="Open menu"
+        >
+          <Menu size={24} />
+        </button>
+
+        {/* Center: Logo */}
+        <div className="absolute left-1/2 -translate-x-1/2 flex items-center select-none">
+          <Link href="/">
+            <img
+              src="/tulsiveda-logo.png"
+              alt="Tulsiveda Logo"
+              className="h-14 md:h-16 w-auto object-contain transition-transform duration-300 hover:scale-105"
+            />
+          </Link>
+        </div>
+
+        {/* Right: Actions */}
+        <div className="flex items-center gap-3 md:gap-5">
+          {/* Wishlist */}
+          <Link 
+            href="/favorites" 
+            className="text-slate-600 hover:text-emerald-700 transition-colors p-1 relative"
+            aria-label="Wishlist"
+          >
+            <Heart size={20} />
+            {favoritesCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-rose-500 text-white rounded-full text-[9px] size-3.5 flex items-center justify-center font-bold">
+                {favoritesCount}
+              </span>
+            )}
+          </Link>
+
+          {/* Cart with count badge */}
+          {/* Mobile Cart Link */}
+          <Link 
+            href="/cart"
+            className="text-slate-600 hover:text-emerald-700 transition-colors p-1 relative lg:hidden"
+            aria-label="Shopping Cart"
+          >
+            <ShoppingCart size={20} />
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-emerald-600 text-white rounded-full text-[9px] size-3.5 flex items-center justify-center font-bold">
+                {cartCount}
+              </span>
+            )}
+          </Link>
+
+          {/* Desktop Cart Sidebar Trigger */}
+          <Sheet>
+            <SheetTrigger asChild>
+              <button 
+                className="text-slate-600 hover:text-emerald-700 transition-colors p-1 relative hidden lg:flex cursor-pointer"
+                aria-label="Shopping Cart Drawer"
+                suppressHydrationWarning
+              >
+                <ShoppingCart size={20} />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-emerald-600 text-white rounded-full text-[9px] size-3.5 flex items-center justify-center font-bold">
+                    {cartCount}
+                  </span>
+                )}
+              </button>
+            </SheetTrigger>
+            <CartDrawer />
+          </Sheet>
+        </div>
+      </div>
+
+      {/* Mobile Navigation Drawer */}
+      <div className={`fixed inset-0 z-50 bg-black/40 backdrop-blur-xs transition-opacity duration-300 ${
+        mobileMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+      }`}>
+        <div className={`absolute top-0 left-0 w-[280px] h-full bg-white p-6 shadow-2xl transition-transform duration-300 transform ${
+          mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+        }`}>
+          <div className="flex items-center justify-between pb-6 border-b border-emerald-950/5">
+            <span className="font-bold text-emerald-900 tracking-wider">TULSIVEDA</span>
+            <button 
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-slate-700 hover:text-emerald-800 p-1"
+              aria-label="Close menu"
+            >
+              <X size={24} />
+            </button>
+          </div>
+
+          <nav className="flex flex-col gap-5 pt-8">
+            <Link 
+              href="/" 
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-slate-700 font-semibold hover:text-emerald-700 text-lg transition-colors"
+            >
+              Home
+            </Link>
+            <Link 
+              href="/shop" 
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-slate-600 font-semibold hover:text-emerald-700 text-lg transition-colors"
+            >
+              Shop
+            </Link>
+            <Link 
+              href="/about-us" 
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-slate-600 font-semibold hover:text-emerald-700 text-lg transition-colors"
+            >
+              About Us
+            </Link>
+          </nav>
+        </div>
+      </div>
+    </nav>
   );
 };

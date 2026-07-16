@@ -9,8 +9,10 @@ import { useDebouncedCallback } from "use-debounce";
 import axios from "axios";
 import EmptyCartPage from "./EmptyCart";
 import { ArrowLeft } from "lucide-react";
-import { useRouter } from "next/navigation";
-import PayButton from "@/components/payment/razorpay/cartproducts/PayButton";
+import { useRouter, useSearchParams } from "next/navigation";
+import PlaceOrderButton from "@/components/payment/PlaceOrderButton";
+import toast from "react-hot-toast";
+
 type PropType = {
   loading: boolean;
   products: ProductType[];
@@ -29,7 +31,159 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
     productId: 0,
   });
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { data: session, status } = useSession();
+
+  // Checkout flow states
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [orderSuccess, setOrderSuccess] = useState<any>(null);
+
+  // Form states
+  const [shippingDetails, setShippingDetails] = useState({
+    fullName: "",
+    email: "",
+    phone: "",
+    street: "",
+    city: "",
+    state: "",
+    pinCode: "",
+  });
+
+  const [paymentMethod, setPaymentMethod] = useState<"razorpay" | "cod">("razorpay");
+  const [couponCode, setCouponCode] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
+  const [couponError, setCouponError] = useState("");
+  const [placingOrder, setPlacingOrder] = useState(false);
+
+  useEffect(() => {
+    if (searchParams.get("checkout") === "true") {
+      setIsCheckingOut(true);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  const handleApplyCoupon = () => {
+    setCouponError("");
+    const code = couponCode.trim().toUpperCase();
+    if (code === "") {
+      setAppliedCoupon(null);
+      return;
+    }
+    if (code === "KRISH10") {
+      setAppliedCoupon("KRISH10");
+      toast.success("Coupon KRISH10 applied successfully! You got 10% off.");
+    } else {
+      setCouponError("Invalid coupon code. Try KRISH10!");
+      setAppliedCoupon(null);
+    }
+  };
+
+  const handlePlaceOrder = async () => {
+    const { fullName, email, phone, street, city, state, pinCode } = shippingDetails;
+    if (!fullName || !email || !phone || !street || !city || !state || !pinCode) {
+      toast.error("Please fill in all shipping details");
+      return;
+    }
+
+    setPlacingOrder(true);
+    try {
+      if (paymentMethod === "cod") {
+        const response = await axios.post("/api/orders/place-cart", {
+          shippingDetails,
+          paymentMethod: "cod",
+          couponCode: appliedCoupon,
+        });
+
+        if (response.data.success) {
+          setOrderSuccess(response.data.order);
+          setProducts([]);
+          window.dispatchEvent(new Event("cart-updated"));
+        } else {
+          toast.error(response.data.message || "Failed to place order");
+        }
+      } else {
+        // Razorpay flow
+        const response = await axios.post("/api/orders/initiate-payment", {
+          couponCode: appliedCoupon,
+        });
+
+        if (!response.data.success) {
+          toast.error(response.data.message || "Failed to initiate payment");
+          setPlacingOrder(false);
+          return;
+        }
+
+        const { keyId, id, amount, currency } = response.data;
+
+        const options = {
+          key: keyId,
+          amount: amount,
+          currency: currency,
+          name: "TulsiVeda",
+          description: "Complete checkout payment",
+          order_id: id,
+          handler: async function (paymentResponse: any) {
+            setPlacingOrder(true);
+            try {
+              const verifyRes = await axios.post("/api/orders/verify-payment", {
+                razorpay_payment_id: paymentResponse.razorpay_payment_id,
+                razorpay_order_id: paymentResponse.razorpay_order_id,
+                razorpay_signature: paymentResponse.razorpay_signature,
+                shippingDetails,
+                paymentMethod: "razorpay",
+                couponCode: appliedCoupon,
+              });
+
+              if (verifyRes.data.success) {
+                setOrderSuccess(verifyRes.data.order);
+                setProducts([]);
+                window.dispatchEvent(new Event("cart-updated"));
+              } else {
+                toast.error(verifyRes.data.message || "Payment verification failed");
+              }
+            } catch (err: any) {
+              console.error(err);
+              toast.error(err.response?.data?.message || "Payment verification failed");
+            } finally {
+              setPlacingOrder(false);
+            }
+          },
+          prefill: {
+            name: fullName,
+            email: email,
+            contact: phone,
+          },
+          theme: {
+            color: "#047857",
+          },
+          modal: {
+            ondismiss: function () {
+              setPlacingOrder(false);
+            },
+          },
+        };
+
+        const rzp = new (window as any).Razorpay(options);
+        rzp.open();
+      }
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.response?.data?.message || "Failed to place order. Please try again.");
+    } finally {
+      if (paymentMethod === "cod") {
+        setPlacingOrder(false);
+      }
+    }
+  };
   // 1️⃣ Subtotal (after discount, WITH quantity)
   const subtotal = products.reduce((sum, p) => {
     const unitPrice = p.discountPrice ?? p.price;
@@ -61,8 +215,12 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
       productQuantity,
     });
 
-    if (response.data.success) console.log("Updated quantity in DB");
-    else console.log("Failed to update quantity");
+    if (response.data.success) {
+      console.log("Updated quantity in DB");
+      window.dispatchEvent(new Event("cart-updated"));
+    } else {
+      console.log("Failed to update quantity");
+    }
   };
 
   const debouncedServer = useDebouncedCallback(updateQuantity, 1000);
@@ -100,6 +258,61 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
     );
   };
 
+  if (orderSuccess) {
+    return (
+      <div className="max-w-xl mx-auto px-4 py-16 text-center space-y-6">
+        <div className="inline-flex items-center justify-center size-20 rounded-full bg-emerald-100 text-emerald-600 animate-bounce">
+          <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <h2 className="text-3xl font-extrabold text-stone-900 tracking-tight">Order Placed Successfully!</h2>
+        <p className="text-stone-500 max-w-sm mx-auto text-sm">
+          Thank you for shopping with TulsiVeda! Your order has been registered in our database.
+        </p>
+
+        <div className="bg-white border border-stone-200 rounded-2xl p-6 text-left space-y-4 shadow-xs">
+          <div className="flex justify-between text-xs text-stone-500">
+            <span>ORDER ID</span>
+            <span className="font-mono font-bold text-stone-850">{orderSuccess.order_id}</span>
+          </div>
+          <hr className="border-stone-100" />
+          <div className="space-y-1">
+            <h4 className="text-xs font-semibold text-stone-900 uppercase tracking-wider">Shipping Details</h4>
+            <p className="text-sm font-medium text-stone-850">{orderSuccess.shippingDetails?.fullName}</p>
+            <p className="text-xs text-stone-500">{orderSuccess.shippingDetails?.street}</p>
+            <p className="text-xs text-stone-500">
+              {orderSuccess.shippingDetails?.city}, {orderSuccess.shippingDetails?.state} - {orderSuccess.shippingDetails?.pinCode}
+            </p>
+            <p className="text-xs text-stone-500">Phone: {orderSuccess.shippingDetails?.phone}</p>
+          </div>
+          <hr className="border-stone-100" />
+          <div className="flex justify-between text-sm">
+            <span className="text-stone-500">Payment Method</span>
+            <span className="font-semibold text-stone-900 uppercase">
+              {orderSuccess.paymentMethod === "cod" ? "Cash on Delivery" : "Razorpay Secure"}
+            </span>
+          </div>
+          <div className="flex justify-between text-sm">
+            <span className="text-stone-500">Total Amount</span>
+            <span className="font-bold text-emerald-800">₹{orderSuccess.amount?.toLocaleString()}</span>
+          </div>
+        </div>
+
+        <button
+          onClick={() => {
+            setProducts([]);
+            window.dispatchEvent(new Event("cart-updated"));
+            router.push("/shop");
+          }}
+          className="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-semibold py-4 rounded-xl transition-all shadow-md cursor-pointer"
+        >
+          CONTINUE SHOPPING
+        </button>
+      </div>
+    );
+  }
+
   if (products.length === 0 && !loading) {
     return <EmptyCartPage />;
   }
@@ -112,6 +325,244 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
         <div className="bg-gray-200 h-4 w-1/2 rounded animate-pulse"></div>
       </div>
     );
+
+  if (isCheckingOut) {
+    const totalItems = products.reduce((sum, p) => sum + p.quantity, 0);
+    const couponDiscount = appliedCoupon === "KRISH10" ? subtotal * 0.1 : 0;
+    const subtotalAfterCoupon = subtotal - couponDiscount;
+    const taxAfterCoupon = (subtotalAfterCoupon * 5) / 100;
+    const finalTotal = subtotalAfterCoupon + taxAfterCoupon;
+
+    return (
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+        <div className="flex items-center gap-4 mb-8">
+          <button 
+            onClick={() => setIsCheckingOut(false)}
+            className="p-2 border border-stone-200 rounded-lg hover:bg-stone-50 transition cursor-pointer"
+          >
+            <ArrowLeft className="size-5 text-stone-700" />
+          </button>
+          <h2 className="text-2xl font-bold text-stone-900">Checkout</h2>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+          {/* Left: Shipping details & Payment options */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Shipping Details */}
+            <div className="bg-white border border-stone-200/60 rounded-2xl p-6 shadow-xs space-y-4">
+              <h3 className="text-lg font-bold text-stone-900 border-b border-stone-100 pb-3">Shipping Details</h3>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-stone-700">Full Name</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Enter full name"
+                    value={shippingDetails.fullName}
+                    onChange={(e) => setShippingDetails({ ...shippingDetails, fullName: e.target.value })}
+                    className="w-full border border-stone-300 rounded-xl px-4 py-3 text-sm focus:border-emerald-600 focus:outline-hidden"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-stone-700">Email Address</label>
+                  <input
+                    type="email"
+                    required
+                    placeholder="Enter email address"
+                    value={shippingDetails.email}
+                    onChange={(e) => setShippingDetails({ ...shippingDetails, email: e.target.value })}
+                    className="w-full border border-stone-300 rounded-xl px-4 py-3 text-sm focus:border-emerald-600 focus:outline-hidden"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-stone-700">Phone Number</label>
+                  <input
+                    type="tel"
+                    required
+                    placeholder="Enter phone number"
+                    value={shippingDetails.phone}
+                    onChange={(e) => setShippingDetails({ ...shippingDetails, phone: e.target.value })}
+                    className="w-full border border-stone-300 rounded-xl px-4 py-3 text-sm focus:border-emerald-600 focus:outline-hidden"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-stone-700">Street Address</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Enter street and house details"
+                    value={shippingDetails.street}
+                    onChange={(e) => setShippingDetails({ ...shippingDetails, street: e.target.value })}
+                    className="w-full border border-stone-300 rounded-xl px-4 py-3 text-sm focus:border-emerald-600 focus:outline-hidden"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-stone-700">City</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Enter city"
+                    value={shippingDetails.city}
+                    onChange={(e) => setShippingDetails({ ...shippingDetails, city: e.target.value })}
+                    className="w-full border border-stone-300 rounded-xl px-4 py-3 text-sm focus:border-emerald-600 focus:outline-hidden"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-semibold text-stone-700">State</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="State"
+                      value={shippingDetails.state}
+                      onChange={(e) => setShippingDetails({ ...shippingDetails, state: e.target.value })}
+                      className="w-full border border-stone-300 rounded-xl px-4 py-3 text-sm focus:border-emerald-600 focus:outline-hidden"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-semibold text-stone-700">PIN Code</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="PIN"
+                      value={shippingDetails.pinCode}
+                      onChange={(e) => setShippingDetails({ ...shippingDetails, pinCode: e.target.value })}
+                      className="w-full border border-stone-300 rounded-xl px-4 py-3 text-sm focus:border-emerald-600 focus:outline-hidden"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Payment Method */}
+            <div className="bg-white border border-stone-200/60 rounded-2xl p-6 shadow-xs space-y-4">
+              <h3 className="text-lg font-bold text-stone-900 border-b border-stone-100 pb-3">Payment Method</h3>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Razorpay card */}
+                <div
+                  onClick={() => setPaymentMethod("razorpay")}
+                  className={`border-2 rounded-xl p-4 cursor-pointer flex flex-col justify-between transition ${
+                    paymentMethod === "razorpay"
+                      ? "border-emerald-600 bg-emerald-50/10"
+                      : "border-stone-200 hover:border-stone-300"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      checked={paymentMethod === "razorpay"}
+                      onChange={() => setPaymentMethod("razorpay")}
+                      className="accent-emerald-700 cursor-pointer"
+                    />
+                    <span className="text-sm font-bold text-stone-900">Razorpay Secure</span>
+                  </div>
+                  <span className="text-xs text-stone-500 mt-2">UPI, Cards, Wallets, NetBanking</span>
+                </div>
+
+                {/* COD card */}
+                <div
+                  onClick={() => setPaymentMethod("cod")}
+                  className={`border-2 rounded-xl p-4 cursor-pointer flex flex-col justify-between transition ${
+                    paymentMethod === "cod"
+                      ? "border-emerald-600 bg-emerald-50/10"
+                      : "border-stone-200 hover:border-stone-300"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      checked={paymentMethod === "cod"}
+                      onChange={() => setPaymentMethod("cod")}
+                      className="accent-emerald-700 cursor-pointer"
+                    />
+                    <span className="text-sm font-bold text-stone-900">Cash on Delivery</span>
+                  </div>
+                  <span className="text-xs text-stone-500 mt-2">Pay when you receive the order</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Order Summary & Promo code */}
+          <div className="space-y-6">
+            {/* Order Summary */}
+            <div className="bg-white border border-stone-200/60 rounded-2xl p-6 shadow-xs space-y-4">
+              <h3 className="text-lg font-bold text-stone-900 border-b border-stone-100 pb-3">Order Summary</h3>
+              
+              <ul className="text-stone-500 text-sm font-medium space-y-3">
+                <li className="flex justify-between">
+                  <span>Total Items</span>
+                  <span className="text-stone-950 font-bold">{totalItems}</span>
+                </li>
+                <li className="flex justify-between">
+                  <span>Subtotal</span>
+                  <span className="text-stone-950 font-bold">₹{subtotal.toLocaleString()}</span>
+                </li>
+                {appliedCoupon && (
+                  <li className="flex justify-between text-emerald-700">
+                    <span>Coupon Discount (10% OFF)</span>
+                    <span>-₹{couponDiscount.toLocaleString()}</span>
+                  </li>
+                )}
+                <li className="flex justify-between">
+                  <span>Shipping</span>
+                  <span className="text-emerald-750 font-bold">FREE</span>
+                </li>
+                <li className="flex justify-between">
+                  <span>Tax (5%)</span>
+                  <span className="text-stone-950 font-bold">+₹{taxAfterCoupon.toLocaleString()}</span>
+                </li>
+                <hr className="border-stone-100 my-1" />
+                <li className="flex justify-between text-base text-stone-950 font-extrabold">
+                  <span>Amount to Pay</span>
+                  <span className="text-emerald-800">₹{finalTotal.toLocaleString()}</span>
+                </li>
+              </ul>
+
+              <button
+                disabled={placingOrder}
+                onClick={handlePlaceOrder}
+                className="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-4 rounded-xl transition shadow-md disabled:bg-stone-300 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer text-sm"
+              >
+                {placingOrder ? "Placing Order..." : "PLACE ORDER"}
+              </button>
+            </div>
+
+            {/* Promo Code Coupon */}
+            <div className="bg-white border border-stone-200/60 rounded-2xl p-6 shadow-xs space-y-4">
+              <h4 className="text-xs font-semibold text-stone-900 uppercase tracking-wider">Apply Coupon</h4>
+              <div className="flex border border-stone-300 overflow-hidden rounded-xl bg-white focus-within:border-emerald-600 transition">
+                <input
+                  type="text"
+                  placeholder="Enter coupon code (e.g. KRISH10)"
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value)}
+                  className="w-full outline-hidden bg-transparent text-stone-600 text-sm px-4 py-3"
+                />
+                <button
+                  type="button"
+                  onClick={handleApplyCoupon}
+                  className="bg-emerald-700 hover:bg-emerald-800 text-white px-6 font-bold text-xs uppercase tracking-wider transition cursor-pointer"
+                >
+                  Apply
+                </button>
+              </div>
+              {couponError && (
+                <p className="text-red-500 text-xs font-semibold">{couponError}</p>
+              )}
+              {appliedCoupon && (
+                <p className="text-emerald-700 text-xs font-semibold">Coupon applied: {appliedCoupon}</p>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="overflow-x-hidden lg:max-w-5xl max-lg:max-w-2xl mx-auto  ">
@@ -241,13 +692,12 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
             </ul>
 
             <div className="mt-8 space-y-3">
-              <PayButton />
-              {/* <Button
-                  type="button"
-                  className="text-sm px-4 py-2.5 w-full font-medium tracking-wide bg-blue-600 hover:bg-blue-700 text-white rounded-md cursor-pointer"
-                >
-                  Checkout
-                </Button> */}
+              <button 
+                onClick={() => setIsCheckingOut(true)}
+                className="w-full bg-emerald-750 hover:bg-emerald-800 text-white font-semibold py-4 rounded-xl transition-all shadow-md shadow-emerald-700/10 cursor-pointer text-sm tracking-wider uppercase"
+              >
+                PROCEED TO CHECKOUT
+              </button>
               <Link href={"/"}>
                 <Button
                   type="button"
@@ -261,22 +711,24 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
               <p className="text-slate-900 text-sm font-medium mb-2">
                 Do you have a promo code?
               </p>
-              <div className="flex border border-blue-600 overflow-hidden rounded-md">
+              <div className="flex border border-emerald-600 overflow-hidden rounded-md">
                 <input
-                  type="email"
-                  placeholder="Promo code"
-                  className="w-full outline-0 bg-white text-slate-600 text-sm px-4 py-2.5"
+                  type="text"
+                  placeholder="Promo code (e.g. KRISH10)"
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value)}
+                  className="w-full outline-hidden bg-white text-slate-600 text-sm px-4 py-2.5"
                 />
                 <Button
                   type="button"
-                  className="flex items-center justify-center font-medium tracking-wide bg-blue-600 hover:bg-blue-700 px-4 text-sm text-white cursor-pointer"
-                  onClick={(prev) => setCoupon(true)}
+                  className="flex items-center justify-center font-medium tracking-wide bg-emerald-700 hover:bg-emerald-800 px-4 text-sm text-white cursor-pointer"
+                  onClick={handleApplyCoupon}
                 >
                   Apply
                 </Button>
               </div>
-              {coupon && (
-                <p className="text-red-500 font-bold">Coupon not valid</p>
+              {couponError && (
+                <p className="text-red-500 font-bold mt-1 text-xs">{couponError}</p>
               )}
             </div>
           </div>
