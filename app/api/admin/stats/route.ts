@@ -1,75 +1,63 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
-import { orders, payments } from "@/db/schema";
-import { eq, sql } from "drizzle-orm";
-import db from "@/db/db";
+import connectDB from "@/db/mongoose";
+import { Order } from "@/db/models";
+import { GUEST_USER_ID } from "@/lib/constants";
 
 export async function GET() {
+  await connectDB();
+
   const session = await getServerSession(authOptions);
   //@ts-ignore
-  const userId = session?.user.id;
+  const userId = session?.user?.id || GUEST_USER_ID;
 
-  if (!userId) {
-    return Response.json({ success: false }, { status: 401 });
+  const totalOrders = await Order.countDocuments({ user_id: userId });
+  const cancelledOrders = await Order.countDocuments({
+    user_id: userId,
+    order_status: "cancelled",
+  });
+  const createdOrders = await Order.countDocuments({
+    user_id: userId,
+    order_status: "created",
+  });
+
+  const paidOrders = await Order.find({
+    user_id: userId,
+    order_status: "paid",
+  });
+  const totalAmount = paidOrders.reduce(
+    (sum: number, order: any) => sum + (order.amount || 0),
+    0,
+  );
+
+  const threeMonthsAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
+  const recentPaidOrders = await Order.find({
+    user_id: userId,
+    order_status: "paid",
+    createdAt: { $gte: threeMonthsAgo },
+  });
+
+  const monthlyRevenueMap = new Map<string, number>();
+  for (const order of recentPaidOrders) {
+    const o = order as any;
+    const month = new Date(o.createdAt).toISOString().slice(0, 7);
+    monthlyRevenueMap.set(
+      month,
+      (monthlyRevenueMap.get(month) || 0) + (o.amount || 0),
+    );
   }
+  const monthlyRevenue = Array.from(monthlyRevenueMap.entries())
+    .map(([month, total]) => ({ month, total }))
+    .sort((a, b) => (a.month < b.month ? 1 : -1));
 
-  const [totalOrders] = await db
-    .select({ count: sql<number>`cast(count(*) as int)` })
-    .from(orders)
-    .where(eq(orders.user_id, userId));
-
-  const [cancelledOrders] = await db
-    .select({ count: sql<number>`cast(count(*) as int)` })
-    .from(orders)
-    .where(
-      sql`${orders.user_id} = ${userId} AND ${orders.order_status} = 'cancelled'`,
-    );
-
-  const [failedPayments] = await db
-    .select({ count: sql<number>`cast(count(*) as int)` })
-    .from(payments)
-    .leftJoin(orders, eq(payments.order_id, orders.order_id))
-    .where(
-      sql`${orders.user_id} = ${userId} AND ${payments.payment_status} = 'failed'`,
-    );
-  const [createdOrders] = await db
-    .select({ count: sql<number>`cast(count(*) as int)` })
-    .from(orders)
-    .where(
-      sql`${orders.user_id} = ${userId} AND ${orders.order_status} = 'created'`,
-    );
-
-  const [paidAmountResult] = await db
-    .select({
-      sum: sql<number>`cast(COALESCE(SUM(${orders.amount}), 0) as int)`,
-    })
-    .from(orders)
-    .where(
-      sql`${orders.user_id} = ${userId} AND ${orders.order_status} = 'paid'`,
-    );
-  const monthlyRevenue = await db
-    .select({
-      month: sql<string>`to_char(date_trunc('month', ${orders.createdAt}), 'YYYY-MM')`,
-      total: sql<number>`cast(sum(${orders.amount}) as int)`,
-    })
-    .from(orders)
-    .where(
-      sql`
-      ${orders.user_id} = ${userId}
-      AND ${orders.order_status} = 'paid'
-      AND ${orders.createdAt} >= date_trunc('month', now()) - interval '3 months'
-    `,
-    )
-    .groupBy(sql`date_trunc('month', ${orders.createdAt})`)
-    .orderBy(sql`date_trunc('month', ${orders.createdAt}) DESC`);
   return Response.json({
     success: true,
     stats: {
-      totalOrders: totalOrders.count || 0,
-      cancelledOrders: cancelledOrders.count || 0,
-      failedPayments: failedPayments.count || 0,
-      createdOrders: createdOrders.count || 0,
-      totalAmount: paidAmountResult.sum || 0,
+      totalOrders: totalOrders || 0,
+      cancelledOrders: cancelledOrders || 0,
+      failedPayments: 0,
+      createdOrders: createdOrders || 0,
+      totalAmount: totalAmount || 0,
       monthlyRevenue: monthlyRevenue,
     },
   });

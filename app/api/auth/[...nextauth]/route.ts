@@ -1,18 +1,12 @@
 import NextAuth, { type AuthOptions } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
-import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import db from "@/db/db";
+import { MongoDBAdapter } from "@auth/mongodb-adapter";
+import clientPromise from "@/db/mongodb";
 import EmailProvider from "next-auth/providers/email";
-import nodemailer from "nodemailer";
-import schema from "@/db/schema";
-import { eq } from "drizzle-orm";
-
-if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
-  throw new Error("Missing Google OAuth environment variables");
-}
+import connectDB from "@/db/mongoose";
+import { User } from "@/db/models";
 
 export const authOptions: AuthOptions = {
-  adapter: DrizzleAdapter(db),
+  adapter: MongoDBAdapter(clientPromise),
   session: {
     strategy: "jwt",
   },
@@ -28,22 +22,14 @@ export const authOptions: AuthOptions = {
       },
       from: process.env.EMAIL_FROM,
     }),
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
   ],
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        const response = await db
-          .selectDistinct()
-          .from(schema.users)
-          .where(eq(schema.users.email, user.email!));
-        const role = response[0].role;
-        const id = response[0].id;
-        token.role = role;
-        token.id = id;
+        await connectDB();
+        const dbUser = await User.findOne({ email: user.email });
+        token.role = dbUser?.role ?? "user";
+        token.id = dbUser?.id ?? user.id;
       }
       return token;
     },

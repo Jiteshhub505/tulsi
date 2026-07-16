@@ -1,23 +1,17 @@
-import db from "@/db/db";
-import { addresses } from "@/db/schema";
-import { getServerSession } from "next-auth";
+import connectDB from "@/db/mongoose";
+import { Address } from "@/db/models";
+import { GUEST_USER_ID } from "@/lib/constants";
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
-import { success } from "zod";
 
 export async function POST(req: NextRequest) {
+  await connectDB();
   const data = await req.json();
   const token = await getToken({ req });
 
-  if (!token || !token.sub) {
-    return NextResponse.json(
-      { success: false, message: "Unauthorized" },
-      { status: 401 }
-    );
-  }
-  const id = token.sub;
+  const id = token?.sub || GUEST_USER_ID;
   try {
-    const response = await db.insert(addresses).values({
+    await Address.create({
       userId: id,
       phoneNumber: data.phone,
       houseNumber: data.house,

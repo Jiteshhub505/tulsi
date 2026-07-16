@@ -1,20 +1,15 @@
-import db from "@/db/db";
-import { cartItems } from "@/db/schema";
-import { and, eq } from "drizzle-orm";
+import connectDB from "@/db/mongoose";
+import { CartItem } from "@/db/models";
 import { NextResponse } from "next/server";
-import { success } from "zod";
 
 export async function PUT(req: Request) {
+  await connectDB();
   const { productId, productQuantity, cartItemId } = await req.json();
   try {
-    const response = await db
-      .update(cartItems)
-      .set({
-        quantity: productQuantity,
-      })
-      .where(
-        and(eq(cartItems.id, cartItemId), eq(cartItems.productId, productId))
-      );
+    await CartItem.updateOne(
+      { _id: cartItemId, productId },
+      { quantity: productQuantity }
+    );
 
     return NextResponse.json({ message: "Succesfully updated", success: true });
   } catch (error) {

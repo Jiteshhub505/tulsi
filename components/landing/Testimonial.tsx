@@ -1,5 +1,9 @@
+"use client";
+
+import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 type Testimonial = {
   name: string;
@@ -246,15 +250,21 @@ const testimonialsWithIndianPhotos = testimonials.map((item) => {
   };
 });
 
-const testimonialChunks = chunkArray(
-  testimonialsWithIndianPhotos,
-  Math.ceil(testimonialsWithIndianPhotos.length / 3)
-);
-
 export default function Testimonial() {
+  const [showAll, setShowAll] = useState(false);
+
+  const visibleTestimonials = showAll
+    ? testimonialsWithIndianPhotos
+    : testimonialsWithIndianPhotos.slice(0, 6);
+
+  const testimonialChunks = chunkArray(
+    visibleTestimonials,
+    Math.ceil(visibleTestimonials.length / 3)
+  );
+
   return (
     <section>
-      <div className="py-16 md:py-32">
+      <div className="pt-16 pb-8 md:pt-32 md:pb-16">
         <div className="mx-auto max-w-6xl px-6">
           <div className="text-center">
             <h2 className="text-3xl font-semibold">
@@ -304,6 +314,14 @@ export default function Testimonial() {
               </div>
             ))}
           </div>
+
+          {!showAll && (
+            <div className="mt-10 flex justify-center">
+              <Button onClick={() => setShowAll(true)} variant="outline">
+                View More ({testimonialsWithIndianPhotos.length} Reviews)
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </section>

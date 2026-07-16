@@ -1,9 +1,11 @@
-import db from "@/db/db";
-import { products } from "@/db/schema";
+import connectDB from "@/db/mongoose";
+import { Product } from "@/db/models";
 
 export const GET = async () => {
+  await connectDB();
+
   try {
-    const response = await db.select().from(products);
+    const response = await Product.find({});
     return Response.json({
       response,
       message: "Successfully fetched products",

@@ -1,60 +1,54 @@
-import db from "@/db/db";
-import { cart, cartItems } from "@/db/schema";
-import { and, eq, sql } from "drizzle-orm";
+import connectDB from "@/db/mongoose";
+import { Cart, CartItem, User } from "@/db/models";
+import { GUEST_USER_ID, GUEST_USER_EMAIL } from "@/lib/constants";
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
 
 export async function POST(req: Request) {
+  await connectDB();
   try {
+    const { productId, quantity } = await req.json();
+    const addQty = quantity && typeof quantity === "number" && quantity > 0 ? quantity : 1;
     const session = await getServerSession(authOptions);
     //@ts-ignore
-    if (!session?.user?.id) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    const userId = session?.user?.id || GUEST_USER_ID;
+
+    // Ensure guest user exists
+    const guestUser = await User.findById(GUEST_USER_ID);
+    if (!guestUser) {
+      await User.create({
+        _id: GUEST_USER_ID,
+        name: "Guest User",
+        email: GUEST_USER_EMAIL,
+        role: "user",
+      });
     }
 
-    const { productId } = await req.json();
-    //@ts-ignore
-    const userId = session.user.id;
-
     // 1️⃣ Get or create active cart
-    const [existingCart] = await db
-      .select()
-      .from(cart)
-      .where(and(eq(cart.userId, userId), eq(cart.status, "active")));
-
-    const cartId =
-      existingCart?.id ??
-      (
-        await db
-          .insert(cart)
-          .values({ userId, status: "active" })
-          .returning({ id: cart.id })
-      )[0].id;
+    let existingCart = await Cart.findOne({ userId, status: "active" });
+    if (!existingCart) {
+      existingCart = await Cart.create({ userId, status: "active" });
+    }
+    const cartId = existingCart.id;
 
     // 2️⃣ Check item
-    const [item] = await db
-      .select()
-      .from(cartItems)
-      .where(
-        and(eq(cartItems.cartId, cartId), eq(cartItems.productId, productId))
-      );
+    const item = await CartItem.findOne({ cartId, productId });
 
     if (item) {
-      await db
-        .update(cartItems)
-        .set({ quantity: sql`${cartItems.quantity} + 1` })
-        .where(eq(cartItems.id, item.id));
+      item.quantity += addQty;
+      await item.save();
     } else {
-      await db.insert(cartItems).values({
+      await CartItem.create({
         cartId,
         productId,
-        quantity: 1,
+        quantity: addQty,
       });
     }
 
     return NextResponse.json({ success: true });
   } catch (err) {
+    console.error("ADD_TO_CART_ERROR", err);
     return NextResponse.json(
       { message: "Error adding to cart" },
       { status: 500 }

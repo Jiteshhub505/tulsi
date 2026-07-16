@@ -28,22 +28,28 @@ export default function UserProfile() {
   const [loading, setLoading] = useState<boolean>(true);
   const fetchUser = async () => {
     setLoading(true);
-    const response = await axios.get("/api/userprofile/getuserdetails");
-    setUser({
-      name: session?.user?.name ?? "",
-      email: session?.user?.email ?? "",
-      image: session?.user?.image ?? null,
-      role: response.data.user[0].role,
-      phone: response.data.user[0].phone, // fetch later if stored separately
-      createdAt: response.data.user[0].createdAt.toLocaleString(),
-      lastLogin: new Date().toLocaleString(),
-    });
-    setLoading(false);
+    try {
+      const response = await axios.get("/api/userprofile/getuserdetails");
+      if (response.data.user && response.data.user[0]) {
+        const u = response.data.user[0];
+        setUser({
+          name: u.name ?? "Guest User",
+          email: u.email ?? "guest@tulsiveda.com",
+          image: u.image ?? null,
+          role: u.role,
+          phone: u.phone,
+          createdAt: u.createdAt ? new Date(u.createdAt).toLocaleString() : "",
+          lastLogin: new Date().toLocaleString(),
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
   useEffect(() => {
-    if (status === "authenticated") {
-      fetchUser();
-    }
+    fetchUser();
   }, [status]);
 
   const addContact = () => {};

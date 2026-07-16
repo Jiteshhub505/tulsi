@@ -1,10 +1,10 @@
-import db from "@/db/db";
-import { chats } from "@/db/schema";
-import { and, eq } from "drizzle-orm";
+import connectDB from "@/db/mongoose";
+import { Chat } from "@/db/models";
 import { authOptions } from "../../auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 
 export const GET = async (req: Request) => {
+  await connectDB();
   try {
     const session = await getServerSession(authOptions);
     const userEmail = session?.user?.email;
@@ -29,16 +29,8 @@ export const GET = async (req: Request) => {
 
     const response =
       role == "admin"
-        ? await db
-            .select()
-            .from(chats)
-            .where(and(eq(chats.ticketId, ticketId)))
-        : await db
-            .select()
-            .from(chats)
-            .where(
-              and(eq(chats.userEmail, userEmail), eq(chats.ticketId, ticketId))
-            );
+        ? await Chat.find({ ticketId })
+        : await Chat.find({ userEmail, ticketId });
 
     return Response.json({
       success: true,

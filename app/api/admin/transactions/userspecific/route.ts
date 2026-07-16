@@ -1,8 +1,9 @@
-import db from "@/db/db";
-import { orders, users } from "@/db/schema";
-import { and, eq } from "drizzle-orm";
+import connectDB from "@/db/mongoose";
+import { Order, User, OrderItem, Product } from "@/db/models";
 
 export const GET = async (req: Request) => {
+  await connectDB();
+
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
   const orderId = searchParams.get("orderId");
@@ -14,29 +15,45 @@ export const GET = async (req: Request) => {
     });
 
   try {
-    const userDetails = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, userId));
+    const userDetails = await User.find({ _id: userId }).lean();
 
-    const specificTransaction = await db
-      .select()
-      .from(orders)
-      .where(and(eq(orders.user_id, userId), eq(orders.order_id, orderId)));
+    const specificTransaction = await Order.find({
+      user_id: userId,
+      order_id: orderId,
+    }).lean();
 
-    const allTransactions = await db
-      .select()
-      .from(orders)
-      .where(eq(orders.user_id, userId));
+    const allTransactions = await Order.find({ user_id: userId }).lean();
+
+    // Fetch order items
+    const orderItems = await OrderItem.find({ order_id: orderId });
+    const products = await Product.find({
+      _id: { $in: orderItems.map((item) => item.product_id) },
+    });
+
+    const itemsWithDetails = orderItems.map((item) => {
+      const product = products.find((p) => p.id === item.product_id);
+      return {
+        product_id: item.product_id,
+        quantity: item.quantity,
+        price: item.price,
+        name: product ? product.name : "Unknown Product",
+        image: product && product.galleryImages && product.galleryImages.length > 0 ? product.galleryImages[0] : "",
+      };
+    });
 
     return Response.json({
       success: true,
-      details: { userDetails, allTransactions, specificTransaction },
+      details: {
+        userDetails,
+        allTransactions,
+        specificTransaction,
+        orderItems: itemsWithDetails,
+      },
       message: "successfuly fetched details",
     });
   } catch (error) {
     return Response.json({
-      success: true,
+      success: false,
       message: "error getting details",
       error,
     });

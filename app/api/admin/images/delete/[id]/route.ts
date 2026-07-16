@@ -1,22 +1,17 @@
-import db from "@/db/db";
-import { products } from "@/db/schema";
-import { eq, sql } from "drizzle-orm";
+import connectDB from "@/db/mongoose";
+import { Product } from "@/db/models";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(
   req: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> },
 ) {
+  await connectDB();
   const { id } = await context.params;
   const { data } = await req.json();
   const url = data.url;
   try {
-    const result = await db
-      .update(products)
-      .set({
-        galleryImages: sql`${products.galleryImages}::jsonb - ${url}::text`,
-      })
-      .where(eq(products.id, id));
+    await Product.findByIdAndUpdate(id, { $pull: { galleryImages: url } });
 
     return NextResponse.json({ success: true });
   } catch (error) {

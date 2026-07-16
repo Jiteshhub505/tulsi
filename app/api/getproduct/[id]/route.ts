@@ -1,20 +1,16 @@
-import db from "@/db/db";
-import schema from "@/db/schema";
-import { eq } from "drizzle-orm";
+import connectDB from "@/db/mongoose";
+import { Product } from "@/db/models";
 import { NextResponse } from "next/server";
-import { success } from "zod";
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  await connectDB();
+
   const { id } = await params;
   try {
-    const response = await db
-      .select()
-      .from(schema.products)
-      .where(eq(schema.products.id, id));
-    const product = response[0];
+    const product = await Product.findById(id);
     return NextResponse.json({ product, success: true });
   } catch (error) {
     console.log("error getting products....", error);

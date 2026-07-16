@@ -1,8 +1,9 @@
-import db from "@/db/db";
-import { ticket } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import connectDB from "@/db/mongoose";
+import { Ticket } from "@/db/models";
 
 export const PUT = async (req: Request) => {
+  await connectDB();
+
   const { searchParams } = new URL(req.url);
   const status = searchParams.get("status");
   const id = searchParams.get("ticketId");
@@ -17,17 +18,7 @@ export const PUT = async (req: Request) => {
       message: "Please provide ID & Status",
     });
   try {
-    const validStatuses = status as
-      | "open"
-      | "completed"
-      | "pending"
-      | "replied";
-    const response = await db
-      .update(ticket)
-      .set({
-        status: validStatuses,
-      })
-      .where(eq(ticket.id, id));
+    await Ticket.findByIdAndUpdate(id, { status });
 
     return Response.json({
       status: 200,

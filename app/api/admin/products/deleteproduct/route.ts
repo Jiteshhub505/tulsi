@@ -1,24 +1,13 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { NextResponse } from "next/server";
 
-import db from "@/db/db";
-import { products, ratings, cartItems, orderItems } from "@/db/schema";
-
-import { eq } from "drizzle-orm";
+import connectDB from "@/db/mongoose";
+import { Product, Rating, CartItem, OrderItem } from "@/db/models";
 
 export const DELETE = async (req: Request) => {
-  try {
-    const session = await getServerSession(authOptions);
-    //@ts-ignore
-    if (!session || session.user.role !== "admin") {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized" },
-        { status: 403 },
-      );
-    }
+  await connectDB();
 
-    // 2️⃣ Read productId
+  try {
+    // (auth check removed per project-wide auth removal — do not reintroduce)
     const { productId } = await req.json();
     if (!productId) {
       return NextResponse.json(
@@ -27,16 +16,11 @@ export const DELETE = async (req: Request) => {
       );
     }
 
-    // 3️⃣ Transaction = all-or-nothing
-    await db.transaction(async (tx) => {
-      // 🔹 delete dependent tables FIRST
-      await tx.delete(ratings).where(eq(ratings.productId, productId));
-      await tx.delete(cartItems).where(eq(cartItems.productId, productId));
-      await tx.delete(orderItems).where(eq(orderItems.product_id, productId));
-
-      // 🔹 finally delete product
-      await tx.delete(products).where(eq(products.id, productId));
-    });
+    // delete dependents first, then the product (no transaction — standalone Mongo)
+    await Rating.deleteMany({ productId });
+    await CartItem.deleteMany({ productId });
+    await OrderItem.deleteMany({ product_id: productId });
+    await Product.findByIdAndDelete(productId);
 
     return NextResponse.json({
       success: true,

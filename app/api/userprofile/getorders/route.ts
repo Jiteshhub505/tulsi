@@ -1,38 +1,38 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import db from "@/db/db";
-import { eq, desc } from "drizzle-orm";
-import { orders, orderItems, products } from "@/db/schema";
+import connectDB from "@/db/mongoose";
+import { Order, OrderItem, Product } from "@/db/models";
+import { GUEST_USER_ID } from "@/lib/constants";
 
 export async function GET() {
+  await connectDB();
   try {
     const session = await getServerSession(authOptions);
     //@ts-ignore
-    const id = session?.user?.id;
-    if (!id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const id = session?.user?.id || GUEST_USER_ID;
+
+    const orders = await Order.find({ user_id: id }).sort({ createdAt: -1 });
+
+    const result = [];
+    for (const order of orders) {
+      const orderItems = await OrderItem.find({ order_id: order.order_id });
+      for (const orderItem of orderItems) {
+        const product = await Product.findById(orderItem.product_id);
+        result.push({
+          orderId: order.order_id,
+          amount: order.amount,
+          currency: order.currency,
+          status: order.order_status,
+          createdAt: order.createdAt,
+          productId: product?.id,
+          productName: product?.name,
+          productImage: product?.galleryImages,
+          price: orderItem.price,
+          quantity: orderItem.quantity,
+        });
+      }
     }
-
-    const result = await db
-      .select({
-        orderId: orders.order_id,
-        amount: orders.amount,
-        currency: orders.currency,
-        status: orders.order_status,
-        createdAt: orders.createdAt,
-
-        productId: products.id,
-        productName: products.name,
-        productImage: products.galleryImages,
-        price: orderItems.price,
-        quantity: orderItems.quantity,
-      })
-      .from(orders)
-      .leftJoin(orderItems, eq(orderItems.order_id, orders.order_id))
-      .leftJoin(products, eq(products.id, orderItems.product_id))
-      .where(eq(orders.user_id, id))
-      .orderBy(desc(orders.createdAt));
 
     return NextResponse.json(result);
   } catch (error) {

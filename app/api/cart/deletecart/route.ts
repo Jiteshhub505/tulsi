@@ -1,31 +1,15 @@
-import db from "@/db/db";
-import { cartItems } from "@/db/schema";
-import { and, eq } from "drizzle-orm";
+import connectDB from "@/db/mongoose";
+import { CartItem } from "@/db/models";
 import { NextResponse } from "next/server";
-import { success } from "zod";
 
 export async function DELETE(req: Request) {
+  await connectDB();
   const { cartItemId, productId } = await req.json();
-  console.log(cartItemId, productId);
   try {
-    const response = await db
-      .select()
-      .from(cartItems)
-      .where(
-        and(
-          eq(cartItems.id, String(cartItemId)),
-          eq(cartItems.productId, String(productId))
-        )
-      );
-    console.log(response);
-    await db
-      .delete(cartItems)
-      .where(
-        and(
-          eq(cartItems.id, String(cartItemId)),
-          eq(cartItems.productId, String(productId))
-        )
-      );
+    await CartItem.deleteOne({
+      _id: String(cartItemId),
+      productId: String(productId),
+    });
 
     return NextResponse.json({
       message: "Succesfully removed product from cart",

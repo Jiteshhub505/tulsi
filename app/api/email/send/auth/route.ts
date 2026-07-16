@@ -2,15 +2,15 @@ import { Resend } from "resend";
 import { render } from "@react-email/render";
 import EmailTemplate from "@/components/mail/email-template";
 import { NextRequest, NextResponse } from "next/server";
-import db from "@/db/db";
-import { chats, ticket } from "@/db/schema";
+import connectDB from "@/db/mongoose";
+import { Chat, Ticket } from "@/db/models";
 import { getToken } from "next-auth/jwt";
-import { eq } from "drizzle-orm";
-import { rateLimit } from "@/lib/rate-limit/redis";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY || "re_disabled");
 
 export async function POST(req: NextRequest) {
+  await connectDB();
+
   const token = await getToken({ req });
   const values = await req.json();
   const content = values.content;
@@ -18,16 +18,7 @@ export async function POST(req: NextRequest) {
   const role = values.role;
   const userEmail =
     role == "user" ? "deepanshupokhriyal07@gmail.com" : values.userEmail;
-  const ip = req.headers.get("x-forwarded-for") ?? "unknown";
 
-  const allowed = await rateLimit(ip);
-
-  if (!allowed) {
-    return Response.json(
-      { error: "Too many emails. Try again later." },
-      { status: 429 },
-    );
-  }
   if (!userEmail) return Response.json("Unauthenticated", { status: 400 });
 
   const html = await render(
@@ -51,18 +42,17 @@ export async function POST(req: NextRequest) {
     }
     const mailId = data.id;
     console.log(mailId, typeof mailId);
-    const response = await db.insert(chats).values({
-      id: mailId,
+    const response = await Chat.create({
+      _id: mailId,
       ticketId: ticketId,
       userEmail: values.userEmail,
       content: content,
       role: role,
     });
 
-    const update = await db
-      .update(ticket)
-      .set({ status: "pending" })
-      .where(eq(ticket.id, ticketId));
+    const update = await Ticket.findByIdAndUpdate(ticketId, {
+      status: "pending",
+    });
 
     return NextResponse.json({
       message: "Successfully sent",

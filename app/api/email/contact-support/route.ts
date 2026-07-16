@@ -2,9 +2,7 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { render } from "@react-email/render";
 import EmailTemplate from "@/components/mail/email-template";
-import db from "@/db/db";
-import { chats } from "@/db/schema";
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY || "re_disabled");
 
 export async function POST(req: Request) {
   const { userEmail, country, name, subject, content } = await req.json();

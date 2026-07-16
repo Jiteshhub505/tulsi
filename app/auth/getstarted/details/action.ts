@@ -1,15 +1,12 @@
 "use server";
 
-import db from "@/db/db";
-import schema from "@/db/schema";
-import { eq } from "drizzle-orm";
+import connectDB from "@/db/mongoose";
+import { User } from "@/db/models";
 
 export async function updateUserName(email: string, name: string) {
+  await connectDB();
   try {
-    const response = await db
-      .update(schema.users)
-      .set({ name })
-      .where(eq(schema.users.email, email));
+    await User.updateOne({ email }, { name });
 
     return {
       success: true,

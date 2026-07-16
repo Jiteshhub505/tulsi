@@ -1,26 +1,17 @@
-import db from "@/db/db";
-import { addresses } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import connectDB from "@/db/mongoose";
+import { Address } from "@/db/models";
+import { GUEST_USER_ID } from "@/lib/constants";
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
+  await connectDB();
   const token = await getToken({ req });
 
-  if (!token || !token.sub) {
-    return NextResponse.json(
-      { success: false, message: "Unauthorized" },
-      { status: 401 }
-    );
-  }
-
-  const userId = token.sub;
+  const userId = token?.sub || GUEST_USER_ID;
 
   try {
-    const response = await db
-      .select()
-      .from(addresses)
-      .where(eq(addresses.userId, userId));
+    const response = await Address.find({ userId });
 
     return NextResponse.json({
       success: true,

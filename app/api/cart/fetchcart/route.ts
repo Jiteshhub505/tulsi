@@ -1,36 +1,50 @@
-import db from "@/db/db";
-import { cart, cartItems, products } from "@/db/schema";
-import { and, eq } from "drizzle-orm";
+import connectDB from "@/db/mongoose";
+import { Cart, CartItem, Product, User } from "@/db/models";
+import { GUEST_USER_ID, GUEST_USER_EMAIL } from "@/lib/constants";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
 import { NextResponse } from "next/server";
-import { success } from "zod";
 
 export async function GET(req: Request) {
+  await connectDB();
   const session = await getServerSession(authOptions);
+  //@ts-ignore
+  const userId = session?.user?.id || GUEST_USER_ID;
   try {
-    const response = await db
-      .select()
-      .from(cart)
-      //@ts-ignore
-      .where(and(eq(cart.userId, session?.user.id), eq(cart.status, "active")));
-    if (response.length === 0)
+    // Ensure guest user exists
+    const guestUser = await User.findById(GUEST_USER_ID);
+    if (!guestUser) {
+      await User.create({
+        _id: GUEST_USER_ID,
+        name: "Guest User",
+        email: GUEST_USER_EMAIL,
+        role: "user",
+      });
+    }
+
+    const existingCart = await Cart.findOne({ userId, status: "active" });
+    if (!existingCart)
       return NextResponse.json({ error: "No cart exists", success: false });
 
-    const cartid = response[0]?.id;
-    const items = await db
-      .select({
-        cartItemId: cartItems.id,
-        quantity: cartItems.quantity,
-        productId: products.id,
-        name: products.name,
-        price: products.price,
-        discountPrice: products.discountPrice,
-        image: products.galleryImages,
-      })
-      .from(cartItems)
-      .innerJoin(products, eq(cartItems.productId, products.id))
-      .where(eq(cartItems.cartId, cartid));
+    const cartId = existingCart.id;
+    const cartItems = await CartItem.find({ cartId });
+    const products = await Product.find({
+      _id: { $in: cartItems.map((item: any) => item.productId) },
+    });
+    const productsById = new Map(products.map((p: any) => [p.id, p]));
+
+    const items = cartItems.map((item: any) => {
+      const product: any = productsById.get(item.productId);
+      return {
+        cartItemId: item.id,
+        quantity: item.quantity,
+        productId: product?.id,
+        name: product?.name,
+        price: product?.price,
+        discountPrice: product?.discountPrice,
+        image: product?.galleryImages,
+      };
+    });
 
     return NextResponse.json({ items, status: 200, success: true });
   } catch (error) {
