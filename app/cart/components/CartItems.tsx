@@ -337,7 +337,7 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
         <div className="flex items-center gap-4 mb-8">
           <button 
-            onClick={() => setIsCheckingOut(false)}
+            onClick={() => router.push("/")}
             className="p-2 border border-stone-200 rounded-lg hover:bg-stone-50 transition cursor-pointer"
           >
             <ArrowLeft className="size-5 text-stone-700" />
@@ -569,7 +569,7 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
       <div className="grid w-screen lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2    p-6 rounded-md">
           <div className="flex items-center gap-2">
-            <Button variant="outline" onClick={() => router.back()}>
+            <Button variant="outline" onClick={() => router.push("/")}>
               <ArrowLeft className="cursor-pointer " />
             </Button>
             {/* <p className=" font-semibold text-slate-900 ">Back to Home</p> */}

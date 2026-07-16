@@ -7,7 +7,7 @@ import { ArrowRight } from "lucide-react";
 
 export default function Hero() {
   return (
-    <section className="relative w-full min-h-[calc(100vh-80px)] bg-[#f0fbf6] py-12 px-6 md:px-12 lg:px-16 flex items-center justify-center">
+    <section className="relative w-full min-h-[calc(100vh-80px)] bg-[#f0fbf6] py-8 sm:py-12 px-4 sm:px-6 md:px-12 lg:px-16 flex items-center justify-center">
 
       {/* Main Page Container */}
       <div className="relative w-full max-w-7xl mx-auto flex flex-col mt-[25px]">
@@ -67,7 +67,7 @@ export default function Hero() {
           </div>
 
           {/* Right Column: Organic Leaf Frame & Image */}
-          <div className="flex justify-center lg:justify-end items-center relative w-full">
+          <div className="flex justify-center lg:justify-end items-center relative w-full mt-4 lg:mt-0">
             <div className="relative w-full max-w-[340px] xs:max-w-[410px] sm:max-w-[490px] lg:max-w-[560px] xl:max-w-[640px] aspect-square rounded-[30%_70%_70%_30%_/_30%_30%_70%_70%] border-4 border-white/60 shadow-[0_25px_60px_rgba(4,47,31,0.1)] overflow-hidden transition-all duration-500 hover:scale-[1.02]">
               <Image
                 src="/hero-tulsiveda.png"

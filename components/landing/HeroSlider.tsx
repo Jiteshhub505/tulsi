@@ -68,7 +68,7 @@ export default function HeroSlider() {
 
   return (
     <section
-      className="relative mt-16 h-[72vh] min-h-[520px] w-full overflow-hidden border-b border-white/10 bg-slate-950 shadow-2xl"
+      className="relative mt-16 h-[60vh] sm:h-[72vh] min-h-[400px] sm:min-h-[520px] w-full overflow-hidden border-b border-white/10 bg-slate-950 shadow-2xl"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
@@ -101,7 +101,7 @@ export default function HeroSlider() {
               initial={{ y: 30, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.2, duration: 0.5 }}
-              className="mb-6 max-w-5xl text-4xl font-extrabold tracking-tight md:text-6xl lg:text-7xl"
+              className="mb-4 sm:mb-6 max-w-5xl text-2xl sm:text-4xl font-extrabold tracking-tight md:text-6xl lg:text-7xl"
             >
               {slides[current].title}
             </motion.h1>
@@ -110,7 +110,7 @@ export default function HeroSlider() {
               initial={{ y: 30, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.4, duration: 0.5 }}
-              className="mb-10 max-w-3xl text-base font-normal text-slate-100 md:text-xl"
+              className="mb-6 sm:mb-10 max-w-3xl text-sm font-normal text-slate-100 sm:text-base md:text-xl"
             >
               {slides[current].subtitle}
             </motion.p>
@@ -124,7 +124,7 @@ export default function HeroSlider() {
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="cursor-pointer rounded-full bg-emerald-500 px-10 py-4 text-lg font-bold text-emerald-950 shadow-lg shadow-emerald-700/30 transition-colors hover:bg-emerald-400"
+                  className="cursor-pointer rounded-full bg-emerald-500 px-6 sm:px-10 py-3 sm:py-4 text-sm sm:text-lg font-bold text-emerald-950 shadow-lg shadow-emerald-700/30 transition-colors hover:bg-emerald-400"
                 >
                   {slides[current].cta}
                 </motion.div>

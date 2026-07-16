@@ -67,7 +67,7 @@ export default function Products() {
               Premium quality formulations crafted from time-tested Ayurvedic ingredients.
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 md:gap-8">
             {[1, 2, 3, 4].map((i) => (
               <div key={i} className="bg-white rounded-2xl overflow-hidden animate-pulse">
                 <div className="aspect-square bg-stone-200"></div>
@@ -85,7 +85,7 @@ export default function Products() {
   }
 
   return (
-    <section id="bestsellers" className="w-full py-20 bg-[#f9fcfb] px-6 md:px-12 lg:px-16 border-t border-emerald-950/5">
+    <section id="bestsellers" className="w-full py-10 md:py-20 bg-[#f9fcfb] px-4 md:px-12 lg:px-16 border-t border-emerald-950/5">
       <div className="max-w-7xl mx-auto space-y-12">
         
         {/* Section Heading */}
@@ -99,7 +99,7 @@ export default function Products() {
         </div>
 
         {/* 4-Product Responsive Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 md:gap-8">
           {products.map((product) => {
             const discount = product.discountPrice
               ? Math.round(((product.price - product.discountPrice) / product.price) * 100)
@@ -123,14 +123,9 @@ export default function Products() {
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                   
-                  {/* In Stock Badge */}
-                  <span className="absolute top-4 left-4 bg-emerald-600/95 backdrop-blur-sm text-white font-medium text-xs py-1.5 px-3 rounded-full shadow-sm">
-                    In Stock
-                  </span>
-                  
                   {/* Discount Badge */}
                   {discount && discount > 0 && (
-                    <span className="absolute bottom-4 left-4 bg-rose-500 text-white text-xs font-bold py-1.5 px-3 rounded-full shadow-sm">
+                    <span className="hidden sm:block absolute bottom-4 left-4 bg-rose-500 text-white text-xs font-bold py-1.5 px-3 rounded-full shadow-sm">
                       {discount}% OFF
                     </span>
                   )}
@@ -153,11 +148,11 @@ export default function Products() {
                 </div>
 
                 {/* Product Info */}
-                <div className="flex flex-col flex-1 p-5 md:p-6">
+                <div className="flex flex-col flex-1 p-3 sm:p-5 md:p-6">
                   <span className="text-xs font-medium text-emerald-600 uppercase tracking-wider mb-2">
                     {product.category}
                   </span>
-                  <h3 className="font-semibold text-slate-900 text-lg group-hover:text-emerald-700 transition-colors leading-snug line-clamp-2 mb-3">
+                  <h3 className="font-semibold text-slate-900 text-sm sm:text-lg group-hover:text-emerald-700 transition-colors leading-snug line-clamp-2 mb-2 sm:mb-3">
                     {product.name}
                   </h3>
                   
@@ -165,7 +160,7 @@ export default function Products() {
                   <div className="mt-auto pt-4 border-t border-gray-50 flex items-center justify-between">
                     <div className="flex flex-col">
                       <div className="flex items-center gap-2">
-                        <span className="text-xl font-bold text-slate-900">₹{displayPrice.toLocaleString()}</span>
+                        <span className="text-base sm:text-xl font-bold text-slate-900">₹{displayPrice.toLocaleString()}</span>
                         {product.discountPrice && (
                           <span className="text-sm font-medium text-slate-400 line-through">
                             ₹{product.price.toLocaleString()}
