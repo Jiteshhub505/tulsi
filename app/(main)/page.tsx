@@ -10,6 +10,7 @@ import HeroSlider from "../../components/landing/HeroSlider";
 import HeroFIlterProducts from "@/components/landing/HeroFIlterProducts";
 import WavyBanner from "@/components/landing/WavyBanner";
 import PromoBanner from "@/components/landing/PromoBanner";
+import SpecialOffers from "@/components/landing/SpecialOffers";
 
 export default function Home() {
   return (
@@ -17,6 +18,7 @@ export default function Home() {
       <Hero />
       <WavyBanner />
       <Categories />
+      <SpecialOffers />
       <Products />
       <PromoBanner />
       <Features />

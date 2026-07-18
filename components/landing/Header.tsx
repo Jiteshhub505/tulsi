@@ -213,7 +213,7 @@ export const Header = () => {
 
   return (
     <>
-      <nav className="sticky top-0 z-50 w-full bg-white/90 backdrop-blur-md border-b border-zinc-200 shadow-sm px-6 md:px-12 lg:px-16 transition-all duration-300">
+      <nav className="sticky top-0 z-50 w-full bg-emerald-50/90 backdrop-blur-md border-b border-emerald-100/80 shadow-sm px-6 md:px-12 lg:px-16 transition-all duration-300">
         <div className="max-w-7xl mx-auto flex items-center justify-between py-3 md:py-4">
 
           {/* Left: Hamburger (Mobile) */}

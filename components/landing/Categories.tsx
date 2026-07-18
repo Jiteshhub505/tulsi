@@ -9,22 +9,22 @@ export default function Categories() {
   const categories = [
     {
       name: "Hygiene",
-      image: "/womens_health.png",
+      image: "/cat_hygiene.png",
       link: "/shop?category=Hygiene",
     },
     {
       name: "Skin Care",
-      image: "/skin_care.png",
+      image: "/cat_skin_care.png",
       link: "/shop?category=Skin",
     },
     {
       name: "Supplements",
-      image: "/gym_foods.png",
+      image: "/cat_supplements.png",
       link: "/shop?category=Suppliments",
     },
     {
       name: "Health & Fitness",
-      image: "/mens_health.png",
+      image: "/cat_health_fitness.png",
       link: "/shop?category=Health%20%26%20Fitness",
     },
   ];
