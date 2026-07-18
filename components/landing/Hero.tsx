@@ -29,6 +29,7 @@ const slides = [
 
 export default function Hero() {
   const [current, setCurrent] = useState(0);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const nextSlide = useCallback(() => {
     setCurrent((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
@@ -42,6 +43,20 @@ export default function Hero() {
     const timer = setInterval(nextSlide, 4000);
     return () => clearInterval(timer);
   }, [nextSlide]);
+
+  // Safety timeout to hide loader after 4 seconds regardless
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setIsLoaded(true);
+    }, 4000);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  const handleImageLoad = (index: number) => {
+    if (index === 0) {
+      setIsLoaded(true);
+    }
+  };
 
   return (
     <section
@@ -67,6 +82,7 @@ export default function Hero() {
                 priority
                 className="object-cover object-top"
                 sizes="100vw"
+                onLoad={() => handleImageLoad(current)}
               />
             </div>
             {/* Mobile/Tablet Image */}
@@ -78,6 +94,7 @@ export default function Hero() {
                 priority
                 className="object-cover object-center"
                 sizes="100vw"
+                onLoad={() => handleImageLoad(current)}
               />
             </div>
           </div>
@@ -131,6 +148,50 @@ export default function Hero() {
           />
         ))}
       </div>
+
+      {/* Premium Loader Overlay */}
+      <AnimatePresence>
+        {!isLoaded && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
+            className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-emerald-50/95 backdrop-blur-md"
+          >
+            <div className="relative flex flex-col items-center gap-6">
+              {/* Pulsating logo */}
+              <motion.div
+                animate={{
+                  scale: [1, 1.05, 1],
+                  opacity: [0.9, 1, 0.9],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="w-36 h-36 md:w-44 md:h-44 relative flex items-center justify-center"
+              >
+                <Image
+                  src="/tulsiveda-logo.png"
+                  alt="TulsiVeda Loader Logo"
+                  width={176}
+                  height={176}
+                  priority
+                  className="object-contain"
+                />
+              </motion.div>
+
+              {/* Bouncing dots */}
+              <div className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 bg-emerald-600 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                <span className="w-2.5 h-2.5 bg-emerald-600 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                <span className="w-2.5 h-2.5 bg-emerald-600 rounded-full animate-bounce" />
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
