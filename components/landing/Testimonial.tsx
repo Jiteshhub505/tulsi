@@ -275,7 +275,7 @@ export default function Testimonial() {
               part of their fitness journey.
             </p>
           </div>
-          <div className="mt-8 grid gap-3 sm:grid-cols-2 md:mt-12 lg:grid-cols-3">
+          <div className="mt-8 grid gap-3 grid-cols-1 sm:grid-cols-2 md:mt-12 lg:grid-cols-3">
             {testimonialChunks.map((chunk, chunkIndex) => (
               <div key={chunkIndex} className="space-y-3">
                 {chunk.map(({ name, role, quote, image }, index) => (

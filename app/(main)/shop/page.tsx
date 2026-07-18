@@ -603,7 +603,7 @@ function ShopPageContent() {
 
             {/* Product Grid */}
             {loading ? (
-              <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-4 sm:gap-5 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3">
                 {Array.from({ length: 6 }).map((_, i) => (
                   <SkeletonCard key={i} />
                 ))}
@@ -634,7 +634,7 @@ function ShopPageContent() {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
                 {filtered.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}

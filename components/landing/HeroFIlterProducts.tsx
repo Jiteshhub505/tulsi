@@ -208,7 +208,7 @@ export default function CategoryProducts() {
   const products = productsByCategory[selectedId] ?? [];
 
   return (
-    <div className="max-w-7xl mx-auto px-20 py-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-8 md:px-12 lg:px-20 py-10">
       {/* --- CATEGORY SELECTOR GRID --- */}
       <div className="flex flex-wrap gap-3 items-center mb-10">
         <span className="font-bold text-sm text-gray-700 uppercase tracking-wider flex items-center gap-2">
@@ -252,7 +252,7 @@ export default function CategoryProducts() {
       </h2>
 
       {/* --- PRODUCT GRID --- */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-8">
         {products.map((product) => (
           <div key={product.id} className="group cursor-pointer">
             <div className="relative h-72 w-full bg-gray-50 rounded-xl overflow-hidden mb-4 border border-gray-100">

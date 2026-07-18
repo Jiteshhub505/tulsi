@@ -118,11 +118,14 @@ export default function CartDrawer() {
   const total = subtotal + tax;
 
   return (
-    <SheetContent className="flex flex-col h-full w-[400px] sm:w-[480px] p-6 bg-white dark:bg-zinc-950 border-l border-zinc-150 dark:border-zinc-800">
-      <SheetHeader className="pb-4">
+    <SheetContent className="flex flex-col h-full w-full sm:w-[400px] md:w-[480px] p-5 sm:p-6 bg-white dark:bg-zinc-950 border-l border-zinc-150 dark:border-zinc-800">
+      <SheetHeader className="pb-3 sm:pb-4">
         <SheetTitle className="text-xl font-bold flex items-center gap-2 text-zinc-900 dark:text-zinc-50">
           <ShoppingBag className="size-5 text-emerald-700" />
           Your Cart
+          {products.length > 0 && (
+            <span className="ml-auto text-sm font-medium text-zinc-500">{products.length} item{products.length > 1 ? 's' : ''}</span>
+          )}
         </SheetTitle>
       </SheetHeader>
       <Separator />
@@ -144,15 +147,15 @@ export default function CartDrawer() {
       ) : (
         <>
           {/* Scrollable list of items */}
-          <div className="flex-1 overflow-y-auto pr-1 py-4 space-y-4">
+          <div className="flex-1 overflow-y-auto pr-1 py-3 sm:py-4 space-y-3 sm:space-y-4">
             {products.map((p, i) => {
               const price = p.discountPrice ?? p.price;
               return (
                 <div
                   key={i}
-                  className="flex gap-4 p-3 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-100 dark:border-zinc-800 items-start relative group"
+                  className="flex gap-3 sm:gap-4 p-3 sm:p-3.5 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-100 dark:border-zinc-800 items-start relative group"
                 >
-                  <div className="size-20 bg-white dark:bg-zinc-800 p-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 shrink-0">
+                  <div className="size-20 sm:size-20 bg-white dark:bg-zinc-800 p-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 shrink-0">
                     <img
                       src={p.image[0]}
                       alt={p.name}
@@ -161,11 +164,11 @@ export default function CartDrawer() {
                   </div>
 
                   <div className="flex-1 min-w-0 pr-6">
-                    <h4 className="font-bold text-zinc-900 dark:text-zinc-50 text-sm truncate">
+                    <h4 className="font-bold text-zinc-900 dark:text-zinc-50 text-sm line-clamp-2 leading-snug">
                       {p.name}
                     </h4>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-zinc-900 dark:text-zinc-50 font-bold text-sm">
+                    <div className="flex items-center gap-2 mt-1.5">
+                      <span className="text-zinc-900 dark:text-zinc-50 font-bold text-base">
                         ₹{price}
                       </span>
                       {p.discountPrice && (
@@ -175,29 +178,30 @@ export default function CartDrawer() {
                       )}
                     </div>
 
+                    {/* Qty Controls — large touch targets */}
                     <div className="flex items-center mt-3 border border-zinc-200 dark:border-zinc-700 rounded-lg w-fit bg-white dark:bg-zinc-800">
                       <button
                         onClick={() => decreaseQuantity(p.productId)}
-                        className="p-1 px-2.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors rounded-l-lg cursor-pointer"
+                        className="py-2 px-3 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors rounded-l-lg cursor-pointer active:bg-zinc-200"
                         disabled={p.quantity <= 1}
                       >
-                        <Minus className="size-3 text-zinc-600 dark:text-zinc-300" />
+                        <Minus className="size-3.5 text-zinc-600 dark:text-zinc-300" />
                       </button>
-                      <span className="text-zinc-800 dark:text-zinc-200 px-3 text-xs font-semibold">
+                      <span className="text-zinc-800 dark:text-zinc-200 px-4 text-sm font-bold">
                         {p.quantity}
                       </span>
                       <button
                         onClick={() => increaseQuantity(p.productId)}
-                        className="p-1 px-2.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors rounded-r-lg cursor-pointer"
+                        className="py-2 px-3 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors rounded-r-lg cursor-pointer active:bg-zinc-200"
                       >
-                        <Plus className="size-3 text-zinc-600 dark:text-zinc-300" />
+                        <Plus className="size-3.5 text-zinc-600 dark:text-zinc-300" />
                       </button>
                     </div>
                   </div>
 
                   <button
                     onClick={() => removeItem(p.productId, p.cartItemId)}
-                    className="absolute top-3 right-3 text-zinc-400 hover:text-red-500 transition-colors p-1 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/20 cursor-pointer"
+                    className="absolute top-3 right-3 text-zinc-400 hover:text-red-500 transition-colors p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/20 cursor-pointer"
                     aria-label="Remove item"
                   >
                     <Trash2 className="size-4" />

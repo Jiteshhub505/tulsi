@@ -76,8 +76,8 @@ const Features = ({
       <div className="w-full">
         <NewArrivalMarquee />
         {/* Section Title */}
-        <div className="mx-auto max-w-7xl px-6 pt-10 pb-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 pt-10 pb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">
             {title}
           </h2>
           <p className="mt-2 text-slate-500 text-sm md:text-base">
@@ -93,7 +93,7 @@ const Features = ({
 
         {/* <Integrations /> */}
 
-        <div className="mx-auto max-w-7xl px-6 grid gap-0 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 grid gap-0 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((feature, i) => (
             <div key={i} className="flex flex-col bg-white dark:bg-zinc-900 p-8 border border-zinc-100 dark:border-zinc-800 transition-all hover:shadow-md hover:z-10">
               <div className="bg-primary/10 text-primary mb-4 flex size-12 items-center justify-center rounded-full">

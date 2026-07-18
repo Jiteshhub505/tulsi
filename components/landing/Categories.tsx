@@ -9,33 +9,33 @@ export default function Categories() {
   const categories = [
     {
       name: "Hygiene",
-      image: "/womens_health.png",
+      image: "/cat_hygiene.png",
       link: "/shop?category=Hygiene",
     },
     {
       name: "Skin Care",
-      image: "/skin_care.png",
+      image: "/cat_skin_care.png",
       link: "/shop?category=Skin",
     },
     {
       name: "Supplements",
-      image: "/gym_foods.png",
+      image: "/cat_supplements.png",
       link: "/shop?category=Suppliments",
     },
     {
       name: "Health & Fitness",
-      image: "/mens_health.png",
+      image: "/cat_health_fitness.png",
       link: "/shop?category=Health%20%26%20Fitness",
     },
   ];
 
   return (
-    <section className="w-full py-20 bg-white px-6 md:px-12 lg:px-16">
+    <section className="w-full py-8 md:py-20 bg-white px-4 md:px-12 lg:px-16">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_3.9fr] gap-12 lg:gap-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_3.9fr] gap-6 lg:gap-16 items-start">
           
           {/* Left Column: Heading and description */}
-          <div className="flex flex-col items-center lg:items-start text-center lg:text-left max-w-md mx-auto lg:mx-0">
+          <div className="flex flex-col items-center lg:items-start text-center lg:text-left max-w-md mx-auto lg:mx-0 pb-2 lg:pb-0">
             <h2 className="text-3xl md:text-4xl lg:text-[40px] font-bold text-slate-900 leading-tight tracking-tight mb-4">
               Shop by Category
             </h2>
@@ -52,7 +52,7 @@ export default function Categories() {
           </div>
 
           {/* Right Column: Grid of Category Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 w-full">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 w-full">
             {categories.map((item, idx) => (
               <Link key={idx} href={item.link} className="group flex flex-col cursor-pointer">
                 <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl bg-slate-50 border border-slate-100/50 shadow-sm transition-all duration-500 group-hover:shadow-md group-hover:translate-y-[-2px]">
@@ -64,13 +64,13 @@ export default function Categories() {
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>
-                <div className="mt-4 flex flex-col items-center lg:items-start text-center lg:text-left">
-                  <h3 className="font-semibold text-lg text-slate-900 group-hover:text-emerald-800 transition-colors">
+                <div className="mt-2 sm:mt-4 flex flex-col items-center lg:items-start text-center lg:text-left">
+                  <h3 className="font-semibold text-sm sm:text-lg text-slate-900 group-hover:text-emerald-800 transition-colors">
                     {item.name}
                   </h3>
-                  <span className="inline-flex items-center text-xs font-bold text-emerald-800 tracking-wider uppercase mt-1">
+                  <span className="inline-flex items-center text-[10px] sm:text-xs font-bold text-emerald-800 tracking-wider uppercase mt-0.5 sm:mt-1">
                     <span>Shop Now</span>
-                    <ArrowRight size={12} className="ml-1 group-hover:translate-x-0.5 transition-transform" />
+                    <ArrowRight size={10} className="ml-1 group-hover:translate-x-0.5 transition-transform" />
                   </span>
                 </div>
               </Link>
