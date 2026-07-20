@@ -71,8 +71,7 @@ export const POST = async (req: Request) => {
     const safeCoupon = typeof couponCode === "string" ? couponCode.trim().toUpperCase() : "";
     const discount = safeCoupon === "KRISH10" ? subtotal * 0.1 : 0;
     const subtotalAfterCoupon = subtotal - discount;
-    const tax = (subtotalAfterCoupon * 5) / 100;
-    const amount = subtotalAfterCoupon + tax;
+    const amount = subtotalAfterCoupon;
 
     const orderId = `rzp_${razorpay_order_id.replace("order_", "")}`;
 

@@ -35,11 +35,8 @@ export const getProductsById = async (cartId: string) => {
     return sum + unitPrice * quantity;
   }, 0);
 
-  // 6️⃣ Tax (5% once)
-  const tax = (subtotal * 5) / 100;
-
-  // 7️⃣ Final total
-  const total = subtotal + tax;
+  // 6️⃣ Final total
+  const total = subtotal;
 
   console.log("TOTAL PRICING IS: ", total);
   return total;

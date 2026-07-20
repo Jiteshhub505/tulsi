@@ -114,8 +114,7 @@ export default function CartDrawer() {
     return sum + unitPrice * p.quantity;
   }, 0);
 
-  const tax = (subtotal * 5) / 100;
-  const total = subtotal + tax;
+  const total = subtotal;
 
   return (
     <SheetContent className="flex flex-col h-full w-full sm:w-[400px] md:w-[480px] p-5 sm:p-6 bg-white dark:bg-zinc-950 border-l border-zinc-150 dark:border-zinc-800">
@@ -222,11 +221,7 @@ export default function CartDrawer() {
               </div>
               <div className="flex justify-between">
                 <span>Shipping</span>
-                <span className="text-emerald-700 font-semibold">FREE</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Tax (5%)</span>
-                <span className="text-zinc-900 dark:text-zinc-50 font-semibold">₹{tax}</span>
+                <span className="text-emerald-700 font-semibold">Calculated at checkout</span>
               </div>
               <Separator className="my-2" />
               <div className="flex justify-between text-base text-zinc-900 dark:text-zinc-50 font-bold">
