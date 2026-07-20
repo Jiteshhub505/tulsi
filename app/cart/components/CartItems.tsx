@@ -196,11 +196,8 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
     return sum + (p.price - p.discountPrice) * p.quantity;
   }, 0);
 
-  // 3️⃣ Tax (5% ONCE)
-  const tax = (subtotal * 5) / 100;
-
-  // 4️⃣ Final total
-  const total = subtotal + tax;
+  // 3️⃣ Final total
+  const total = subtotal;
 
   useEffect(() => {}, [products]);
 
@@ -330,8 +327,8 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
     const totalItems = products.reduce((sum, p) => sum + p.quantity, 0);
     const couponDiscount = appliedCoupon === "KRISH10" ? subtotal * 0.1 : 0;
     const subtotalAfterCoupon = subtotal - couponDiscount;
-    const taxAfterCoupon = (subtotalAfterCoupon * 5) / 100;
-    const finalTotal = subtotalAfterCoupon + taxAfterCoupon;
+    const shippingFee = paymentMethod === "cod" ? 50 : 0;
+    const finalTotal = subtotalAfterCoupon + shippingFee;
 
     return (
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
@@ -345,7 +342,7 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
           <h2 className="text-2xl font-bold text-stone-900">Checkout</h2>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+        <form onSubmit={(e) => { e.preventDefault(); handlePlaceOrder(); }} className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
           {/* Left: Shipping details & Payment options */}
           <div className="lg:col-span-2 space-y-8">
             {/* Shipping Details */}
@@ -380,6 +377,8 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
                   <input
                     type="tel"
                     required
+                    pattern="[0-9]{10}"
+                    title="Please enter a valid 10-digit phone number"
                     placeholder="Enter phone number"
                     value={shippingDetails.phone}
                     onChange={(e) => setShippingDetails({ ...shippingDetails, phone: e.target.value })}
@@ -425,6 +424,8 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
                     <input
                       type="text"
                       required
+                      pattern="[0-9]{6}"
+                      title="Please enter a valid 6-digit PIN code"
                       placeholder="PIN"
                       value={shippingDetails.pinCode}
                       onChange={(e) => setShippingDetails({ ...shippingDetails, pinCode: e.target.value })}
@@ -510,11 +511,7 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
                 )}
                 <li className="flex justify-between">
                   <span>Shipping</span>
-                  <span className="text-emerald-750 font-bold">FREE</span>
-                </li>
-                <li className="flex justify-between">
-                  <span>Tax (5%)</span>
-                  <span className="text-stone-950 font-bold">+₹{taxAfterCoupon.toLocaleString()}</span>
+                  <span className="text-emerald-750 font-bold">{paymentMethod === "cod" ? "+₹50" : "FREE"}</span>
                 </li>
                 <hr className="border-stone-100 my-1" />
                 <li className="flex justify-between text-base text-stone-950 font-extrabold">
@@ -524,8 +521,8 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
               </ul>
 
               <button
+                type="submit"
                 disabled={placingOrder}
-                onClick={handlePlaceOrder}
                 className="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-4 rounded-xl transition shadow-md disabled:bg-stone-300 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer text-sm"
               >
                 {placingOrder ? "Placing Order..." : "PLACE ORDER"}
@@ -559,7 +556,7 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
               )}
             </div>
           </div>
-        </div>
+        </form>
       </div>
     );
   }
@@ -677,13 +674,7 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
               <li className="flex flex-wrap gap-4 text-sm">
                 Shipping{" "}
                 <span className="ml-auto text-green-900 font-semibold">
-                  FREE
-                </span>
-              </li>
-              <li className="flex flex-wrap gap-4 text-sm">
-                Tax (5%){" "}
-                <span className="ml-auto text-slate-900 font-semibold">
-                  +₹{tax}
+                  Calculated at checkout
                 </span>
               </li>
               <li className="flex flex-wrap gap-4 text-sm text-slate-900">

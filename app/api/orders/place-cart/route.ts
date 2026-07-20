@@ -73,8 +73,8 @@ export const POST = async (req: Request) => {
     const safeCoupon = typeof couponCode === "string" ? couponCode.trim().toUpperCase() : "";
     const discount = safeCoupon === "KRISH10" ? subtotal * 0.1 : 0;
     const subtotalAfterCoupon = subtotal - discount;
-    const tax = (subtotalAfterCoupon * 5) / 100;
-    const amount = subtotalAfterCoupon + tax;
+    const shippingFee = paymentMethod === "cod" ? 50 : 0;
+    const amount = subtotalAfterCoupon + shippingFee;
 
     const orderId = `local_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 

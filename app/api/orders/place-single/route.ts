@@ -44,8 +44,8 @@ export async function POST(req: Request) {
       return Response.json({ status: 404, message: "Product does not found" });
     }
 
-    const unitPrice = product.price - (product.discountPrice ?? 0);
-    const amount = Math.round(unitPrice + unitPrice * 0.05); // + 5% tax
+    const unitPrice = product.discountPrice ?? product.price;
+    const amount = unitPrice;
 
     const orderId = `local_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 
