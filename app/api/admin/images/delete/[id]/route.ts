@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import connectDB from "@/db/mongoose";
 import { Product } from "@/db/models";
 import { NextRequest, NextResponse } from "next/server";
