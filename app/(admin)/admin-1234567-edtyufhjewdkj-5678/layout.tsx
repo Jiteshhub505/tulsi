@@ -1,4 +1,4 @@
-"use client";
+export const dynamic = "force-dynamic";
 
 import AdminSidebar from "@/components/admin-sidebar";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -65,14 +65,20 @@ export default function AdminLayout({
       <div className="flex min-h-screen items-center justify-center bg-stone-100 px-4 py-12 sm:px-6 lg:px-8">
         <div className="w-full max-w-md space-y-8 bg-white border border-stone-200 p-8 rounded-2xl shadow-xl">
           <div className="text-center">
-            <h2 className="text-3xl font-extrabold text-stone-900 tracking-tight">TulsiVeda Admin Portal</h2>
-            <p className="mt-2 text-sm text-stone-500">Please enter your credentials to access the admin panel.</p>
+            <h2 className="text-3xl font-extrabold text-stone-900 tracking-tight">
+              TulsiVeda Admin Portal
+            </h2>
+            <p className="mt-2 text-sm text-stone-500">
+              Please enter your credentials to access the admin panel.
+            </p>
           </div>
 
           <form className="mt-8 space-y-6" onSubmit={handleLogin}>
             <div className="space-y-4 rounded-md shadow-xs">
               <div className="space-y-1">
-                <label className="text-xs font-bold text-stone-700 uppercase tracking-wider">Admin ID</label>
+                <label className="text-xs font-bold text-stone-700 uppercase tracking-wider">
+                  Admin ID
+                </label>
                 <input
                   type="text"
                   required
@@ -84,7 +90,9 @@ export default function AdminLayout({
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-bold text-stone-700 uppercase tracking-wider">Password</label>
+                <label className="text-xs font-bold text-stone-700 uppercase tracking-wider">
+                  Password
+                </label>
                 <input
                   type="password"
                   required
@@ -97,7 +105,9 @@ export default function AdminLayout({
             </div>
 
             {loginError && (
-              <p className="text-red-500 text-sm font-semibold text-center mt-2">{loginError}</p>
+              <p className="text-red-500 text-sm font-semibold text-center mt-2">
+                {loginError}
+              </p>
             )}
 
             <button
