@@ -21,7 +21,7 @@ function MobileDrawer({
   onClose: () => void;
 }) {
   const [mounted, setMounted] = useState(false);
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
 
   useEffect(() => {
     setMounted(true);

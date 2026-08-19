@@ -203,7 +203,7 @@ export default function SingleProduct({ id }: { id: string }) {
       <div className="border-b border-stone-200 bg-white/80 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
           <div className="flex items-center gap-2 text-sm text-stone-600">
-            <Link href="/" className="hover:text-stone-900 transition-colors">Home</Link>
+            <Link href="/" className="hover:text-stone-900 transition-colors">{t("Home")}</Link>
             <span>/</span>
             <Link href="/shop" className="hover:text-stone-900 transition-colors uppercase">{t(product.category)}</Link>
             <span>/</span>
@@ -284,17 +284,17 @@ export default function SingleProduct({ id }: { id: string }) {
             <div className="flex flex-wrap gap-x-6 gap-y-3 py-3 border-y border-stone-200">
               <div className="flex items-center gap-2 text-xs text-stone-700 font-semibold">
                 <Shield size={16} className="text-emerald-700" />
-                <span>TRUSTED BY DOCTORS</span>
+                <span>{t("TRUSTED BY DOCTORS")}</span>
               </div>
               <div className="flex items-center gap-2 text-xs text-stone-700 font-semibold">
                 <Check size={16} className="text-emerald-700" />
-                <span>EASY TO USE</span>
+                <span>{t("EASY TO USE")}</span>
               </div>
               <div className="flex items-center gap-2 text-xs text-stone-700 font-semibold">
                 <svg className="w-4 h-4 text-emerald-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span>CERTIFIED QUALITY</span>
+                <span>{t("CERTIFIED QUALITY")}</span>
               </div>
             </div>
 
@@ -308,7 +308,7 @@ export default function SingleProduct({ id }: { id: string }) {
                   onClick={() => setIsExpanded(!isExpanded)}
                   className="text-xs font-semibold text-emerald-700 hover:text-emerald-800 transition-colors uppercase tracking-wider focus:outline-hidden cursor-pointer"
                 >
-                  {isExpanded ? "Read Less" : "Read More"}
+                  {isExpanded ? t("Read Less") : t("Read More")}
                 </button>
               </div>
             )}
@@ -325,12 +325,12 @@ export default function SingleProduct({ id }: { id: string }) {
                   </span>
                 )}
               </div>
-              <p className="text-xs text-stone-500">Inclusive of all taxes</p>
+              <p className="text-xs text-stone-500">{t("Inclusive of all taxes")}</p>
             </div>
 
             {/* Quantity Selector */}
             <div className="space-y-3">
-              <h3 className="text-xs font-semibold text-stone-900 uppercase tracking-wide">Quantity:</h3>
+              <h3 className="text-xs font-semibold text-stone-900 uppercase tracking-wide">{t("QUANTITY:")}</h3>
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -378,7 +378,7 @@ export default function SingleProduct({ id }: { id: string }) {
             </div>
 
             <p className="text-xs text-center text-stone-500">
-              Satisfaction Guaranteed • Free Shipping Over ₹500 • Secure Check-Out
+              {t("Satisfaction Guaranteed • Free Shipping Over ₹500 • Secure Check-Out")}
             </p>
           </div>
         </div>

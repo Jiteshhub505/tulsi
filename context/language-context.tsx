@@ -68,7 +68,7 @@ const uiTranslations: Record<string, Record<Language, string>> = {
   "Pippali": { en: "Pippali", hi: "पिप्पली" },
   "Pippali Desc": {
     en: "Enhances healthy appetite and maximizes nutrient absorption. Stimulates metabolism to help your body efficiently process nutrients.",
-    hi: "स्वस्थ भूख को बढ़ाता है और पोषक तत्वों के अवशोषण को अधिकतम करता है।",
+    hi: "स्वस्थ भूख को बढ़ाता है और पोषक तत्वों के अवअवशोषण को अधिकतम करता है।",
   },
   "Kaunch Beej": { en: "Kaunch Beej", hi: "कौंच बीज" },
   "Kaunch Beej Desc": {
@@ -162,7 +162,9 @@ const uiTranslations: Record<string, Record<Language, string>> = {
   "Stamina and Power": { en: "Stamina and Power", hi: "स्टैमिना और शक्ति" },
   "Health Disease": { en: "Health Disease", hi: "स्वास्थ्य रोग" },
   "Supplements": { en: "Supplements", hi: "सप्लीमेंट्स" },
+  "Suppliments": { en: "Supplements", hi: "सप्लीमेंट्स" },
   "Skin Care": { en: "Skin Care", hi: "स्किन केयर" },
+  "Skin": { en: "Skin Care", hi: "स्किन केयर" },
   "Hygiene": { en: "Hygiene", hi: "हाइजीन" },
   "Others": { en: "Others", hi: "अन्य" },
 
@@ -172,8 +174,28 @@ const uiTranslations: Record<string, Record<Language, string>> = {
     en: "Try adjusting your filters or search terms.",
     hi: "अपने फ़िल्टर या खोज शब्दों को समायोजित करने का प्रयास करें।",
   },
+  "No products in this category yet — check back soon.": {
+    en: "No products in this category yet — check back soon.",
+    hi: "इस श्रेणी में अभी तक कोई उत्पाद नहीं है — जल्द ही वापस देखें।",
+  },
 
-  // Single Product Page
+  // Single Product Page Badges & Buttons
+  "TRUSTED BY DOCTORS": { en: "TRUSTED BY DOCTORS", hi: "डॉक्टरों द्वारा विश्वसनीय" },
+  "EASY TO USE": { en: "EASY TO USE", hi: "उपयोग में आसान" },
+  "CERTIFIED QUALITY": { en: "CERTIFIED QUALITY", hi: "प्रमाणित गुणवत्ता" },
+  "Read More": { en: "Read More", hi: "अधिक पढ़ें" },
+  "READ MORE": { en: "READ MORE", hi: "अधिक पढ़ें" },
+  "Read Less": { en: "Read Less", hi: "कम पढ़ें" },
+  "READ LESS": { en: "READ LESS", hi: "कम पढ़ें" },
+  "Inclusive of all taxes": { en: "Inclusive of all taxes", hi: "सभी कर शामिल" },
+  "QUANTITY:": { en: "QUANTITY:", hi: "मात्रा:" },
+  "Quantity:": { en: "Quantity:", hi: "मात्रा:" },
+  "Satisfaction Guaranteed • Free Shipping Over ₹500 • Secure Check-Out": {
+    en: "Satisfaction Guaranteed • Free Shipping Over ₹500 • Secure Check-Out",
+    hi: "संतुष्टि की गारंटी • ₹500 से अधिक पर मुफ़्त शिपिंग • सुरक्षित चेक-आउट",
+  },
+  "View Product": { en: "View Product", hi: "उत्पाद देखें" },
+  "Unavailable": { en: "Unavailable", hi: "अनुपलब्ध" },
   "Add to Cart": { en: "Add to Cart", hi: "कार्ट में जोड़ें" },
   "Adding to Cart...": { en: "Adding to Cart...", hi: "कार्ट में जोड़ा जा रहा है..." },
   "Buy Now": { en: "Buy Now", hi: "अभी खरीदें" },
@@ -197,6 +219,19 @@ const uiTranslations: Record<string, Record<Language, string>> = {
 // Generic dictionary for dynamic text translation (Product names, titles, descriptions)
 const knownTextTranslations: Record<string, string> = {
   // Product Names & Titles
+  "Ved Shakti": "वेद शक्ति",
+  "Veda Shakti": "वेद शक्ति",
+  "Empower you strength": "अपनी ताकत बढ़ाएं",
+  "Empower your strength": "अपनी ताकत बढ़ाएं",
+  "Veda Shakti - Natural Power, Stronger You": "वेद शक्ति - प्राकृतिक शक्ति, मजबूत आप",
+  "Veda Shakti - Natural Power & Stamina Support": "वेद शक्ति - प्राकृतिक शक्ति और सहनशक्ति समर्थन",
+  "Veda Shakti is a premium Ayurvedic wellness supplement made with carefully selected natural herbs to support overall health and vitality. Its traditional herbal formula is crafted to promote daily wellness, boost energy, and help maintain a balanced, healthy lifestyle....":
+    "वेद शक्ति एक प्रीमियम आयुर्वेदिक वेलनेस सप्लीमेंट है जो समग्र स्वास्थ्य और जीवन शक्ति का समर्थन करने के लिए ध्यानपूर्वक चुनी गई प्राकृतिक जड़ी-बूटियों से बना है। इसका पारंपरिक हर्बल फॉर्मूला दैनिक कल्याण को बढ़ावा देने, ऊर्जा बढ़ाने और एक संतुलित, स्वस्थ जीवन शैली बनाए रखने में मदद करने के लिए तैयार किया गया है।",
+  "Veda Shakti is a premium Ayurvedic wellness supplement made with carefully selected natural herbs to support overall health and vitality. Its traditional herbal formula is crafted to promote daily wellness, boost energy, and help maintain a balanced, healthy lifestyle.":
+    "वेद शक्ति एक प्रीमियम आयुर्वेदिक वेलनेस सप्लीमेंट है जो समग्र स्वास्थ्य और जीवन शक्ति का समर्थन करने के लिए ध्यानपूर्वक चुनी गई प्राकृतिक जड़ी-बूटियों से बना है। इसका पारंपरिक हर्बल फॉर्मूला दैनिक कल्याण को बढ़ावा देने, ऊर्जा बढ़ाने और एक संतुलित, स्वस्थ जीवन शैली बनाए रखने में मदद करने के लिए तैयार किया गया है।",
+  "Carefully selected Ayurvedic ingredients to support overall energy, stamina, and power.":
+    "समग्र ऊर्जा, सहनशक्ति और शक्ति का समर्थन करने के लिए सावधानीपूर्वक चुने गए आयुर्वेदिक घटक।",
+
   "Ayurvedic Fat Burner": "आयुर्वेदिक फैट बर्नर",
   "Ayurvedic Fat Burner - Metabolism & Energy Support": "आयुर्वेदिक फैट बर्नर - चयापचय और ऊर्जा समर्थन",
   "An Ayurvedic formulation designed to support metabolism and active daily routines when combined with proper diet and exercise.":
@@ -319,13 +354,12 @@ const knownTextTranslations: Record<string, string> = {
   "A curated set of essential hygiene products designed for everyday personal care needs.":
     "रोजमर्रा की व्यक्तिगत देखभाल की जरूरतों के लिए डिज़ाइन किए गए आवश्यक स्वच्छता उत्पादों का एक क्यूरेटेड सेट।",
 
-  "Veda Shakti": "वेद शक्ति",
-  "Veda Shakti - Natural Power, Stronger You": "वेद शक्ति - प्राकृतिक शक्ति, मजबूत आप",
-  "Veda Shakti - Natural Power & Stamina Support": "वेद शक्ति - प्राकृतिक शक्ति और सहनशक्ति समर्थन",
   "Piles Care": "पाइल्स केयर",
   "Piles Care - Relief, Comfort, Freedom": "पाइल्स केयर - राहत, आराम, स्वतंत्रता",
   "Piles Care Formula": "पाइल्स केयर फॉर्मूला",
   "Piles Care Formula - Relief & Comfort Support": "पाइल्स केयर फॉर्मूला - राहत और आराम समर्थन",
+  "A traditional Ayurvedic blend designed to support daily digestive health and relief.":
+    "दैनिक पाचन स्वास्थ्य और राहत का समर्थन करने के लिए बनाया गया एक पारंपरिक आयुर्वेदिक मिश्रण।",
   "Pure Shilajit": "शुद्ध शिलाजीत",
   "Pure Shilajit - Vitality and Vigor": "शुद्ध शिलाजीत - जीवन शक्ति और स्फूर्ति",
 
@@ -354,19 +388,31 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   const t = (key: string): string => {
+    if (!key) return "";
     if (uiTranslations[key]) {
       return uiTranslations[key][language] || key;
     }
+    const trimmed = key.trim();
+    if (uiTranslations[trimmed]) {
+      return uiTranslations[trimmed][language] || key;
+    }
     if (language === "hi" && knownTextTranslations[key]) {
       return knownTextTranslations[key];
+    }
+    if (language === "hi" && knownTextTranslations[trimmed]) {
+      return knownTextTranslations[trimmed];
     }
     return key;
   };
 
   const translateText = (text: string | null | undefined): string => {
     if (!text) return "";
-    if (language === "hi" && knownTextTranslations[text]) {
-      return knownTextTranslations[text];
+    if (language === "hi") {
+      const trimmed = text.trim();
+      if (knownTextTranslations[trimmed]) return knownTextTranslations[trimmed];
+      if (knownTextTranslations[text]) return knownTextTranslations[text];
+      if (uiTranslations[trimmed]) return uiTranslations[trimmed].hi || trimmed;
+      if (uiTranslations[text]) return uiTranslations[text].hi || text;
     }
     return text;
   };
