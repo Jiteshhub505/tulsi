@@ -30,6 +30,12 @@ export const PUT = async (
     manufacturedDate,
     createdAt,
     isBestSeller,
+    benefits,
+    clinicalStats,
+    keyIngredients,
+    howToUseSteps,
+    faqs,
+    packOptions,
   } = await req.json();
   const newExpiryDate = expiryDate ? new Date(expiryDate) : undefined;
   const newManufacturedDate = manufacturedDate ? new Date(manufacturedDate) : undefined;
@@ -71,6 +77,12 @@ export const PUT = async (
       expiryDate: newExpiryDate,
       manufacturedDate: newManufacturedDate,
       createdAt,
+      benefits,
+      clinicalStats,
+      keyIngredients,
+      howToUseSteps,
+      faqs,
+      packOptions,
     };
 
     if (isBestSeller !== undefined) {

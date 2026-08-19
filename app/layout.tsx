@@ -30,6 +30,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://res.cloudinary.com" />
+        <link rel="preconnect" href="https://cdn.britannica.com" />
+        <link rel="preconnect" href="https://5.imimg.com" />
+        <link rel="preconnect" href="https://thursd.com" />
+        <link rel="preconnect" href="https://images.saymedia-content.com" />
+        <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+        <link rel="dns-prefetch" href="https://cdn.britannica.com" />
+        <link rel="dns-prefetch" href="https://5.imimg.com" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

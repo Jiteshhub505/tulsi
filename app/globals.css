@@ -117,6 +117,16 @@
   border-color: rgb(200, 200, 200) !important;
 }
 
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img, video {
+  content-visibility: auto;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

@@ -16,10 +16,9 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import Integrations from "./Integrations";
-import NewArrivalMarquee from "./NewArrivalMarquee";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ShoppingBag } from "lucide-react";
+import { ShoppingBag, ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage } from "@/context/language-context";
 
 interface Feature {
@@ -27,6 +26,14 @@ interface Feature {
   descriptionKey: string;
   icon: React.ReactNode;
 }
+
+const CAROUSEL_IMAGES = [
+  "/image-tul.png",
+  "/new2.png",
+  "/new3.png",
+  "/new4.png",
+  "/new5.png",
+];
 
 const defaultFeatures: Feature[] = [
   {
@@ -63,17 +70,70 @@ const defaultFeatures: Feature[] = [
 
 const Features = () => {
   const { t, translateText } = useLanguage();
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % CAROUSEL_IMAGES.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
-    <section className="pt-10 w-full pb-2">
-      <div className="w-full">
-        <NewArrivalMarquee />
+    <section className="pt-6 w-full pb-2">
+      <div className="w-full space-y-8">
+        
+        {/* Infographic Image Carousel */}
+        <div className="relative w-full overflow-hidden group bg-stone-50">
+          <div
+            className="flex transition-transform duration-700 ease-in-out w-full"
+            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+          >
+            {CAROUSEL_IMAGES.map((img, idx) => (
+              <div key={idx} className="w-full shrink-0 flex justify-center">
+                <img
+                  className="w-full h-[280px] xs:h-[340px] sm:h-[440px] md:h-[540px] lg:h-[640px] object-cover sm:object-contain object-center"
+                  src={img}
+                  alt={`Veda Shakti feature slide ${idx + 1}`}
+                />
+              </div>
+            ))}
+          </div>
 
-        <img
-          className="w-full object-contain"
-          src="/image-tul.png"
-          alt="Ayurvedic ingredients and Veda Shakti product"
-        />
+          {/* Navigation Arrows (Hidden on Mobile) */}
+          <button
+            onClick={() => setCurrentSlide((prev) => (prev - 1 + CAROUSEL_IMAGES.length) % CAROUSEL_IMAGES.length)}
+            className="hidden sm:flex absolute left-4 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white p-3 rounded-full backdrop-blur-xs opacity-0 group-hover:opacity-100 transition-all cursor-pointer z-10 shadow-md items-center justify-center"
+            aria-label="Previous Slide"
+          >
+            <ChevronLeft size={24} />
+          </button>
+
+          <button
+            onClick={() => setCurrentSlide((prev) => (prev + 1) % CAROUSEL_IMAGES.length)}
+            className="hidden sm:flex absolute right-4 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white p-3 rounded-full backdrop-blur-xs opacity-0 group-hover:opacity-100 transition-all cursor-pointer z-10 shadow-md items-center justify-center"
+            aria-label="Next Slide"
+          >
+            <ChevronRight size={24} />
+          </button>
+
+        </div>
+
+        {/* Pagination Indicators */}
+        <div className="flex justify-center items-center gap-2 -mt-2">
+          <div className="flex items-center gap-2 bg-stone-200/90 backdrop-blur-xs px-4 py-2 rounded-full shadow-2xs border border-stone-300/60">
+            {CAROUSEL_IMAGES.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrentSlide(idx)}
+                className={`h-2.5 rounded-full transition-all cursor-pointer ${
+                  currentSlide === idx ? "w-8 bg-emerald-700 shadow-xs" : "w-2.5 bg-stone-400 hover:bg-stone-600"
+                }`}
+                aria-label={`Go to slide ${idx + 1}`}
+              />
+            ))}
+          </div>
+        </div>
 
         <div className="mx-auto max-w-7xl px-4 sm:px-6 grid gap-0 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {defaultFeatures.map((feature, i) => (

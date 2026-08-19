@@ -62,6 +62,12 @@ export const simpleProductSchema = z.object({
   descriptionHi: z.string().optional(),
   category: z.enum(categories).default("Digestion"),
   inStock: z.number().min(0, "Stock cannot be negative").default(1),
+  benefits: z.array(z.object({ title: z.string(), desc: z.string(), icon: z.string().optional() })).optional(),
+  clinicalStats: z.array(z.object({ percentage: z.number(), label: z.string() })).optional(),
+  keyIngredients: z.array(z.object({ name: z.string(), desc: z.string(), image: z.string().optional() })).optional(),
+  howToUseSteps: z.array(z.object({ step: z.number(), title: z.string(), desc: z.string() })).optional(),
+  faqs: z.array(z.object({ question: z.string(), answer: z.string() })).optional(),
+  packOptions: z.array(z.object({ packName: z.string(), price: z.number(), discountPrice: z.number().optional(), isPopular: z.boolean().optional() })).optional(),
 });
 
 export type SimpleProductInput = z.infer<typeof simpleProductSchema>;

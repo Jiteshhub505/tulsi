@@ -22,7 +22,7 @@ type Product = {
 export default function HeroFIlterProducts() {
   const { t, translateText } = useLanguage();
   const [products, setProducts] = useState<Product[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [selectedCategory, setSelectedCategory] = useState<string>("Health Disease");
   const [loading, setLoading] = useState(true);
   const [favorites, setFavorites] = useState<string[]>([]);
 
@@ -53,11 +53,9 @@ export default function HeroFIlterProducts() {
     fetchProducts();
   }, []);
 
-  const categories = ["All", "Digestion", "Health & Fitness", "Stamina and Power", "Health Disease"];
+  const categories = ["Health Disease", "Digestion", "Health & Fitness", "Stamina and Power"];
 
-  const filteredProducts = selectedCategory === "All"
-    ? products
-    : products.filter((p) => p.category === selectedCategory);
+  const filteredProducts = products.filter((p) => p.category === selectedCategory);
 
   return (
     <section className="w-full py-12 md:py-20 bg-stone-50/50 px-4 sm:px-8 md:px-12 lg:px-16 border-t border-stone-200/60">

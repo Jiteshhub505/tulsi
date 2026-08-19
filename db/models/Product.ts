@@ -44,6 +44,14 @@ const productSchema = new Schema(
     medicineType: { type: String, enum: MEDICINE_TYPES, default: "capsule" },
     createdAt: { type: Date, default: Date.now },
     isBestSeller: { type: Boolean, default: false },
+
+    // Rich D2C Page Fields
+    benefits: { type: [{ title: String, desc: String, icon: String }], default: [] },
+    clinicalStats: { type: [{ percentage: Number, label: String }], default: [] },
+    keyIngredients: { type: [{ name: String, desc: String, image: String }], default: [] },
+    howToUseSteps: { type: [{ step: Number, title: String, desc: String }], default: [] },
+    faqs: { type: [{ question: String, answer: String }], default: [] },
+    packOptions: { type: [{ packName: String, price: Number, discountPrice: Number, isPopular: Boolean }], default: [] },
   },
   { ...sharedOptions, _id: false },
 );
