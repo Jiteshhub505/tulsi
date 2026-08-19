@@ -36,11 +36,10 @@ export type ProductType = {
 
 const CATEGORY_OPTIONS = [
   "All",
-  "Uncategorized",
+  "Digestion",
   "Health & Fitness",
-  "Suppliments",
-  "Skin",
-  "Hygiene",
+  "Stamina and Power",
+  "Health Disease",
 ];
 
 export default function BestSellersPage() {

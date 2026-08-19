@@ -19,7 +19,7 @@ export default function PromoBanner() {
       {/* Central content overlay */}
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4 z-10">
         <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold text-zinc-900 tracking-tight mb-5 sm:mb-7 uppercase">
-          GET UPTO 25% OFF
+          {t("GET UPTO 25% OFF")}
         </h2>
         
         <div>

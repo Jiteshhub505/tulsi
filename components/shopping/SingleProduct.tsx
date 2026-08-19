@@ -25,7 +25,8 @@ import { useLanguage } from "@/context/language-context";
 
 // ---------------- TYPES ----------------
 export type Product = {
-  id: string;
+  id?: string;
+  _id?: string;
   name: string;
   category: string;
   description: string;
@@ -43,6 +44,9 @@ export type Product = {
   expiryDate: string;
   galleryImages: string[];
   warnings: string | null;
+  nameHi?: string;
+  titleHi?: string;
+  descriptionHi?: string;
 };
 
 // ---------------- COMPONENT ----------------
@@ -75,7 +79,10 @@ export default function SingleProduct({ id }: { id: string }) {
       if (response.data.success) {
         // Filter products from same category, exclude current product, limit to 4
         return response.data.products
-          .filter((p: Product) => p.category === product.category && p.id !== id)
+          .filter((p: any) => {
+            const pId = p.id || p._id;
+            return p.category === product.category && pId !== id;
+          })
           .slice(0, 4);
       }
       return [];
@@ -95,23 +102,25 @@ export default function SingleProduct({ id }: { id: string }) {
   const [fav, setFav] = useState(false);
 
   useEffect(() => {
+    const pId = product?.id || product?._id || id;
     if (product) {
-      setFav(isFavorite(product.id));
+      setFav(isFavorite(pId));
     }
     const handleUpdate = () => {
       if (product) {
-        setFav(isFavorite(product.id));
+        setFav(isFavorite(pId));
       }
     };
     window.addEventListener("favorites-updated", handleUpdate);
     return () => window.removeEventListener("favorites-updated", handleUpdate);
-  }, [product]);
+  }, [product, id]);
 
   const handleFavClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if (product) {
-      toggleFavorite(product.id);
+      const pId = product.id || product._id || id;
+      toggleFavorite(pId);
     }
   };
 
@@ -209,7 +218,7 @@ export default function SingleProduct({ id }: { id: string }) {
             <span>/</span>
             <Link href="/shop" className="hover:text-stone-900 transition-colors uppercase">{t(product.category)}</Link>
             <span>/</span>
-            <span className="text-stone-900 font-medium">{translateText(product.name)}</span>
+            <span className="text-stone-900 font-medium">{translateText(product.name, product.nameHi)}</span>
           </div>
         </div>
       </div>
@@ -260,7 +269,7 @@ export default function SingleProduct({ id }: { id: string }) {
           <div className="space-y-6">
             {/* Title */}
             <h1 className="text-2xl sm:text-3xl font-bold text-stone-900 leading-tight">
-              {translateText(product.name)}
+              {translateText(product.name, product.nameHi)}
             </h1>
             
             {/* Rating */}
@@ -279,7 +288,7 @@ export default function SingleProduct({ id }: { id: string }) {
 
             {/* Sub-Title */}
             <p className="text-sm text-stone-600 leading-relaxed font-medium">
-              {translateText(product.title)}
+              {translateText(product.title, product.titleHi)}
             </p>
 
             {/* Trust Badges */}
@@ -304,7 +313,7 @@ export default function SingleProduct({ id }: { id: string }) {
             {product.description && (
               <div className="space-y-2">
                 <div className={`text-sm text-stone-700 leading-relaxed transition-all duration-300 ${!isExpanded ? "line-clamp-3 overflow-hidden" : ""}`}>
-                  {translateText(he.decode(product.description))}
+                  {translateText(he.decode(product.description), product.descriptionHi)}
                 </div>
                 <button
                   onClick={() => setIsExpanded(!isExpanded)}
@@ -370,13 +379,7 @@ export default function SingleProduct({ id }: { id: string }) {
                 {!product.inStock ? t("Out of Stock") : t("Buy Now")}
               </button>
 
-              <button 
-                onClick={handleFavClick}
-                className="w-14 h-14 bg-stone-105 border border-stone-200 rounded-xl flex items-center justify-center hover:bg-stone-200 transition-all cursor-pointer shadow-xs shrink-0"
-                aria-label="Add to Wishlist"
-              >
-                <Heart className={`w-6 h-6 transition-colors ${fav ? "text-rose-500 fill-rose-500" : "text-stone-600"}`} />
-              </button>
+
             </div>
 
             <p className="text-xs text-center text-stone-500">
@@ -396,7 +399,8 @@ export default function SingleProduct({ id }: { id: string }) {
             </div>
           ) : relatedProducts && relatedProducts.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {relatedProducts.map((relatedProduct) => {
+              {relatedProducts.map((relatedProduct, index) => {
+                const prodId = relatedProduct.id || relatedProduct._id || `related-${index}`;
                 const discount = relatedProduct.discountPrice
                   ? Math.round(
                       ((relatedProduct.price - relatedProduct.discountPrice) / relatedProduct.price) * 100
@@ -407,14 +411,14 @@ export default function SingleProduct({ id }: { id: string }) {
 
                 return (
                   <Link
-                    key={relatedProduct.id}
-                    href={`/shop/${relatedProduct.id}`}
+                    key={prodId}
+                    href={`/shop/${prodId}`}
                     className="group flex flex-col bg-white rounded-xl border border-stone-200 overflow-hidden hover:shadow-lg transition-all duration-300"
                   >
                     <div className="relative aspect-square bg-stone-100">
                       <Image
                         src={image}
-                        alt={translateText(relatedProduct.name)}
+                        alt={translateText(relatedProduct.name, relatedProduct.nameHi)}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
                       />
@@ -426,7 +430,7 @@ export default function SingleProduct({ id }: { id: string }) {
                     </div>
                     <div className="p-3">
                       <h3 className="font-semibold text-sm text-stone-900 line-clamp-2 mb-2 group-hover:text-emerald-700 transition-colors">
-                        {translateText(relatedProduct.name)}
+                        {translateText(relatedProduct.name, relatedProduct.nameHi)}
                       </h3>
                       <div className="flex items-center gap-2">
                         <span className="text-lg font-bold text-stone-900">

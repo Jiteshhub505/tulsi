@@ -2,11 +2,10 @@ import { Schema, models, model } from "mongoose";
 import { uuid, sharedOptions } from "./_shared";
 
 export const CATEGORIES = [
-  "Uncategorized",
+  "Digestion",
   "Health & Fitness",
-  "Suppliments",
-  "Skin",
-  "Hygiene",
+  "Stamina and Power",
+  "Health Disease",
 ] as const;
 
 export const MEDICINE_TYPES = ["powder", "capsule", "tablet", "liquid"] as const;
@@ -15,9 +14,12 @@ const productSchema = new Schema(
   {
     _id: { type: String, default: uuid },
     name: { type: String, required: true },
+    nameHi: { type: String, default: null },
     title: { type: String, required: true },
-    category: { type: String, enum: CATEGORIES, default: "Uncategorized", required: true },
+    titleHi: { type: String, default: null },
+    category: { type: String, enum: CATEGORIES, default: "Digestion", required: true },
     description: { type: String, default: null },
+    descriptionHi: { type: String, default: null },
 
     price: { type: Number, required: true },
     discountPrice: { type: Number, default: null },

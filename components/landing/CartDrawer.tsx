@@ -167,7 +167,7 @@ export default function CartDrawer() {
 
                   <div className="flex-1 min-w-0 pr-6">
                     <h4 className="font-bold text-zinc-900 dark:text-zinc-50 text-sm line-clamp-2 leading-snug">
-                      {translateText(p.name)}
+                      {translateText(p.name, (p as any).nameHi)}
                     </h4>
                     <div className="flex items-center gap-2 mt-1.5">
                       <span className="text-zinc-900 dark:text-zinc-50 font-bold text-base">

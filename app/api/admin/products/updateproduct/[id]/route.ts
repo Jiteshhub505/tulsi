@@ -9,9 +9,12 @@ export const PUT = async (
 
   const {
     name,
+    nameHi,
     title,
+    titleHi,
     category,
     description,
+    descriptionHi,
     price,
     discountPrice,
     inStock,
@@ -48,9 +51,12 @@ export const PUT = async (
 
     const updateFields: any = {
       name,
+      nameHi: nameHi && nameHi.trim() ? nameHi.trim() : null,
       title,
+      titleHi: titleHi && titleHi.trim() ? titleHi.trim() : null,
       category,
       description,
+      descriptionHi: descriptionHi && descriptionHi.trim() ? descriptionHi.trim() : null,
       price,
       discountPrice,
       inStock,

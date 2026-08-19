@@ -27,7 +27,8 @@ import {
 
 // ─── Types ───────────────────────────────────────────────────────────
 type Product = {
-  id: string;
+  id?: string;
+  _id?: string;
   name: string;
   title: string;
   category: string;
@@ -77,30 +78,6 @@ const CATEGORY_CONFIG: Record<
     color: "text-rose-700",
     bg: "bg-rose-50",
   },
-  Suppliments: {
-    labelKey: "Supplements",
-    icon: <Dumbbell size={16} />,
-    color: "text-purple-700",
-    bg: "bg-purple-50",
-  },
-  Skin: {
-    labelKey: "Skin Care",
-    icon: <Droplets size={16} />,
-    color: "text-pink-700",
-    bg: "bg-pink-50",
-  },
-  Hygiene: {
-    labelKey: "Hygiene",
-    icon: <Leaf size={16} />,
-    color: "text-teal-700",
-    bg: "bg-teal-50",
-  },
-  Uncategorized: {
-    labelKey: "Others",
-    icon: <Tag size={16} />,
-    color: "text-gray-700",
-    bg: "bg-gray-50",
-  },
 };
 
 // Category image map for the top category pills
@@ -109,10 +86,6 @@ const CATEGORY_IMAGES: Record<string, string> = {
   "Health & Fitness": "/health&fitness.png",
   "Stamina and Power": "/staminaandpower.png",
   "Health Disease": "/healthdisease.png",
-  Suppliments: "/gym_foods.png",
-  Skin: "/skin_care.png",
-  Hygiene: "/womens_health.png",
-  Uncategorized: "/tulsiveda-logo.png",
 };
 
 const SORT_OPTIONS = [
@@ -146,18 +119,19 @@ import { isFavorite, toggleFavorite } from "@/lib/favorites";
 function ProductCard({ product }: { product: Product }) {
   const { t, translateText } = useLanguage();
   const [fav, setFav] = useState(false);
+  const prodId = product.id || product._id || "";
 
   useEffect(() => {
-    setFav(isFavorite(product.id));
-    const handleUpdate = () => setFav(isFavorite(product.id));
+    setFav(isFavorite(prodId));
+    const handleUpdate = () => setFav(isFavorite(prodId));
     window.addEventListener("favorites-updated", handleUpdate);
     return () => window.removeEventListener("favorites-updated", handleUpdate);
-  }, [product.id]);
+  }, [prodId]);
 
   const handleFavClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    toggleFavorite(product.id);
+    toggleFavorite(prodId);
   };
 
   const discount = product.discountPrice
@@ -167,14 +141,14 @@ function ProductCard({ product }: { product: Product }) {
     : null;
   const displayPrice = product.discountPrice ?? product.price;
   const image = product.galleryImages?.[0] ?? "/tulsiveda-logo.png";
-  const catConfig = CATEGORY_CONFIG[product.category] ?? CATEGORY_CONFIG["Uncategorized"];
+  const catConfig = CATEGORY_CONFIG[product.category] ?? CATEGORY_CONFIG["Digestion"];
 
   // Generate a random rating between 4.0 and 5.0
   const rating = (4.0 + Math.random()).toFixed(1);
 
   return (
     <Link
-      href={`/shop/${product.id}`}
+      href={`/shop/${prodId}`}
       className="group flex flex-col bg-gradient-to-br from-amber-50/30 to-stone-100/50 rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 relative"
     >
       {/* Image */}
@@ -194,20 +168,7 @@ function ProductCard({ product }: { product: Product }) {
           </div>
         )}
         
-        {/* Wishlist Icon */}
-        <button
-          onClick={handleFavClick}
-          className="absolute top-3 right-3 w-8 h-8 bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors shadow-sm cursor-pointer z-10"
-        >
-          <svg
-            className={`w-4 h-4 transition-colors ${fav ? "text-rose-500 fill-rose-500" : "text-stone-600"}`}
-            fill={fav ? "currentColor" : "none"}
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-          </svg>
-        </button>
+
 
         {product.inStock === 0 && (
           <div className="absolute inset-0 bg-white/70 backdrop-blur-[2px] flex items-center justify-center">
@@ -225,7 +186,7 @@ function ProductCard({ product }: { product: Product }) {
         </span>
         
         <h3 className="font-semibold text-stone-800 text-sm group-hover:text-emerald-700 transition-colors leading-snug line-clamp-2 mb-2 min-h-[2.5rem]">
-          {translateText(product.name)}
+          {translateText(product.name, (product as any).nameHi)}
         </h3>
 
         {/* Rating */}
@@ -373,7 +334,7 @@ function ShopPageContent() {
     return list;
   }, [products, selectedCategory, search, priceRange, inStockOnly, sortBy]);
 
-  // Predefined primary revamp categories + any API returned categories
+  // Predefined primary revamp categories
   const primaryCategories = [
     "Digestion",
     "Health & Fitness",
@@ -381,8 +342,11 @@ function ShopPageContent() {
     "Health Disease",
   ];
   
+  const ALLOWED = new Set(primaryCategories);
+  const filteredFetchedCategories = categories.filter((c) => ALLOWED.has(c));
+
   const mergedCategories = Array.from(
-    new Set([...primaryCategories, ...categories])
+    new Set([...primaryCategories, ...filteredFetchedCategories])
   );
   
   const allCategories = ["All", ...mergedCategories];
@@ -398,7 +362,7 @@ function ShopPageContent() {
         </h3>
         <div className="space-y-1">
           {allCategories.map((cat) => {
-            const config = CATEGORY_CONFIG[cat] ?? CATEGORY_CONFIG["Uncategorized"];
+            const config = CATEGORY_CONFIG[cat] ?? CATEGORY_CONFIG["Digestion"];
             const isActive = selectedCategory === cat;
             const count =
               cat === "All"
@@ -583,7 +547,7 @@ function ShopPageContent() {
                         t(
                           (
                             CATEGORY_CONFIG[selectedCategory] ??
-                            CATEGORY_CONFIG["Uncategorized"]
+                            CATEGORY_CONFIG["Digestion"]
                           ).labelKey
                         )
                       }
@@ -665,9 +629,10 @@ function ShopPageContent() {
               </div>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-                {filtered.map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
+                {filtered.map((product, idx) => {
+                  const prodKey = product.id || product._id || idx;
+                  return <ProductCard key={prodKey} product={product} />;
+                })}
               </div>
             )}
           </div>

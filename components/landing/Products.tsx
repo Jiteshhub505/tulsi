@@ -183,21 +183,7 @@ export default function Products() {
                     </span>
                   )}
 
-                  {/* Wishlist Heart */}
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      toggleFavorite(productId);
-                    }}
-                    className="absolute top-4 right-4 w-8 h-8 bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors shadow-sm cursor-pointer z-10"
-                  >
-                    <Heart
-                      className={`w-4 h-4 transition-colors ${
-                        favorites.includes(productId) ? "text-rose-500 fill-rose-500" : "text-stone-600"
-                      }`}
-                    />
-                  </button>
+
                 </div>
 
                 {/* Product Info */}
@@ -206,7 +192,7 @@ export default function Products() {
                     {t(product.category)}
                   </span>
                   <h3 className="font-semibold text-slate-900 text-sm sm:text-lg group-hover:text-emerald-700 transition-colors leading-snug line-clamp-2 mb-2 sm:mb-3">
-                    {translateText(product.name)}
+                    {translateText(product.name, (product as any).nameHi)}
                   </h3>
                   
                   {/* Pricing & CTA */}

@@ -24,7 +24,7 @@ export default function AddProductPage() {
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(simpleProductSchema),
-    defaultValues: { category: "Uncategorized", inStock: 1 },
+    defaultValues: { category: "Digestion", inStock: 1 },
   });
 
   const router = useRouter();

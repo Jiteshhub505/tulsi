@@ -7,9 +7,12 @@ export async function POST(request: Request) {
 
   const {
     name,
+    nameHi,
     title,
+    titleHi,
     category,
     description,
+    descriptionHi,
     price,
     discountPrice,
     inStock,
@@ -31,9 +34,12 @@ export async function POST(request: Request) {
   try {
     const newProduct = await Product.create({
       name,
+      nameHi,
       title,
+      titleHi,
       category,
       description,
+      descriptionHi,
       price,
       discountPrice,
       inStock,

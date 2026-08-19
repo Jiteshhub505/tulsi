@@ -36,17 +36,19 @@ export type ProductType = {
   id: string;
 
   name: string;
+  nameHi?: string;
   title: string;
+  titleHi?: string;
   category:
-    | "Uncategorized"
+    | "Digestion"
     | "Health & Fitness"
-    | "Suppliments"
-    | "Skin"
-    | "Hygiene";
+    | "Stamina and Power"
+    | "Health Disease";
   medicineType: "powder" | "capsule" | "tablet" | "liquid";
   form: string;
 
   description: string;
+  descriptionHi?: string;
   directions: string;
   warnings: string | null;
 
@@ -69,11 +71,10 @@ export type ProductType = {
 
 const CATEGORY_OPTIONS = [
   "All",
-  "Uncategorized",
+  "Digestion",
   "Health & Fitness",
-  "Suppliments",
-  "Skin",
-  "Hygiene",
+  "Stamina and Power",
+  "Health Disease",
 ];
 
 const Page = () => {

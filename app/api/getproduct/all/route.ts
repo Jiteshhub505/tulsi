@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
   const category = searchParams.get("category");
 
   const cacheHeaders = {
-    "Cache-Control": "public, max-age=60, stale-while-revalidate=300",
+    "Cache-Control": "no-store, max-age=0, must-revalidate",
   };
 
   try {

@@ -10,7 +10,7 @@ export async function GET(
 
   const { id } = await params;
   const cacheHeaders = {
-    "Cache-Control": "public, max-age=60, stale-while-revalidate=300",
+    "Cache-Control": "no-store, max-age=0, must-revalidate",
   };
 
   try {

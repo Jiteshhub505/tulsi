@@ -1,6 +1,6 @@
 "use client";
 
-import type { ChangeEvent } from "react";
+import { useEffect, type ChangeEvent } from "react";
 import type { FieldErrors, UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { Loader2, X } from "lucide-react";
 
@@ -43,7 +43,16 @@ export function ProductFormFields({
   uploading,
   hasSelectedFiles,
 }: ProductFormFieldsProps) {
-  const categoryValue = watch("category");
+  const rawCategory = watch("category");
+  const categoryValue = (categories as readonly string[]).includes(rawCategory)
+    ? rawCategory
+    : categories[0];
+
+  useEffect(() => {
+    if (!rawCategory || !(categories as readonly string[]).includes(rawCategory)) {
+      setValue("category", categories[0], { shouldValidate: true });
+    }
+  }, [rawCategory, setValue]);
   const slotsLeft = MAX_IMAGES - imageUrls.length;
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -55,14 +64,24 @@ export function ProductFormFields({
     <div className="space-y-6">
       <div className="grid gap-6 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="name">Product Name</Label>
+          <Label htmlFor="name">Product Name (English)</Label>
           <Input id="name" placeholder="e.g. Ayurvedic Weight Gainer" {...register("name")} />
           <FieldError message={errors.name?.message as string} />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="title">Product Title</Label>
+          <Label htmlFor="nameHi" className="text-emerald-800 font-semibold">Product Name (Hindi / हिंदी)</Label>
+          <Input id="nameHi" placeholder="उदा. आयुर्वेदिक वेट गेनर" {...register("nameHi")} />
+          <FieldError message={errors.nameHi?.message as string} />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="title">Product Title (English)</Label>
           <Input id="title" placeholder="Short marketing title" {...register("title")} />
           <FieldError message={errors.title?.message as string} />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="titleHi" className="text-emerald-800 font-semibold">Product Title (Hindi / हिंदी)</Label>
+          <Input id="titleHi" placeholder="उदा. शक्ति और ऊर्जा के लिए" {...register("titleHi")} />
+          <FieldError message={errors.titleHi?.message as string} />
         </div>
         <div className="space-y-2">
           <Label htmlFor="price">Price (₹)</Label>
@@ -88,15 +107,27 @@ export function ProductFormFields({
         </div>
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="description">Description</Label>
-        <Textarea
-          id="description"
-          className="h-[140px]"
-          placeholder="What is this product, and why should someone buy it?"
-          {...register("description")}
-        />
-        <FieldError message={errors.description?.message as string} />
+      <div className="grid gap-6 sm:grid-cols-2">
+        <div className="space-y-2">
+          <Label htmlFor="description">Description (English)</Label>
+          <Textarea
+            id="description"
+            className="h-[140px]"
+            placeholder="What is this product, and why should someone buy it?"
+            {...register("description")}
+          />
+          <FieldError message={errors.description?.message as string} />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="descriptionHi" className="text-emerald-800 font-semibold">Description (Hindi / हिंदी)</Label>
+          <Textarea
+            id="descriptionHi"
+            className="h-[140px]"
+            placeholder="उत्पाद का विवरण हिंदी में दर्ज करें..."
+            {...register("descriptionHi")}
+          />
+          <FieldError message={errors.descriptionHi?.message as string} />
+        </div>
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2">

@@ -89,15 +89,16 @@ export default function CategoryProductGrid({
         {/* Grid */}
         {!loading && products.length > 0 && (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {products.map((product) => {
+            {products.map((product, idx) => {
+              const prodId = product.id || (product as any)._id || idx;
               const inStock = !!product.inStock && product.inStock > 0;
               const displayPrice = product.discountPrice ?? product.price;
               const image = product.galleryImages?.[0] ?? "/tulsiveda-logo.png";
 
               return (
                 <Link
-                  key={product.id}
-                  href={inStock ? `/shop/${product.id}` : "#"}
+                  key={prodId}
+                  href={inStock ? `/shop/${prodId}` : "#"}
                   className={cn(!inStock && "pointer-events-none")}
                 >
                   <Card
@@ -130,9 +131,9 @@ export default function CategoryProductGrid({
 
                     {/* CONTENT */}
                     <CardContent className="pt-4">
-                      <h3 className="text-lg font-semibold">{translateText(product.name)}</h3>
+                      <h3 className="text-lg font-semibold">{translateText(product.name, (product as any).nameHi)}</h3>
                       <p className="mt-2 text-sm text-muted-foreground line-clamp-3">
-                        {translateText(product.description)}
+                        {translateText(product.description, (product as any).descriptionHi)}
                       </p>
                     </CardContent>
 

@@ -6,11 +6,18 @@ export const GET = async () => {
 
   try {
     const response = await Product.find({});
-    return Response.json({
-      response,
-      message: "Successfully fetched products",
-      status: 200,
-    });
+    return Response.json(
+      {
+        response,
+        message: "Successfully fetched products",
+        status: 200,
+      },
+      {
+        headers: {
+          "Cache-Control": "no-store, max-age=0, must-revalidate",
+        },
+      }
+    );
   } catch (error) {
     return Response.json({
       error,

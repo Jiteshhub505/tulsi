@@ -68,15 +68,6 @@ const Features = () => {
     <section className="pt-10 w-full pb-2">
       <div className="w-full">
         <NewArrivalMarquee />
-        {/* Section Title */}
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 pt-10 pb-4">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">
-            {t("Veda Shakti: Premium Ayurvedic Ingredients")}
-          </h2>
-          <p className="mt-2 text-slate-500 text-sm md:text-base">
-            {t("A powerful blend of ancient Ayurvedic herbs, crafted for modern wellness.")}
-          </p>
-        </div>
 
         <img
           className="w-full object-contain"

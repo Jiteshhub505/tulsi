@@ -1,26 +1,28 @@
 import * as z from "zod";
 
 export const categories = [
-  "Uncategorized",
+  "Digestion",
   "Health & Fitness",
-  "Suppliments",
-  "Skin",
-  "Hygiene",
+  "Stamina and Power",
+  "Health Disease",
 ] as const;
 
 export const form = ["powder", "capsule", "tablet", "liquid"] as const;
 
 export const productSchema = z.object({
   name: z.string().min(4, "Name is required"),
+  nameHi: z.string().optional(),
   title: z.string().min(10, "Title must be atleas 10 words"),
+  titleHi: z.string().optional(),
   price: z.number().min(0, "Price is required"),
 
   discountPrice: z.number().positive().optional(),
 
   description: z.string().min(50, "Description is required"),
+  descriptionHi: z.string().optional(),
   stock: z.number().min(0, "Stock cannot be negative"),
 
-  category: z.enum(categories).default("Uncategorized"),
+  category: z.enum(categories).default("Digestion"),
   form: z.enum(form).default("capsule"),
 
   inStock: z.number().default(1),
@@ -51,11 +53,14 @@ export type ProductInput = z.infer<typeof productSchema>;
 // 4, enforced in the form itself rather than via zod).
 export const simpleProductSchema = z.object({
   name: z.string().min(2, "Name is required"),
+  nameHi: z.string().optional(),
   title: z.string().min(4, "Title is required"),
+  titleHi: z.string().optional(),
   price: z.number().min(0, "Price is required"),
   discountPrice: z.number().min(0).optional(),
   description: z.string().min(10, "Description is required"),
-  category: z.enum(categories).default("Uncategorized"),
+  descriptionHi: z.string().optional(),
+  category: z.enum(categories).default("Digestion"),
   inStock: z.number().min(0, "Stock cannot be negative").default(1),
 });
 

@@ -290,19 +290,7 @@ export const Header = () => {
               <span>{language === "en" ? "हिन्दी" : "English"}</span>
             </button>
 
-            {/* Wishlist */}
-            <Link
-              href="/favorites"
-              className="text-slate-600 hover:text-emerald-700 transition-colors p-1 relative"
-              aria-label="Wishlist"
-            >
-              <Heart size={20} />
-              {favoritesCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-rose-500 text-white rounded-full text-[9px] size-3.5 flex items-center justify-center font-bold">
-                  {favoritesCount}
-                </span>
-              )}
-            </Link>
+
 
             {/* Cart — Sheet drawer for ALL screen sizes */}
             <Sheet>

@@ -11,7 +11,7 @@ import { ArrowLeft, Loader2 } from "lucide-react";
 
 import type { ProductType } from "../../page";
 import SkeletonCard from "@/app/(profile)/profile/components/Skeleton";
-import { simpleProductSchema } from "@/validations/productValidation";
+import { categories, simpleProductSchema } from "@/validations/productValidation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProductFormFields } from "@/components/admin/ProductFormFields";
@@ -48,13 +48,19 @@ export default function EditProductPage() {
   useEffect(() => {
     if (!product) return;
     setImageUrls(product.galleryImages ?? []);
+    const validCat = (categories as readonly string[]).includes(product.category)
+      ? product.category
+      : categories[0];
     reset({
       name: product.name,
+      nameHi: (product as any).nameHi ?? "",
       title: product.title,
+      titleHi: (product as any).titleHi ?? "",
       price: product.price,
       discountPrice: product.discountPrice ?? undefined,
       description: product.description,
-      category: product.category,
+      descriptionHi: (product as any).descriptionHi ?? "",
+      category: validCat,
       inStock: product.inStock ?? 0,
     });
   }, [product, reset]);

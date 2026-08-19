@@ -8,7 +8,7 @@ interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
   t: (key: string) => string;
-  translateText: (text: string | null | undefined) => string;
+  translateText: (text: string | null | undefined, altHi?: string | null) => string;
 }
 
 const uiTranslations: Record<string, Record<Language, string>> = {
@@ -26,6 +26,8 @@ const uiTranslations: Record<string, Record<Language, string>> = {
     hi: "आपकी त्वचा, बाल, स्वास्थ्य और दैनिक ऊर्जा के लिए आवश्यक सब कुछ।",
   },
   "Our Best Sellers": { en: "Our Best Sellers", hi: "हमारे बेस्ट सेलर्स" },
+  "Explore Products": { en: "Explore Products", hi: "उत्पाद देखें" },
+  "Shop Top Ayurveda Formulas": { en: "Shop Top Ayurveda Formulas", hi: "सर्वश्रेष्ठ आयुर्वेदिक फॉर्मूले खरीदें" },
   "Best Sellers Subtitle": {
     en: "Premium quality formulations crafted from time-tested Ayurvedic ingredients.",
     hi: "समय की कसौटी पर खरे उतरे आयुर्वेदिक घटकों से निर्मित प्रीमियम गुणवत्ता।",
@@ -34,6 +36,7 @@ const uiTranslations: Record<string, Record<Language, string>> = {
   // Wavy & Promo Banners
   "100% Ayurvedic & Natural Products": { en: "100% Ayurvedic & Natural Products", hi: "100% आयुर्वेदिक और प्राकृतिक उत्पाद" },
   "Pure Ingredients, Time-Tested Formulations": { en: "Pure Ingredients, Time-Tested Formulations", hi: "शुद्ध घटक, समय सिद्ध फॉर्मूले" },
+  "GET UPTO 25% OFF": { en: "GET UPTO 25% OFF", hi: "25% तक की छूट पाएं" },
   "FLAT 25% OFF ON YOUR FIRST ORDER": { en: "FLAT 25% OFF ON YOUR FIRST ORDER", hi: "अपने पहले ऑर्डर पर फ्लैट 25% की छूट पाएं" },
   "Use Code: TULSI25 at checkout to claim your discount. Limited time offer!": {
     en: "Use Code: TULSI25 at checkout to claim your discount. Limited time offer!",
@@ -405,16 +408,17 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     return key;
   };
 
-  const translateText = (text: string | null | undefined): string => {
-    if (!text) return "";
+  const translateText = (text: string | null | undefined, altHi?: string | null): string => {
     if (language === "hi") {
+      if (altHi && altHi.trim()) return altHi.trim();
+      if (!text) return "";
       const trimmed = text.trim();
       if (knownTextTranslations[trimmed]) return knownTextTranslations[trimmed];
       if (knownTextTranslations[text]) return knownTextTranslations[text];
       if (uiTranslations[trimmed]) return uiTranslations[trimmed].hi || trimmed;
       if (uiTranslations[text]) return uiTranslations[text].hi || text;
     }
-    return text;
+    return text || "";
   };
 
   return (
