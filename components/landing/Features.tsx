@@ -1,3 +1,5 @@
+"use client";
+
 import {
   BatteryCharging,
   Flame,
@@ -18,59 +20,50 @@ import Integrations from "./Integrations";
 import NewArrivalMarquee from "./NewArrivalMarquee";
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
+import { useLanguage } from "@/context/language-context";
 
 interface Feature {
-  heading: string;
-  description: string;
+  headingKey: string;
+  descriptionKey: string;
   icon: React.ReactNode;
 }
 
-interface Feature43Props {
-  title?: string;
-  features?: Feature[];
-}
+const defaultFeatures: Feature[] = [
+  {
+    headingKey: "Ashwagandha",
+    descriptionKey: "Ashwagandha Desc",
+    icon: <BatteryCharging className="size-6" />,
+  },
+  {
+    headingKey: "Amla Extract",
+    descriptionKey: "Amla Desc",
+    icon: <ShieldCheck className="size-6" />,
+  },
+  {
+    headingKey: "Gokshura",
+    descriptionKey: "Gokshura Desc",
+    icon: <Flame className="size-6" />,
+  },
+  {
+    headingKey: "Pippali",
+    descriptionKey: "Pippali Desc",
+    icon: <HeartPulse className="size-6" />,
+  },
+  {
+    headingKey: "Kaunch Beej",
+    descriptionKey: "Kaunch Beej Desc",
+    icon: <Activity className="size-6" />,
+  },
+  {
+    headingKey: "100% Natural",
+    descriptionKey: "Natural Formula Desc",
+    icon: <Leaf className="size-6" />,
+  },
+];
 
-const Features = ({
-  title = "Veda Shakti: Premium Ayurvedic Ingredients",
-  features = [
-    {
-      heading: "Ashwagandha",
-      description:
-        "Reduces stress and daily fatigue while supporting optimal muscle growth. Helps maintain healthy cortisol levels for better endurance.",
-      icon: <BatteryCharging className="size-6" />,
-    },
-    {
-      heading: "Amla Extract",
-      description:
-        "Boosts immunity and improves digestion with natural Vitamin C. Supports cellular health and enhances your body's natural defense.",
-      icon: <ShieldCheck className="size-6" />,
-    },
-    {
-      heading: "Gokshura",
-      description:
-        "Supports active muscle growth and boosts overall vitality. Rejuvenates the body to increase energy and healthy physical performance.",
-      icon: <Flame className="size-6" />,
-    },
-    {
-      heading: "Pippali",
-      description:
-        "Enhances healthy appetite and maximizes nutrient absorption. Stimulates metabolism to help your body efficiently process nutrients.",
-      icon: <HeartPulse className="size-6" />,
-    },
-    {
-      heading: "Kaunch Beej",
-      description:
-        "Helps in rapid muscle recovery and increases energy and stamina. A natural strength booster that supports nervous system function.",
-      icon: <Activity className="size-6" />,
-    },
-    {
-      heading: "100% Natural",
-      description:
-        "30 capsules of pure Ayurvedic formulation with no synthetic additives. Rigorously tested for maximum purity and effectiveness.",
-      icon: <Leaf className="size-6" />,
-    },
-  ],
-}: Feature43Props) => {
+const Features = () => {
+  const { t, translateText } = useLanguage();
+
   return (
     <section className="pt-10 w-full pb-2">
       <div className="w-full">
@@ -78,10 +71,10 @@ const Features = ({
         {/* Section Title */}
         <div className="mx-auto max-w-7xl px-4 sm:px-6 pt-10 pb-4">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">
-            {title}
+            {t("Veda Shakti: Premium Ayurvedic Ingredients")}
           </h2>
           <p className="mt-2 text-slate-500 text-sm md:text-base">
-            A powerful blend of ancient Ayurvedic herbs, crafted for modern wellness.
+            {t("A powerful blend of ancient Ayurvedic herbs, crafted for modern wellness.")}
           </p>
         </div>
 
@@ -91,16 +84,14 @@ const Features = ({
           alt="Ayurvedic ingredients and Veda Shakti product"
         />
 
-        {/* <Integrations /> */}
-
         <div className="mx-auto max-w-7xl px-4 sm:px-6 grid gap-0 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          {features.map((feature, i) => (
+          {defaultFeatures.map((feature, i) => (
             <div key={i} className="flex flex-col bg-white dark:bg-zinc-900 p-8 border border-zinc-100 dark:border-zinc-800 transition-all hover:shadow-md hover:z-10">
               <div className="bg-primary/10 text-primary mb-4 flex size-12 items-center justify-center rounded-full">
                 {feature.icon}
               </div>
-              <h3 className="mb-2 text-lg font-bold text-zinc-900 dark:text-zinc-100">{feature.heading}</h3>
-              <p className="text-muted-foreground leading-relaxed text-sm">{feature.description}</p>
+              <h3 className="mb-2 text-lg font-bold text-zinc-900 dark:text-zinc-100">{t(feature.headingKey)}</h3>
+              <p className="text-muted-foreground leading-relaxed text-sm">{t(feature.descriptionKey)}</p>
             </div>
           ))}
         </div>
@@ -110,7 +101,7 @@ const Features = ({
           <Link href="/shop/148c338c-bf9f-49c2-8c86-1fda31b15a88">
             <button className="inline-flex items-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-8 py-4 rounded-xl shadow-lg shadow-emerald-700/20 transition-all duration-300 hover:-translate-y-0.5 cursor-pointer text-sm tracking-wide">
               <ShoppingBag size={18} />
-              Shop Veda Shakti
+              {t("Shop Veda Shakti")}
             </button>
           </Link>
         </div>
@@ -120,3 +111,4 @@ const Features = ({
 };
 
 export default Features;
+

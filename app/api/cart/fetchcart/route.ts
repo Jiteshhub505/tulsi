@@ -6,11 +6,12 @@ import { authOptions } from "../../auth/[...nextauth]/route";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
-  await connectDB();
-  const session = await getServerSession(authOptions);
-  //@ts-ignore
-  const userId = session?.user?.id || GUEST_USER_ID;
   try {
+    await connectDB();
+    const session = await getServerSession(authOptions);
+    //@ts-ignore
+    const userId = session?.user?.id || GUEST_USER_ID;
+
     // Ensure guest user exists
     const guestUser = await User.findById(GUEST_USER_ID);
     if (!guestUser) {
@@ -24,7 +25,7 @@ export async function GET(req: Request) {
 
     const existingCart = await Cart.findOne({ userId, status: "active" });
     if (!existingCart)
-      return NextResponse.json({ error: "No cart exists", success: false });
+      return NextResponse.json({ items: [], success: true });
 
     const cartId = existingCart.id;
     const cartItems = await CartItem.find({ cartId });
@@ -49,10 +50,9 @@ export async function GET(req: Request) {
     return NextResponse.json({ items, status: 200, success: true });
   } catch (error) {
     return NextResponse.json({
-      error,
-      message: "Internal server error",
-      status: 500,
-      success: false,
+      items: [],
+      success: true,
     });
   }
 }
+

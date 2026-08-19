@@ -1,7 +1,12 @@
+"use client";
+
 import { Logo } from "@/components/landing/logo";
 import Link from "next/link";
+import { useLanguage } from "@/context/language-context";
 
 export default function Footer() {
+  const { t } = useLanguage();
+
   return (
     <footer className="py-4 bg-white dark:bg-zinc-950 border-t border-zinc-100 dark:border-zinc-900 w-full">
       <div className="mx-auto max-w-5xl px-6">
@@ -57,7 +62,7 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-4 pt-4 border-t border-zinc-100 flex flex-col sm:flex-row items-center justify-between gap-1 text-xs text-muted-foreground">
-          <span>© {new Date().getFullYear()} TulsiVeda. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} TulsiVeda. {t("All Rights Reserved.")}</span>
           <span>
             build by{" "}
             <a

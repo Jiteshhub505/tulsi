@@ -2,18 +2,23 @@ import connectDB from "@/db/mongoose";
 import { Product } from "@/db/models";
 import { NextResponse } from "next/server";
 
+const DEFAULT_CATEGORIES = [
+  "Digestion",
+  "Health & Fitness",
+  "Stamina and Power",
+  "Health Disease",
+];
+
 export async function GET() {
-  await connectDB();
-
   try {
+    await connectDB();
     const categories = await Product.distinct("category");
-
-    return NextResponse.json({ success: true, categories });
+    if (categories && categories.length > 0) {
+      return NextResponse.json({ success: true, categories });
+    }
+    return NextResponse.json({ success: true, categories: DEFAULT_CATEGORIES });
   } catch (error) {
     console.error("Error getting product categories:", error);
-    return NextResponse.json(
-      { success: false, message: "Failed to fetch categories" },
-      { status: 500 },
-    );
+    return NextResponse.json({ success: true, categories: DEFAULT_CATEGORIES });
   }
 }

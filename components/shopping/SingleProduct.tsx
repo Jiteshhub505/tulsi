@@ -21,6 +21,7 @@ import { Star, Check, Shield, Heart } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { isFavorite, toggleFavorite } from "@/lib/favorites";
+import { useLanguage } from "@/context/language-context";
 
 // ---------------- TYPES ----------------
 export type Product = {
@@ -47,6 +48,8 @@ export type Product = {
 // ---------------- COMPONENT ----------------
 export default function SingleProduct({ id }: { id: string }) {
   const { status } = useSession();
+  const { t, translateText } = useLanguage();
+  const router = useRouter();
 
   const {
     data: product,
@@ -81,8 +84,6 @@ export default function SingleProduct({ id }: { id: string }) {
 
   const selectedImage = product?.galleryImages?.[0] ?? "";
 
-  const router = useRouter();
-
   // ---------------- STATES ----------------
   const [activeImage, setActiveImage] = useState<string>("");
   const [quantity, setQuantity] = useState(1);
@@ -102,60 +103,65 @@ export default function SingleProduct({ id }: { id: string }) {
     };
     window.addEventListener("favorites-updated", handleUpdate);
     return () => window.removeEventListener("favorites-updated", handleUpdate);
-  }, [product?.id]);
+  }, [product]);
 
-  const handleFavClick = () => {
-    if (!product) return;
-    const added = toggleFavorite(product.id);
-    if (added) {
-      toast.success("Added to favorites");
-    } else {
-      toast.success("Removed from favorites");
+  const handleFavClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (product) {
+      toggleFavorite(product.id);
     }
   };
 
   const handleAddToBag = async () => {
-    if (!product) return;
+    if (status !== "authenticated") {
+      toast.error("Please login to add products to cart");
+      router.push("/auth/signin");
+      return;
+    }
+
     setIsAdding(true);
     try {
       const response = await axios.post("/api/cart/addtocart", {
-        productId: product.id,
-        quantity: quantity,
+        productId: product?.id,
+        quantity,
       });
 
       if (response.data.success) {
-        toast.success(`Successfully added ${quantity} ${quantity > 1 ? "items" : "item"} to your bag!`);
-        // Notify other components (Header, CartDrawer, etc.)
+        toast.success("Added to cart!");
         window.dispatchEvent(new Event("cart-updated"));
       } else {
-        toast.error(response.data.message || "Failed to add to bag");
+        toast.error("Failed to add to cart");
       }
     } catch (error) {
-      console.error(error);
-      toast.error("An error occurred while adding to bag");
+      toast.error("Error adding to cart");
     } finally {
       setIsAdding(false);
     }
   };
 
   const handleBuyNow = async () => {
-    if (!product) return;
+    if (status !== "authenticated") {
+      toast.error("Please login to proceed with purchase");
+      router.push("/auth/signin");
+      return;
+    }
+
     setIsAdding(true);
     try {
       const response = await axios.post("/api/cart/addtocart", {
-        productId: product.id,
-        quantity: quantity,
+        productId: product?.id,
+        quantity,
       });
 
       if (response.data.success) {
         window.dispatchEvent(new Event("cart-updated"));
-        router.push("/cart?checkout=true");
+        router.push("/cart");
       } else {
-        toast.error(response.data.message || "Failed to initiate buy now");
+        toast.error("Failed to add to cart");
       }
     } catch (error) {
-      console.error(error);
-      toast.error("An error occurred during buy now");
+      toast.error("Error processing request");
     } finally {
       setIsAdding(false);
     }
@@ -170,19 +176,8 @@ export default function SingleProduct({ id }: { id: string }) {
   // ---------------- LOADING / ERROR ----------------
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-stone-100 to-amber-50/30 p-10">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            <div className="space-y-4">
-              <div className="bg-stone-200 h-[600px] rounded-xl animate-pulse"></div>
-            </div>
-            <div className="space-y-6">
-              <div className="bg-stone-200 h-12 w-3/4 rounded animate-pulse"></div>
-              <div className="bg-stone-200 h-8 w-1/2 rounded animate-pulse"></div>
-              <div className="bg-stone-200 h-24 rounded animate-pulse"></div>
-            </div>
-          </div>
-        </div>
+      <div className="min-h-screen bg-gradient-to-br from-stone-100 to-amber-50/30 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-700"></div>
       </div>
     );
   }
@@ -210,9 +205,9 @@ export default function SingleProduct({ id }: { id: string }) {
           <div className="flex items-center gap-2 text-sm text-stone-600">
             <Link href="/" className="hover:text-stone-900 transition-colors">Home</Link>
             <span>/</span>
-            <Link href="/shop" className="hover:text-stone-900 transition-colors uppercase">{product.category}</Link>
+            <Link href="/shop" className="hover:text-stone-900 transition-colors uppercase">{t(product.category)}</Link>
             <span>/</span>
-            <span className="text-stone-900 font-medium">{product.name}</span>
+            <span className="text-stone-900 font-medium">{translateText(product.name)}</span>
           </div>
         </div>
       </div>
@@ -251,7 +246,7 @@ export default function SingleProduct({ id }: { id: string }) {
             >
               <Image
                 src={activeImage || selectedImage}
-                alt={product.name}
+                alt={translateText(product.name)}
                 fill
                 className="object-contain transition-transform duration-500 group-hover:scale-102"
                 priority
@@ -263,7 +258,7 @@ export default function SingleProduct({ id }: { id: string }) {
           <div className="space-y-6">
             {/* Title */}
             <h1 className="text-2xl sm:text-3xl font-bold text-stone-900 leading-tight">
-              {product.name}
+              {translateText(product.name)}
             </h1>
             
             {/* Rating */}
@@ -277,25 +272,25 @@ export default function SingleProduct({ id }: { id: string }) {
                   />
                 ))}
               </div>
-              <span className="text-sm text-stone-700">{rating} · {reviewCount.toLocaleString()} Reviews</span>
+              <span className="text-sm text-stone-700">{rating} · {reviewCount.toLocaleString()} {t("Customer Reviews")}</span>
             </div>
 
             {/* Sub-Title */}
             <p className="text-sm text-stone-600 leading-relaxed font-medium">
-              {product.title}
+              {translateText(product.title)}
             </p>
 
             {/* Trust Badges */}
             <div className="flex flex-wrap gap-x-6 gap-y-3 py-3 border-y border-stone-200">
-              <div className="flex items-center gap-2 text-xs text-stone-700">
+              <div className="flex items-center gap-2 text-xs text-stone-700 font-semibold">
                 <Shield size={16} className="text-emerald-700" />
                 <span>TRUSTED BY DOCTORS</span>
               </div>
-              <div className="flex items-center gap-2 text-xs text-stone-700">
+              <div className="flex items-center gap-2 text-xs text-stone-700 font-semibold">
                 <Check size={16} className="text-emerald-700" />
                 <span>EASY TO USE</span>
               </div>
-              <div className="flex items-center gap-2 text-xs text-stone-700">
+              <div className="flex items-center gap-2 text-xs text-stone-700 font-semibold">
                 <svg className="w-4 h-4 text-emerald-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
@@ -307,11 +302,7 @@ export default function SingleProduct({ id }: { id: string }) {
             {product.description && (
               <div className="space-y-2">
                 <div className={`text-sm text-stone-700 leading-relaxed transition-all duration-300 ${!isExpanded ? "line-clamp-3 overflow-hidden" : ""}`}>
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html: he.decode(product.description),
-                    }}
-                  />
+                  {translateText(he.decode(product.description))}
                 </div>
                 <button
                   onClick={() => setIsExpanded(!isExpanded)}
@@ -364,17 +355,17 @@ export default function SingleProduct({ id }: { id: string }) {
               <button 
                 disabled={isAdding || !product.inStock}
                 onClick={handleAddToBag}
-                className="flex-1 bg-emerald-50/50 hover:bg-emerald-100/50 border-2 border-emerald-700 disabled:bg-stone-100 disabled:border-stone-300 disabled:text-stone-400 disabled:cursor-not-allowed text-emerald-850 font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer text-sm"
+                className="flex-1 bg-emerald-50/50 hover:bg-emerald-100/50 border-2 border-emerald-700 disabled:bg-stone-100 disabled:border-stone-300 disabled:text-stone-400 disabled:cursor-not-allowed text-emerald-850 font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer text-sm uppercase"
               >
-                {isAdding ? "Adding..." : "ADD TO BAG"}
+                {isAdding ? t("Adding to Cart...") : t("Add to Cart")}
               </button>
 
               <button 
                 disabled={isAdding || !product.inStock}
                 onClick={handleBuyNow}
-                className="flex-1 bg-emerald-700 hover:bg-emerald-800 disabled:bg-stone-300 disabled:cursor-not-allowed disabled:shadow-none text-white font-bold py-4 rounded-xl transition-all shadow-md shadow-emerald-700/10 cursor-pointer flex items-center justify-center gap-2 text-sm"
+                className="flex-1 bg-emerald-700 hover:bg-emerald-800 disabled:bg-stone-300 disabled:cursor-not-allowed disabled:shadow-none text-white font-bold py-4 rounded-xl transition-all shadow-md shadow-emerald-700/10 cursor-pointer flex items-center justify-center gap-2 text-sm uppercase"
               >
-                {!product.inStock ? "OUT OF STOCK" : "BUY NOW"}
+                {!product.inStock ? t("Out of Stock") : t("Buy Now")}
               </button>
 
               <button 
@@ -394,7 +385,7 @@ export default function SingleProduct({ id }: { id: string }) {
 
         {/* Related Products Section */}
         <div className="mt-16">
-          <h2 className="text-2xl font-bold text-stone-900 mb-6">You May Also Like</h2>
+          <h2 className="text-2xl font-bold text-stone-900 mb-6">{t("Related Products")}</h2>
           {relatedLoading ? (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {[1, 2, 3, 4].map((item) => (
@@ -421,7 +412,7 @@ export default function SingleProduct({ id }: { id: string }) {
                     <div className="relative aspect-square bg-stone-100">
                       <Image
                         src={image}
-                        alt={relatedProduct.name}
+                        alt={translateText(relatedProduct.name)}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
                       />
@@ -433,7 +424,7 @@ export default function SingleProduct({ id }: { id: string }) {
                     </div>
                     <div className="p-3">
                       <h3 className="font-semibold text-sm text-stone-900 line-clamp-2 mb-2 group-hover:text-emerald-700 transition-colors">
-                        {relatedProduct.name}
+                        {translateText(relatedProduct.name)}
                       </h3>
                       <div className="flex items-center gap-2">
                         <span className="text-lg font-bold text-stone-900">
@@ -451,7 +442,7 @@ export default function SingleProduct({ id }: { id: string }) {
               })}
             </div>
           ) : (
-            <p className="text-stone-500 text-center py-8">No related products found</p>
+            <p className="text-stone-500 text-center py-8">{t("No products found")}</p>
           )}
         </div>
       </div>

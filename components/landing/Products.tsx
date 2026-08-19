@@ -7,6 +7,8 @@ import { ArrowRight, Star, Heart } from "lucide-react";
 import axios from "axios";
 import { getFavorites, toggleFavorite } from "@/lib/favorites";
 
+import { useLanguage } from "@/context/language-context";
+
 type Product = {
   id: string;
   name: string;
@@ -18,7 +20,51 @@ type Product = {
   isBestSeller?: boolean;
 };
 
+const DEFAULT_BEST_SELLERS: Product[] = [
+  {
+    id: "bs-1",
+    name: "Ayurvedic Fat Burner",
+    category: "Digestion",
+    price: 600,
+    discountPrice: 499,
+    inStock: 25,
+    galleryImages: ["/digestion.png"],
+    isBestSeller: true,
+  },
+  {
+    id: "bs-2",
+    name: "Ayurvedic Weight Gainer",
+    category: "Health & Fitness",
+    price: 600,
+    discountPrice: 499,
+    inStock: 25,
+    galleryImages: ["/health&fitness.png"],
+    isBestSeller: true,
+  },
+  {
+    id: "bs-3",
+    name: "Veda Shakti",
+    category: "Stamina and Power",
+    price: 1299,
+    discountPrice: 999,
+    inStock: 15,
+    galleryImages: ["/staminaandpower.png"],
+    isBestSeller: true,
+  },
+  {
+    id: "bs-4",
+    name: "Piles Care Formula",
+    category: "Health Disease",
+    price: 899,
+    discountPrice: 699,
+    inStock: 20,
+    galleryImages: ["/healthdisease.png"],
+    isBestSeller: true,
+  },
+];
+
 export default function Products() {
+  const { t, translateText } = useLanguage();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [favorites, setFavorites] = useState<string[]>([]);
@@ -39,10 +85,13 @@ export default function Products() {
           const displayProducts = response.data.products.filter(
             (p: Product) => p.isBestSeller && (p.inStock === null || p.inStock > 0)
           );
-          setProducts(displayProducts);
+          setProducts(displayProducts.length > 0 ? displayProducts : response.data.products.slice(0, 4));
+        } else {
+          setProducts(DEFAULT_BEST_SELLERS);
         }
       } catch (error) {
         console.error("Error fetching products:", error);
+        setProducts(DEFAULT_BEST_SELLERS);
       } finally {
         setLoading(false);
       }
@@ -51,9 +100,8 @@ export default function Products() {
     fetchProducts();
   }, []);
 
-  if (!loading && products.length === 0) {
-    return null;
-  }
+  const displayList = products.length > 0 ? products : DEFAULT_BEST_SELLERS;
+
 
   if (loading) {
     return (
@@ -61,10 +109,10 @@ export default function Products() {
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="text-center space-y-3 max-w-xl mx-auto">
             <h2 className="text-3xl md:text-4xl lg:text-[40px] font-bold tracking-tight text-slate-900">
-              Our Best Sellers
+              {t("Our Best Sellers")}
             </h2>
             <p className="text-slate-500 text-sm md:text-base font-medium">
-              Premium quality formulations crafted from time-tested Ayurvedic ingredients.
+              {t("Best Sellers Subtitle")}
             </p>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 md:gap-8">
@@ -91,16 +139,16 @@ export default function Products() {
         {/* Section Heading */}
         <div className="text-center space-y-3 max-w-xl mx-auto">
           <h2 className="text-3xl md:text-4xl lg:text-[40px] font-bold tracking-tight text-slate-900">
-            Our Best Sellers
+            {t("Our Best Sellers")}
           </h2>
           <p className="text-slate-500 text-sm md:text-base font-medium">
-            Premium quality formulations crafted from time-tested Ayurvedic ingredients.
+            {t("Best Sellers Subtitle")}
           </p>
         </div>
 
         {/* 4-Product Responsive Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 md:gap-8">
-          {products.map((product) => {
+          {displayList.map((product) => {
             const discount = product.discountPrice
               ? Math.round(((product.price - product.discountPrice) / product.price) * 100)
               : null;
@@ -117,7 +165,7 @@ export default function Products() {
                 <div className="relative aspect-square w-full overflow-hidden bg-slate-50">
                   <Image
                     src={image}
-                    alt={product.name}
+                    alt={translateText(product.name)}
                     fill
                     sizes="(max-width: 768px) 100vw, 25vw"
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -150,10 +198,10 @@ export default function Products() {
                 {/* Product Info */}
                 <div className="flex flex-col flex-1 p-3 sm:p-5 md:p-6">
                   <span className="text-xs font-medium text-emerald-600 uppercase tracking-wider mb-2">
-                    {product.category}
+                    {t(product.category)}
                   </span>
                   <h3 className="font-semibold text-slate-900 text-sm sm:text-lg group-hover:text-emerald-700 transition-colors leading-snug line-clamp-2 mb-2 sm:mb-3">
-                    {product.name}
+                    {translateText(product.name)}
                   </h3>
                   
                   {/* Pricing & CTA */}
@@ -183,3 +231,4 @@ export default function Products() {
     </section>
   );
 }
+

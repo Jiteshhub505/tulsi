@@ -6,28 +6,31 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 
+import { useLanguage } from "@/context/language-context";
+
 const slides = [
   {
     id: 1,
-    desktopImage: "/hero1.webp",
+    desktopImage: "/hero1img.png",
     mobileImage: "/herom1.webp",
     alt: "Veda Shakti - Natural Power, Stronger You",
   },
   {
     id: 2,
-    desktopImage: "/hero2_v2.webp",
+    desktopImage: "/hero2img.png",
     mobileImage: "/herom2_v2.webp",
     alt: "Piles Care - Relief, Comfort, Freedom",
   },
   {
     id: 3,
-    desktopImage: "/hero3.webp",
+    desktopImage: "/hero3img.png",
     mobileImage: "/herom3.webp",
     alt: "Pure Shilajit - Vitality and Vigor",
   },
 ];
 
 export default function Hero() {
+  const { t } = useLanguage();
   const [current, setCurrent] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -103,13 +106,13 @@ export default function Hero() {
           <div className="absolute left-1/2 -translate-x-1/2 md:left-[8%] md:translate-x-0 bottom-[48%] sm:bottom-[15%] md:bottom-[20%] flex flex-row items-center gap-3 sm:gap-4 md:gap-6 z-10 w-max">
             <Link href="/shop">
               <button className="group relative inline-flex items-center justify-center bg-[#7db73c] hover:bg-[#72a635] text-white font-semibold rounded-full shadow-[0_4px_12px_rgba(125,183,60,0.25)] hover:shadow-[0_6px_18px_rgba(125,183,60,0.35)] transition-all duration-300 transform active:scale-95 cursor-pointer text-xs xs:text-sm sm:text-sm md:text-base lg:text-lg py-2.5 xs:py-3 sm:py-2.5 md:py-3 lg:py-3.5 px-5 xs:px-7 sm:px-6 md:px-8 lg:px-10">
-                <span>Shop Now</span>
+                <span>{t("Shop Now")}</span>
                 <ArrowRight className="ml-1 sm:ml-2 group-hover:translate-x-1 transition-transform w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" />
               </button>
             </Link>
             <Link href="/shop">
               <button className="group inline-flex items-center justify-center border border-emerald-950/20 hover:border-emerald-950/40 text-emerald-950 font-semibold rounded-full hover:bg-emerald-900/5 transition-all duration-300 active:scale-95 cursor-pointer text-xs xs:text-sm sm:text-sm md:text-base lg:text-lg py-2.5 xs:py-3 sm:py-2.5 md:py-3 lg:py-3.5 px-5 xs:px-7 sm:px-6 md:px-8 lg:px-10">
-                <span>View All Products</span>
+                <span>{t("View All Products")}</span>
               </button>
             </Link>
           </div>

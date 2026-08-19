@@ -21,7 +21,10 @@ export type ProductType = {
   quantity: number;
 };
 
+import { useLanguage } from "@/context/language-context";
+
 export default function CartDrawer() {
+  const { t, translateText } = useLanguage();
   const [products, setProducts] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
@@ -121,9 +124,9 @@ export default function CartDrawer() {
       <SheetHeader className="pb-3 sm:pb-4">
         <SheetTitle className="text-xl font-bold flex items-center gap-2 text-zinc-900 dark:text-zinc-50">
           <ShoppingBag className="size-5 text-emerald-700" />
-          Your Cart
+          {t("Your Shopping Cart")}
           {products.length > 0 && (
-            <span className="ml-auto text-sm font-medium text-zinc-500">{products.length} item{products.length > 1 ? 's' : ''}</span>
+            <span className="ml-auto text-sm font-medium text-zinc-500">{products.length} {t("Items")}</span>
           )}
         </SheetTitle>
       </SheetHeader>
@@ -138,9 +141,9 @@ export default function CartDrawer() {
           <div className="rounded-full bg-zinc-50 dark:bg-zinc-900 p-4 border border-zinc-100 dark:border-zinc-800">
             <ShoppingBag className="size-8 text-zinc-400" />
           </div>
-          <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 text-lg">Your cart is empty</h3>
+          <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 text-lg">{t("Your cart is empty")}</h3>
           <p className="text-zinc-500 text-sm max-w-[240px]">
-            Add some premium Ayurvedic supplements to get started.
+            {t("Add some premium Ayurvedic supplements to get started.")}
           </p>
         </div>
       ) : (
@@ -157,14 +160,14 @@ export default function CartDrawer() {
                   <div className="size-20 sm:size-20 bg-white dark:bg-zinc-800 p-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 shrink-0">
                     <img
                       src={p.image[0]}
-                      alt={p.name}
+                      alt={translateText(p.name)}
                       className="w-full h-full object-contain"
                     />
                   </div>
 
                   <div className="flex-1 min-w-0 pr-6">
                     <h4 className="font-bold text-zinc-900 dark:text-zinc-50 text-sm line-clamp-2 leading-snug">
-                      {p.name}
+                      {translateText(p.name)}
                     </h4>
                     <div className="flex items-center gap-2 mt-1.5">
                       <span className="text-zinc-900 dark:text-zinc-50 font-bold text-base">
@@ -216,7 +219,7 @@ export default function CartDrawer() {
           <div className="pt-4 space-y-4 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50">
             <div className="space-y-1.5 text-sm font-medium text-zinc-500 dark:text-zinc-400">
               <div className="flex justify-between">
-                <span>Subtotal</span>
+                <span>{t("Subtotal")}</span>
                 <span className="text-zinc-900 dark:text-zinc-50 font-semibold">₹{subtotal}</span>
               </div>
               <div className="flex justify-between">
@@ -233,7 +236,7 @@ export default function CartDrawer() {
             <div className="pt-2">
               <Link href="/cart?checkout=true" className="w-full">
                 <Button className="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-semibold py-6 rounded-xl transition-all shadow-md cursor-pointer text-sm tracking-wider uppercase">
-                  Proceed to Checkout
+                  {t("Proceed to Checkout")}
                 </Button>
               </Link>
             </div>

@@ -4,28 +4,31 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { useLanguage } from "@/context/language-context";
 
 export default function Categories() {
+  const { t } = useLanguage();
+
   const categories = [
     {
-      name: "Hygiene",
-      image: "/cat_hygiene.png",
-      link: "/shop?category=Hygiene",
+      nameKey: "Digestion",
+      image: "/digestion.png",
+      link: "/shop?category=Digestion",
     },
     {
-      name: "Skin Care",
-      image: "/cat_skin_care.png",
-      link: "/shop?category=Skin",
-    },
-    {
-      name: "Supplements",
-      image: "/cat_supplements.png",
-      link: "/shop?category=Suppliments",
-    },
-    {
-      name: "Health & Fitness",
-      image: "/cat_health_fitness.png",
+      nameKey: "Health & Fitness",
+      image: "/health&fitness.png",
       link: "/shop?category=Health%20%26%20Fitness",
+    },
+    {
+      nameKey: "Stamina and Power",
+      image: "/staminaandpower.png",
+      link: "/shop?category=Stamina%20and%20Power",
+    },
+    {
+      nameKey: "Health Disease",
+      image: "/healthdisease.png",
+      link: "/shop?category=Health%20Disease",
     },
   ];
 
@@ -37,16 +40,16 @@ export default function Categories() {
           {/* Left Column: Heading and description */}
           <div className="flex flex-col items-center lg:items-start text-center lg:text-left max-w-md mx-auto lg:mx-0 pb-2 lg:pb-0">
             <h2 className="text-3xl md:text-4xl lg:text-[40px] font-bold text-slate-900 leading-tight tracking-tight mb-4">
-              Shop by Category
+              {t("Shop by Category")}
             </h2>
             <p className="text-slate-500 text-sm md:text-base leading-relaxed font-medium mb-6 lg:mb-8">
-              Everything you need for your best skin, hair, health, and daily energy days.
+              {t("Category Subtitle")}
             </p>
             <Link 
               href="/shop" 
               className="inline-flex items-center text-slate-900 font-bold text-sm md:text-base hover:text-emerald-800 transition-colors group cursor-pointer"
             >
-              <span>View All Products</span>
+              <span>{t("View All Products")}</span>
               <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
@@ -58,18 +61,18 @@ export default function Categories() {
                 <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl bg-slate-50 border border-slate-100/50 shadow-sm transition-all duration-500 group-hover:shadow-md group-hover:translate-y-[-2px]">
                   <Image
                     src={item.image}
-                    alt={item.name}
+                    alt={t(item.nameKey)}
                     fill
-                    sizes="(max-w-768px) 100vw, 25vw"
+                    sizes="(max-width: 768px) 100vw, 25vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>
                 <div className="mt-2 sm:mt-4 flex flex-col items-center lg:items-start text-center lg:text-left">
                   <h3 className="font-semibold text-sm sm:text-lg text-slate-900 group-hover:text-emerald-800 transition-colors">
-                    {item.name}
+                    {t(item.nameKey)}
                   </h3>
                   <span className="inline-flex items-center text-[10px] sm:text-xs font-bold text-emerald-800 tracking-wider uppercase mt-0.5 sm:mt-1">
-                    <span>Shop Now</span>
+                    <span>{t("Shop Now")}</span>
                     <ArrowRight size={10} className="ml-1 group-hover:translate-x-0.5 transition-transform" />
                   </span>
                 </div>
@@ -82,3 +85,4 @@ export default function Categories() {
     </section>
   );
 }
+

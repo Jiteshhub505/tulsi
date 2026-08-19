@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/context/language-context";
+
 
 type Testimonial = {
   name: string;
@@ -262,17 +264,18 @@ export default function Testimonial() {
     Math.ceil(visibleTestimonials.length / 3)
   );
 
+  const { t, translateText } = useLanguage();
+
   return (
     <section>
       <div className="pt-16 pb-8 md:pt-32 md:pb-16">
         <div className="mx-auto max-w-6xl px-6">
           <div className="text-center">
             <h2 className="text-3xl font-semibold">
-              Trusted by Fitness Enthusiasts
+              {t("What Our Customers Say")}
             </h2>
             <p className="mt-6">
-              Real feedback from people who’ve made consistency and discipline
-              part of their fitness journey.
+              {t("Testimonials Subtitle")}
             </p>
           </div>
           <div className="mt-8 grid gap-3 grid-cols-1 sm:grid-cols-2 md:mt-12 lg:grid-cols-3">
@@ -299,12 +302,12 @@ export default function Testimonial() {
                         <h3 className="font-medium">{name}</h3>
 
                         <span className="text-muted-foreground block text-sm tracking-wide">
-                          {role}
+                          {translateText(role)}
                         </span>
 
                         <blockquote className="mt-3">
                           <p className="text-gray-700 dark:text-gray-300">
-                            {quote}
+                            {translateText(quote)}
                           </p>
                         </blockquote>
                       </div>
@@ -318,7 +321,7 @@ export default function Testimonial() {
           {!showAll && (
             <div className="mt-10 flex justify-center">
               <Button onClick={() => setShowAll(true)} variant="outline">
-                View More ({testimonialsWithIndianPhotos.length} Reviews)
+                {t("View More")} ({testimonialsWithIndianPhotos.length} {t("Customer Reviews")})
               </Button>
             </div>
           )}

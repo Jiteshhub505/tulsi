@@ -2,14 +2,18 @@
 
 import React from "react";
 
+import { useLanguage } from "@/context/language-context";
+
 export default function WavyBanner() {
+  const { t } = useLanguage();
+
   const items = [
-    "Free Delivery All Over India",
-    "Fast Shipping",
-    "100% Natural",
-    "Clinically Trusted",
-    "Zero Chemical Additives",
-    "Premium Quality",
+    t("Free Delivery All Over India"),
+    t("Fast Shipping"),
+    t("100% Natural"),
+    t("Clinically Trusted"),
+    t("Zero Chemical Additives"),
+    t("Premium Quality"),
   ];
 
   return (

@@ -39,43 +39,64 @@ type Product = {
   goal: string[] | null;
 };
 
+import { useLanguage } from "@/context/language-context";
+
+
 // ─── Static category config ────────────────────────────────────────
 const CATEGORY_CONFIG: Record<
   string,
-  { label: string; icon: React.ReactNode; color: string; bg: string }
+  { labelKey: string; icon: React.ReactNode; color: string; bg: string }
 > = {
   All: {
-    label: "All Products",
+    labelKey: "All Products",
     icon: <Sparkles size={16} />,
     color: "text-emerald-700",
     bg: "bg-emerald-50",
   },
+  Digestion: {
+    labelKey: "Digestion",
+    icon: <Leaf size={16} />,
+    color: "text-emerald-700",
+    bg: "bg-emerald-50",
+  },
   "Health & Fitness": {
-    label: "Health & Fitness",
+    labelKey: "Health & Fitness",
     icon: <ShieldCheck size={16} />,
     color: "text-blue-700",
     bg: "bg-blue-50",
   },
+  "Stamina and Power": {
+    labelKey: "Stamina and Power",
+    icon: <Dumbbell size={16} />,
+    color: "text-purple-700",
+    bg: "bg-purple-50",
+  },
+  "Health Disease": {
+    labelKey: "Health Disease",
+    icon: <Droplets size={16} />,
+    color: "text-rose-700",
+    bg: "bg-rose-50",
+  },
   Suppliments: {
-    label: "Supplements",
+    labelKey: "Supplements",
     icon: <Dumbbell size={16} />,
     color: "text-purple-700",
     bg: "bg-purple-50",
   },
   Skin: {
-    label: "Skin Care",
+    labelKey: "Skin Care",
     icon: <Droplets size={16} />,
     color: "text-pink-700",
     bg: "bg-pink-50",
   },
   Hygiene: {
-    label: "Hygiene",
+    labelKey: "Hygiene",
     icon: <Leaf size={16} />,
     color: "text-teal-700",
     bg: "bg-teal-50",
   },
   Uncategorized: {
-    label: "Others",
+    labelKey: "Others",
     icon: <Tag size={16} />,
     color: "text-gray-700",
     bg: "bg-gray-50",
@@ -84,7 +105,10 @@ const CATEGORY_CONFIG: Record<
 
 // Category image map for the top category pills
 const CATEGORY_IMAGES: Record<string, string> = {
-  "Health & Fitness": "/mens_health.png",
+  Digestion: "/digestion.png",
+  "Health & Fitness": "/health&fitness.png",
+  "Stamina and Power": "/staminaandpower.png",
+  "Health Disease": "/healthdisease.png",
   Suppliments: "/gym_foods.png",
   Skin: "/skin_care.png",
   Hygiene: "/womens_health.png",
@@ -92,11 +116,11 @@ const CATEGORY_IMAGES: Record<string, string> = {
 };
 
 const SORT_OPTIONS = [
-  { value: "featured", label: "Featured" },
-  { value: "price-asc", label: "Price: Low to High" },
-  { value: "price-desc", label: "Price: High to Low" },
-  { value: "discount", label: "Best Discount" },
-  { value: "name", label: "Name A–Z" },
+  { value: "featured", labelKey: "Featured" },
+  { value: "price-asc", labelKey: "Price: Low to High" },
+  { value: "price-desc", labelKey: "Price: High to Low" },
+  { value: "discount", labelKey: "Best Discount" },
+  { value: "name", labelKey: "Name A–Z" },
 ];
 
 // ─── Skeleton card ─────────────────────────────────────────────────
@@ -120,6 +144,7 @@ function SkeletonCard() {
 import { isFavorite, toggleFavorite } from "@/lib/favorites";
 
 function ProductCard({ product }: { product: Product }) {
+  const { t, translateText } = useLanguage();
   const [fav, setFav] = useState(false);
 
   useEffect(() => {
@@ -156,7 +181,7 @@ function ProductCard({ product }: { product: Product }) {
       <div className="relative aspect-square w-full overflow-hidden bg-gradient-to-br from-stone-100 to-amber-100/30">
         <Image
           src={image}
-          alt={product.name}
+          alt={translateText(product.name)}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
           className="object-cover transition-transform duration-700 group-hover:scale-110"
@@ -187,7 +212,7 @@ function ProductCard({ product }: { product: Product }) {
         {product.inStock === 0 && (
           <div className="absolute inset-0 bg-white/70 backdrop-blur-[2px] flex items-center justify-center">
             <span className="text-sm font-semibold text-stone-700 bg-white px-4 py-2 rounded-lg shadow-sm">
-              Out of Stock
+              {t("Out of Stock")}
             </span>
           </div>
         )}
@@ -196,11 +221,11 @@ function ProductCard({ product }: { product: Product }) {
       {/* Info */}
       <div className="flex flex-col flex-1 p-4 bg-white">
         <span className={`text-[10px] font-medium uppercase tracking-wide mb-1.5 ${catConfig.color}`}>
-          {catConfig.label}
+          {t(catConfig.labelKey)}
         </span>
         
         <h3 className="font-semibold text-stone-800 text-sm group-hover:text-emerald-700 transition-colors leading-snug line-clamp-2 mb-2 min-h-[2.5rem]">
-          {product.name}
+          {translateText(product.name)}
         </h3>
 
         {/* Rating */}
@@ -235,6 +260,7 @@ function ProductCard({ product }: { product: Product }) {
 
 // ─── Main Page ──────────────────────────────────────────────────────
 function ShopPageContent() {
+  const { t } = useLanguage();
   const searchParams = useSearchParams();
   const categoryFromUrl = searchParams.get('category');
   
@@ -247,7 +273,6 @@ function ShopPageContent() {
   const [inStockOnly, setInStockOnly] = useState(false);
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   // Set category from URL parameter on mount
   useEffect(() => {
@@ -348,8 +373,19 @@ function ShopPageContent() {
     return list;
   }, [products, selectedCategory, search, priceRange, inStockOnly, sortBy]);
 
-  // All categories including "All"
-  const allCategories = ["All", ...categories.filter((c) => c !== "All")];
+  // Predefined primary revamp categories + any API returned categories
+  const primaryCategories = [
+    "Digestion",
+    "Health & Fitness",
+    "Stamina and Power",
+    "Health Disease",
+  ];
+  
+  const mergedCategories = Array.from(
+    new Set([...primaryCategories, ...categories])
+  );
+  
+  const allCategories = ["All", ...mergedCategories];
 
   // ─── Sidebar content ─────────────────────────────────────────────
   const SidebarContent = () => (
@@ -358,7 +394,7 @@ function ShopPageContent() {
       <div>
         <h3 className="text-sm font-bold text-stone-900 mb-3 flex items-center gap-2">
           <div className="w-1 h-5 bg-emerald-600 rounded-full" />
-          By Categories
+          {t("By Categories")}
         </h3>
         <div className="space-y-1">
           {allCategories.map((cat) => {
@@ -382,7 +418,8 @@ function ShopPageContent() {
                 }`}
               >
                 <span className="flex items-center gap-2">
-                  {config.label}
+                  {config.icon}
+                  {t(config.labelKey)}
                 </span>
                 <span className={`text-xs ${isActive ? "text-white/80" : "text-stone-400"}`}>
                   {count}
@@ -400,7 +437,7 @@ function ShopPageContent() {
       <div>
         <h3 className="text-sm font-bold text-stone-900 mb-3 flex items-center gap-2">
           <div className="w-1 h-5 bg-emerald-600 rounded-full" />
-          Price
+          {t("Price")}
         </h3>
         <div className="space-y-4">
           <input
@@ -435,7 +472,7 @@ function ShopPageContent() {
       <div>
         <h3 className="text-sm font-bold text-stone-900 mb-3 flex items-center gap-2">
           <div className="w-1 h-5 bg-emerald-600 rounded-full" />
-          Availability
+          {t("Availability")}
         </h3>
         <div className="space-y-2">
           <label className="flex items-center gap-2 cursor-pointer group">
@@ -446,16 +483,7 @@ function ShopPageContent() {
               className="w-4 h-4 rounded border-stone-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
             />
             <span className="text-sm text-stone-700 group-hover:text-emerald-700 transition-colors">
-              In Stock
-            </span>
-          </label>
-          <label className="flex items-center gap-2 cursor-pointer group">
-            <input
-              type="checkbox"
-              className="w-4 h-4 rounded border-stone-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
-            />
-            <span className="text-sm text-stone-700 group-hover:text-emerald-700 transition-colors">
-              Out of Stock
+              {t("In Stock")}
             </span>
           </label>
         </div>
@@ -476,7 +504,7 @@ function ShopPageContent() {
             className="w-full text-sm font-semibold text-emerald-700 hover:text-emerald-800 flex items-center justify-center gap-2 py-2 rounded-lg hover:bg-emerald-50 transition-all cursor-pointer"
           >
             <X size={14} />
-            Clear All
+            {t("Clear All")}
           </button>
         </>
       )}
@@ -493,7 +521,7 @@ function ShopPageContent() {
             <div className="sticky top-8 bg-white rounded-lg border border-stone-200 p-5">
               <div className="flex items-center gap-2 mb-6 pb-4 border-b border-stone-200">
                 <SlidersHorizontal size={18} className="text-emerald-600" />
-                <span className="font-bold text-stone-900">Filter Options</span>
+                <span className="font-bold text-stone-900">{t("Filter Options")}</span>
               </div>
               <SidebarContent />
             </div>
@@ -511,19 +539,19 @@ function ShopPageContent() {
                     className="lg:hidden flex items-center gap-2 px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-semibold hover:bg-emerald-800 transition-all cursor-pointer"
                   >
                     <Filter size={16} />
-                    Filters
+                    {t("Filters")}
                   </button>
 
                   {/* Result count */}
                   <span className="text-sm text-stone-600">
-                    Showing <span className="font-semibold text-stone-900">{filtered.length}</span> products
+                    {t("Showing")} <span className="font-semibold text-stone-900">{filtered.length}</span> {t("products")}
                   </span>
                 </div>
 
                 <div className="flex items-center gap-3">
                   {/* Sort */}
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-stone-600 hidden sm:block">Sort by:</span>
+                    <span className="text-sm text-stone-600 hidden sm:block">{t("Sort by:")}</span>
                     <div className="relative">
                       <select
                         value={sortBy}
@@ -532,7 +560,7 @@ function ShopPageContent() {
                       >
                         {SORT_OPTIONS.map((opt) => (
                           <option key={opt.value} value={opt.value}>
-                            {opt.label}
+                            {t(opt.labelKey)}
                           </option>
                         ))}
                       </select>
@@ -548,14 +576,16 @@ function ShopPageContent() {
               {/* Active filters chips */}
               {(selectedCategory !== "All" || inStockOnly || search) && (
                 <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-stone-200">
-                  <span className="text-xs text-stone-600 font-medium">Active Filter:</span>
+                  <span className="text-xs text-stone-600 font-medium">{t("Active Filter:")}</span>
                   {selectedCategory !== "All" && (
                     <span className="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-800 text-xs font-medium px-3 py-1 rounded-full border border-emerald-200">
                       {
-                        (
-                          CATEGORY_CONFIG[selectedCategory] ??
-                          CATEGORY_CONFIG["Uncategorized"]
-                        ).label
+                        t(
+                          (
+                            CATEGORY_CONFIG[selectedCategory] ??
+                            CATEGORY_CONFIG["Uncategorized"]
+                          ).labelKey
+                        )
                       }
                       <button
                         onClick={() => setSelectedCategory("All")}
@@ -567,7 +597,7 @@ function ShopPageContent() {
                   )}
                   {inStockOnly && (
                     <span className="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-800 text-xs font-medium px-3 py-1 rounded-full border border-emerald-200">
-                      In Stock
+                      {t("In Stock")}
                       <button
                         onClick={() => setInStockOnly(false)}
                         className="cursor-pointer hover:text-emerald-900"
@@ -595,7 +625,7 @@ function ShopPageContent() {
                     }}
                     className="text-xs text-stone-500 hover:text-emerald-700 font-medium underline cursor-pointer"
                   >
-                    Clear All
+                    {t("Clear All")}
                   </button>
                 </div>
               )}
@@ -615,10 +645,10 @@ function ShopPageContent() {
                 </div>
                 <div className="text-center">
                   <p className="text-lg font-semibold text-stone-900">
-                    No products found
+                    {t("No products found")}
                   </p>
                   <p className="text-sm text-stone-500 mt-1">
-                    Try adjusting your filters or search terms.
+                    {t("Try adjusting your filters or search terms.")}
                   </p>
                 </div>
                 <button
@@ -630,7 +660,7 @@ function ShopPageContent() {
                   }}
                   className="mt-2 px-6 py-2.5 bg-emerald-700 text-white text-sm font-semibold rounded-lg hover:bg-emerald-800 transition-all cursor-pointer"
                 >
-                  Clear All Filters
+                  {t("Clear All Filters")}
                 </button>
               </div>
             ) : (
@@ -657,7 +687,7 @@ function ShopPageContent() {
             <div className="flex items-center justify-between p-5 border-b border-stone-200 bg-emerald-700">
               <div className="flex items-center gap-2">
                 <SlidersHorizontal size={18} className="text-white" />
-                <span className="font-bold text-white">Filter Options</span>
+                <span className="font-bold text-white">{t("Filter Options")}</span>
               </div>
               <button
                 onClick={() => setSidebarOpen(false)}
@@ -672,6 +702,7 @@ function ShopPageContent() {
           </div>
         </div>
       )}
+
 
       <style jsx global>{`
         .no-scrollbar::-webkit-scrollbar {

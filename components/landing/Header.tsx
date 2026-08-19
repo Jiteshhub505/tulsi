@@ -10,6 +10,8 @@ import CartDrawer from "./CartDrawer";
 import axios from "axios";
 import { getFavorites } from "@/lib/favorites";
 
+import { useLanguage } from "@/context/language-context";
+
 // ── Mobile Drawer rendered via Portal so it escapes nav's stacking context ──
 function MobileDrawer({
   open,
@@ -19,6 +21,7 @@ function MobileDrawer({
   onClose: () => void;
 }) {
   const [mounted, setMounted] = useState(false);
+  const { language, setLanguage } = useLanguage();
 
   useEffect(() => {
     setMounted(true);
@@ -156,6 +159,31 @@ function MobileDrawer({
               {label}
             </Link>
           ))}
+
+          {/* Language Switcher in Mobile Drawer */}
+          <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid #e2e8f0" }}>
+            <button
+              onClick={() => setLanguage(language === "en" ? "hi" : "en")}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "8px",
+                width: "100%",
+                padding: "10px 16px",
+                borderRadius: "10px",
+                backgroundColor: "#ecfdf5",
+                color: "#047857",
+                fontWeight: 600,
+                fontSize: "14px",
+                border: "1px solid #a7f3d0",
+                cursor: "pointer",
+              }}
+            >
+              <span>🌐</span>
+              <span>{language === "en" ? "हिन्दी" : "English"}</span>
+            </button>
+          </div>
         </nav>
 
         {/* Bottom accent bar */}
@@ -175,6 +203,7 @@ function MobileDrawer({
 // ── Main Header ──────────────────────────────────────────────────────────────
 export const Header = () => {
   const { data: session, status } = useSession();
+  const { language, setLanguage, t } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   const [favoritesCount, setFavoritesCount] = useState(0);
@@ -250,7 +279,17 @@ export const Header = () => {
           </div>
 
           {/* Right: Actions */}
-          <div className="flex items-center gap-3 md:gap-5">
+          <div className="flex items-center gap-3 md:gap-4">
+            {/* Language Switcher Button (Desktop & Tablet) */}
+            <button
+              onClick={() => setLanguage(language === "en" ? "hi" : "en")}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-100/80 hover:bg-emerald-200/80 text-emerald-800 border border-emerald-200 transition-colors cursor-pointer"
+              aria-label="Switch Language"
+            >
+              <span>🌐</span>
+              <span>{language === "en" ? "हिन्दी" : "English"}</span>
+            </button>
+
             {/* Wishlist */}
             <Link
               href="/favorites"
@@ -292,3 +331,4 @@ export const Header = () => {
     </>
   );
 };
+
