@@ -81,11 +81,15 @@ export default function Products() {
       try {
         const response = await axios.get("/api/getproduct/all");
         if (response.data.success) {
+          const fetchedProducts = (response.data.products || []).map((p: any) => ({
+            ...p,
+            id: p.id || p._id,
+          }));
           // Filter products that are marked as best seller and in-stock
-          const displayProducts = response.data.products.filter(
+          const displayProducts = fetchedProducts.filter(
             (p: Product) => p.isBestSeller && (p.inStock === null || p.inStock > 0)
           );
-          setProducts(displayProducts.length > 0 ? displayProducts : response.data.products.slice(0, 4));
+          setProducts(displayProducts.length > 0 ? displayProducts : fetchedProducts.slice(0, 4));
         } else {
           setProducts(DEFAULT_BEST_SELLERS);
         }
@@ -148,7 +152,8 @@ export default function Products() {
 
         {/* 4-Product Responsive Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 md:gap-8">
-          {displayList.map((product) => {
+          {displayList.map((product, index) => {
+            const productId = product.id || (product as any)._id || `product-${index}`;
             const discount = product.discountPrice
               ? Math.round(((product.price - product.discountPrice) / product.price) * 100)
               : null;
@@ -157,8 +162,8 @@ export default function Products() {
             
             return (
               <Link 
-                key={product.id} 
-                href={`/shop/${product.id}`}
+                key={productId} 
+                href={`/shop/${productId}`}
                 className="group flex flex-col bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl hover:shadow-emerald-900/5 transition-all duration-300 hover:-translate-y-1"
               >
                 {/* Image Container */}
@@ -183,13 +188,13 @@ export default function Products() {
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      toggleFavorite(product.id);
+                      toggleFavorite(productId);
                     }}
                     className="absolute top-4 right-4 w-8 h-8 bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors shadow-sm cursor-pointer z-10"
                   >
                     <Heart
                       className={`w-4 h-4 transition-colors ${
-                        favorites.includes(product.id) ? "text-rose-500 fill-rose-500" : "text-stone-600"
+                        favorites.includes(productId) ? "text-rose-500 fill-rose-500" : "text-stone-600"
                       }`}
                     />
                   </button>

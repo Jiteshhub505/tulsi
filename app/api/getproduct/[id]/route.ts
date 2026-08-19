@@ -9,9 +9,13 @@ export async function GET(
   await connectDB();
 
   const { id } = await params;
+  const cacheHeaders = {
+    "Cache-Control": "public, max-age=60, stale-while-revalidate=300",
+  };
+
   try {
-    const product = await Product.findById(id);
-    return NextResponse.json({ product, success: true });
+    const product = await Product.findById(id).lean();
+    return NextResponse.json({ product, success: true }, { headers: cacheHeaders });
   } catch (error) {
     console.log("error getting products....", error);
     return NextResponse.json({ error, success: false });

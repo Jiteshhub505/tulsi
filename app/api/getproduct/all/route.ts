@@ -61,24 +61,28 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const category = searchParams.get("category");
 
+  const cacheHeaders = {
+    "Cache-Control": "public, max-age=60, stale-while-revalidate=300",
+  };
+
   try {
     await connectDB();
-    const products = await Product.find(category ? { category } : {});
+    const products = await Product.find(category ? { category } : {}).lean();
     
     if (products && products.length > 0) {
-      return NextResponse.json({ success: true, products });
+      return NextResponse.json({ success: true, products }, { headers: cacheHeaders });
     }
 
     const filteredFallback = category
       ? FALLBACK_PRODUCTS.filter((p) => p.category === category)
       : FALLBACK_PRODUCTS;
 
-    return NextResponse.json({ success: true, products: filteredFallback });
+    return NextResponse.json({ success: true, products: filteredFallback }, { headers: cacheHeaders });
   } catch (error) {
     console.error("Error fetching all products:", error);
     const filteredFallback = category
       ? FALLBACK_PRODUCTS.filter((p) => p.category === category)
       : FALLBACK_PRODUCTS;
-    return NextResponse.json({ success: true, products: filteredFallback });
+    return NextResponse.json({ success: true, products: filteredFallback }, { headers: cacheHeaders });
   }
 }

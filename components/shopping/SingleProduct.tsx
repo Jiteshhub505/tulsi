@@ -69,7 +69,9 @@ export default function SingleProduct({ id }: { id: string }) {
     queryKey: ["related-products", product?.category],
     queryFn: async () => {
       if (!product?.category) return [];
-      const response = await axios.get("/api/getproduct/all");
+      const response = await axios.get("/api/getproduct/all", {
+        params: { category: product.category },
+      });
       if (response.data.success) {
         // Filter products from same category, exclude current product, limit to 4
         return response.data.products
