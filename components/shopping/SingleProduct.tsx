@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import he from "he";
 import { useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import getproductdetails from "./actions/getproductdetals";
 import React, { useEffect, useState, Fragment } from "react";
@@ -528,6 +528,17 @@ export default function SingleProduct({ id, initialProduct }: { id: string; init
   const { status } = useSession();
   const { t, translateText } = useLanguage();
   const router = useRouter();
+  const queryClient = useQueryClient();
+
+  // Scroll to top instantly when opening a product
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }, [id]);
+
+  // Find product from global cache if available for 0ms transition
+  const cachedFromList = queryClient
+    .getQueryData<Product[]>(["all-products"])
+    ?.find((p: any) => (p.id || p._id) === id);
 
   const {
     data: product,
@@ -536,7 +547,7 @@ export default function SingleProduct({ id, initialProduct }: { id: string; init
   } = useQuery<Product>({
     queryKey: ["product", id],
     queryFn: () => getproductdetails(id),
-    initialData: initialProduct,
+    initialData: initialProduct || cachedFromList,
     staleTime: 5 * 60 * 1000,
   });
 
@@ -582,6 +593,7 @@ export default function SingleProduct({ id, initialProduct }: { id: string; init
   const [pincodeMsg, setPincodeMsg] = useState<string | null>(null);
   const [selectedPack, setSelectedPack] = useState(0);
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   useEffect(() => {
     if (product?.galleryImages?.length) {
@@ -652,23 +664,7 @@ export default function SingleProduct({ id, initialProduct }: { id: string; init
     }
   };
 
-  const [imageLoaded, setImageLoaded] = useState(false);
-
-  // Preload main hero image so full skeleton holds until image is 100% ready
-  const targetImage = activeImage || selectedImage;
-  useEffect(() => {
-    if (!targetImage || typeof window === "undefined") return;
-    const img = new window.Image();
-    img.src = targetImage;
-    if (img.complete) {
-      setImageLoaded(true);
-    } else {
-      img.onload = () => setImageLoaded(true);
-      img.onerror = () => setImageLoaded(true);
-    }
-  }, [targetImage]);
-
-  if (isLoading || !product || !imageLoaded) {
+  if (isLoading || !product) {
     return <SingleProductSkeleton />;
   }
 
