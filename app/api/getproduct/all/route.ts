@@ -57,12 +57,15 @@ const FALLBACK_PRODUCTS = [
   },
 ];
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const category = searchParams.get("category");
 
   const cacheHeaders = {
-    "Cache-Control": "public, max-age=60, s-maxage=300, stale-while-revalidate=600",
+    "Cache-Control": "no-store, max-age=0, must-revalidate",
   };
 
   try {

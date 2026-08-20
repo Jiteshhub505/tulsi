@@ -252,7 +252,9 @@ function ShopPageContent() {
       const res = await axios.get("/api/getproduct/all");
       return res.data.success ? res.data.products : [];
     },
-    staleTime: 10 * 60 * 1000,
+    staleTime: 0,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
 
   const { data: categories = [] } = useQuery<string[]>({
@@ -261,7 +263,8 @@ function ShopPageContent() {
       const res = await axios.get("/api/getproduct/getcategory");
       return res.data.success ? res.data.categories : [];
     },
-    staleTime: 10 * 60 * 1000,
+    staleTime: 0,
+    refetchOnMount: "always",
   });
 
   // Dynamic max price

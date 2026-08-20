@@ -2,6 +2,9 @@ import connectDB from "@/db/mongoose";
 import { Product } from "@/db/models";
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -10,7 +13,7 @@ export async function GET(
 
   const { id } = await params;
   const cacheHeaders = {
-    "Cache-Control": "public, max-age=60, s-maxage=300, stale-while-revalidate=600",
+    "Cache-Control": "no-store, max-age=0, must-revalidate",
   };
 
   try {

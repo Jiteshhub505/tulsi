@@ -85,16 +85,17 @@ export default function Products() {
           ...p,
           id: p.id || p._id,
         }));
-        // Include all in-stock products, newest first
         const inStockProducts = fetchedProducts.filter(
           (p: Product) => p.inStock === null || p.inStock > 0
         );
         const sortedList = [...inStockProducts].reverse();
         return sortedList.length > 0 ? sortedList : [...fetchedProducts].reverse();
       }
-      return DEFAULT_BEST_SELLERS;
+      return [];
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: 0,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
 
   const displayList = products.length > 0 ? products : DEFAULT_BEST_SELLERS;

@@ -522,7 +522,7 @@ function getCategoryRichContent(categoryName: string, productName: string) {
 }
 
 // ---------------- COMPONENT ----------------
-export default function SingleProduct({ id }: { id: string }) {
+export default function SingleProduct({ id, initialProduct }: { id: string; initialProduct?: any }) {
   const { status } = useSession();
   const { t, translateText } = useLanguage();
   const router = useRouter();
@@ -534,6 +534,7 @@ export default function SingleProduct({ id }: { id: string }) {
   } = useQuery<Product>({
     queryKey: ["product", id],
     queryFn: () => getproductdetails(id),
+    initialData: initialProduct,
     staleTime: 5 * 60 * 1000,
   });
 
