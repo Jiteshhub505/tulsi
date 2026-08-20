@@ -93,7 +93,8 @@ export default function Products() {
       }
       return [];
     },
-    staleTime: 0,
+    initialData: DEFAULT_BEST_SELLERS,
+    staleTime: 10 * 1000,
     refetchOnMount: "always",
     refetchOnWindowFocus: true,
   });

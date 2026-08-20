@@ -46,7 +46,7 @@ export default function HeroFIlterProducts() {
       }
       return [];
     },
-    staleTime: 0,
+    staleTime: 10 * 1000,
     refetchOnMount: "always",
     refetchOnWindowFocus: true,
   });
