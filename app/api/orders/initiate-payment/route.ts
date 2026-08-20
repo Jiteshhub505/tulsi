@@ -1,16 +1,11 @@
 import connectDB from "@/db/mongoose";
 import { Cart, CartItem, Product } from "@/db/models";
-import { GUEST_USER_ID, GUEST_USER_EMAIL } from "@/lib/constants";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getCartUserId } from "@/lib/cart/getCartUserId";
 import Razorpay from "razorpay";
 
 export const POST = async (req: Request) => {
   await connectDB();
-
-  const session = await getServerSession(authOptions);
-  //@ts-ignore
-  const userId = session?.user?.id || GUEST_USER_ID;
+  const userId = await getCartUserId();
 
   try {
     const body = await req.json().catch(() => ({}));

@@ -1,35 +1,10 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import connectDB from "@/db/mongoose";
-import { Cart, CartItem, Order, OrderItem, Product, User } from "@/db/models";
-import { getProductsById } from "@/lib/products/getProductsById";
-import { GUEST_USER_ID, GUEST_USER_EMAIL } from "@/lib/constants";
-import { getServerSession } from "next-auth";
+import { Cart, CartItem, Order, OrderItem, Product } from "@/db/models";
+import { getCartUserId } from "@/lib/cart/getCartUserId";
 
-/**
- * Places an order for the user's whole active cart.
- *
- * NOTE: Razorpay (and any real payment gateway) has been removed for now.
- * This marks the order as "paid" directly with no actual payment being
- * taken. Wire up a real payment provider before shipping this to
- * production.
- */
 export const POST = async (req: Request) => {
   await connectDB();
-
-  const session = await getServerSession(authOptions);
-  //@ts-ignore
-  const userId = session?.user?.id || GUEST_USER_ID;
-
-  // Ensure guest user exists
-  const guestUser = await User.findById(GUEST_USER_ID);
-  if (!guestUser) {
-    await User.create({
-      _id: GUEST_USER_ID,
-      name: "Guest User",
-      email: GUEST_USER_EMAIL,
-      role: "user",
-    });
-  }
+  const userId = await getCartUserId();
 
   try {
     const body = await req.json().catch(() => ({}));
@@ -40,7 +15,7 @@ export const POST = async (req: Request) => {
     if (!cart) {
       return Response.json({
         status: 404,
-        message: "Does not found Cart ID",
+        message: "Active cart not found",
         success: false,
       });
     }
