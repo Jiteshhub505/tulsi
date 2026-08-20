@@ -6,7 +6,7 @@ import { Plus, Minus, Trash2, Loader2, ShoppingBag } from "lucide-react";
 import axios from "axios";
 import { useDebouncedCallback } from "use-debounce";
 import PlaceOrderButton from "@/components/payment/PlaceOrderButton";
-import { SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { SheetContent, SheetHeader, SheetTitle, SheetClose } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -172,18 +172,24 @@ export default function CartDrawer() {
                   key={i}
                   className="flex gap-3 sm:gap-4 p-3 sm:p-3.5 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-100 dark:border-zinc-800 items-start relative group"
                 >
-                  <div className="size-20 sm:size-20 bg-white dark:bg-zinc-800 p-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 shrink-0">
-                    <img
-                      src={p.image[0]}
-                      alt={translateText(p.name)}
-                      className="w-full h-full object-contain"
-                    />
-                  </div>
+                  <SheetClose asChild>
+                    <Link href={`/shop/${p.productId}`} className="size-20 sm:size-20 bg-white dark:bg-zinc-800 p-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 shrink-0 block hover:opacity-90 transition-opacity">
+                      <img
+                        src={p.image[0]}
+                        alt={translateText(p.name)}
+                        className="w-full h-full object-contain"
+                      />
+                    </Link>
+                  </SheetClose>
 
                   <div className="flex-1 min-w-0 pr-6">
-                    <h4 className="font-bold text-zinc-900 dark:text-zinc-50 text-sm line-clamp-2 leading-snug">
-                      {translateText(p.name, (p as any).nameHi)}
-                    </h4>
+                    <SheetClose asChild>
+                      <Link href={`/shop/${p.productId}`} className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors">
+                        <h4 className="font-bold text-zinc-900 dark:text-zinc-50 text-sm line-clamp-2 leading-snug hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors">
+                          {translateText(p.name, (p as any).nameHi)}
+                        </h4>
+                      </Link>
+                    </SheetClose>
                     {p.quantity >= 2 && (
                       <span className="inline-block mt-1 text-[10px] font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-md">
                         🔥 10% Multi-Buy Discount
@@ -264,11 +270,13 @@ export default function CartDrawer() {
             </div>
 
             <div className="pt-2">
-              <Link href="/cart?checkout=true" className="w-full">
-                <Button className="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-semibold py-6 rounded-xl transition-all shadow-md cursor-pointer text-sm tracking-wider uppercase">
-                  {t("Proceed to Checkout")}
-                </Button>
-              </Link>
+              <SheetClose asChild>
+                <Link href="/cart?checkout=true" className="w-full">
+                  <Button className="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-semibold py-6 rounded-xl transition-all shadow-md cursor-pointer text-sm tracking-wider uppercase">
+                    {t("Proceed to Checkout")}
+                  </Button>
+                </Link>
+              </SheetClose>
             </div>
           </div>
         </>

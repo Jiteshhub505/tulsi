@@ -28,11 +28,12 @@ interface Feature {
 }
 
 const CAROUSEL_IMAGES = [
-  "/image-tul.png",
-  "/new2.png",
-  "/new3.png",
-  "/new4.png",
-  "/new5.png",
+  "/f1.png",
+  "/f2.png",
+  "/f3.png",
+  "/f4.png",
+  "/f5.png",
+  "/f6.png",
 ];
 
 const defaultFeatures: Feature[] = [

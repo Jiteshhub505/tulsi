@@ -521,6 +521,84 @@ function getCategoryRichContent(categoryName: string, productName: string) {
   };
 }
 
+// ---------------- SKELETON ----------------
+function SingleProductSkeleton() {
+  return (
+    <div className="min-h-screen bg-stone-50/60 font-sans text-stone-900 pb-20 animate-pulse">
+      {/* Breadcrumb Skeleton */}
+      <div className="border-b border-stone-200/80 bg-white/90 py-3 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto flex items-center gap-2">
+          <div className="h-4 w-12 bg-stone-200 rounded" />
+          <div className="h-4 w-3 bg-stone-200 rounded" />
+          <div className="h-4 w-20 bg-stone-200 rounded" />
+          <div className="h-4 w-3 bg-stone-200 rounded" />
+          <div className="h-4 w-32 bg-stone-200 rounded" />
+        </div>
+      </div>
+
+      {/* Main Product Hero Skeleton */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+          {/* Left Column: Gallery Thumbnails & Big Image */}
+          <div className="lg:col-span-6 flex flex-col-reverse md:flex-row gap-4 items-start w-full">
+            <div className="flex md:flex-col gap-2.5 shrink-0">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-stone-200" />
+              ))}
+            </div>
+            <div className="w-full aspect-square bg-stone-200 rounded-3xl" />
+          </div>
+
+          {/* Right Column: Product Info Skeleton */}
+          <div className="lg:col-span-6 flex flex-col gap-6">
+            <div className="space-y-3">
+              <div className="h-5 w-28 bg-emerald-100 rounded-full" />
+              <div className="h-8 w-4/5 bg-stone-200 rounded-lg" />
+              <div className="h-4 w-1/3 bg-stone-200 rounded" />
+            </div>
+
+            {/* Price Box Skeleton */}
+            <div className="p-4 bg-stone-100/80 rounded-2xl flex items-center justify-between">
+              <div className="h-8 w-28 bg-stone-200 rounded" />
+              <div className="h-6 w-20 bg-emerald-100 rounded-full" />
+            </div>
+
+            {/* Pack Selector Skeleton */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="h-20 bg-stone-200 rounded-2xl" />
+              <div className="h-20 bg-stone-200 rounded-2xl" />
+            </div>
+
+            {/* Quantity & CTA Buttons Skeleton */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <div className="h-14 w-full sm:w-32 bg-stone-200 rounded-2xl" />
+              <div className="h-14 flex-1 bg-stone-200 rounded-2xl" />
+              <div className="h-14 flex-1 bg-stone-300 rounded-2xl" />
+            </div>
+
+            {/* Badges Skeleton */}
+            <div className="grid grid-cols-3 gap-2 pt-2">
+              <div className="h-12 bg-stone-100 rounded-xl" />
+              <div className="h-12 bg-stone-100 rounded-xl" />
+              <div className="h-12 bg-stone-100 rounded-xl" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Customer Experiences Skeleton */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 py-12 space-y-6">
+        <div className="h-7 w-48 bg-stone-200 rounded" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="h-40 bg-stone-200 rounded-2xl" />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ---------------- COMPONENT ----------------
 export default function SingleProduct({ id, initialProduct }: { id: string; initialProduct?: any }) {
   const { status } = useSession();
@@ -650,15 +728,27 @@ export default function SingleProduct({ id, initialProduct }: { id: string; init
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-stone-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-700"></div>
-      </div>
-    );
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  // Preload main hero image so full skeleton holds until image is 100% ready
+  const targetImage = activeImage || selectedImage;
+  useEffect(() => {
+    if (!targetImage || typeof window === "undefined") return;
+    const img = new window.Image();
+    img.src = targetImage;
+    if (img.complete) {
+      setImageLoaded(true);
+    } else {
+      img.onload = () => setImageLoaded(true);
+      img.onerror = () => setImageLoaded(true);
+    }
+  }, [targetImage]);
+
+  if (isLoading || !product || !imageLoaded) {
+    return <SingleProductSkeleton />;
   }
 
-  if (isError || !product) {
+  if (isError) {
     return (
       <div className="min-h-screen bg-stone-50 flex items-center justify-center">
         <p className="text-stone-600 font-medium">Failed to load product details</p>
@@ -735,15 +825,21 @@ export default function SingleProduct({ id, initialProduct }: { id: string; init
               onClick={() => setIsZoomed(true)}
               className="relative w-full aspect-square bg-white rounded-3xl border border-stone-200/80 shadow-xs overflow-hidden flex items-center justify-center group cursor-zoom-in p-6"
             >
+              {!imageLoaded && (
+                <div className="absolute inset-0 bg-stone-100 animate-pulse rounded-3xl flex items-center justify-center">
+                  <div className="w-16 h-16 rounded-full bg-stone-200 animate-pulse" />
+                </div>
+              )}
               <Image
                 src={activeImage || selectedImage}
                 alt={translateText(product.name, product.nameHi)}
                 fill
                 priority
-                className="object-contain p-4 transition-transform duration-700 group-hover:scale-105"
+                onLoad={() => setImageLoaded(true)}
+                className={`object-contain p-4 transition-all duration-500 group-hover:scale-105 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
               />
               {discountPercent > 0 && (
-                <span className="absolute top-4 left-4 bg-emerald-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm">
+                <span className="absolute top-4 left-4 bg-emerald-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm z-10">
                   {discountPercent}% {t("OFF")}
                 </span>
               )}
@@ -972,7 +1068,54 @@ export default function SingleProduct({ id, initialProduct }: { id: string; init
         </div>
       </div>
 
-      {/* SECTION 2: Why It Works / Key Benefits */}
+      {/* SECTION 2: Customer Reviews / Experiences */}
+      <section className="py-16 px-4 sm:px-8 max-w-7xl mx-auto space-y-10 border-t border-stone-200">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-stone-200 pb-8">
+          <div>
+            <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-3.5 py-1 rounded-full">
+              {t("Verified Reviews")}
+            </span>
+            <h2 className="text-3xl font-extrabold text-stone-900 mt-3">{t("Customer Experiences")}</h2>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="text-center">
+              <div className="text-3xl font-extrabold text-stone-950">{rating}</div>
+              <div className="flex text-amber-500 justify-center">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} size={14} className="fill-amber-500" />
+                ))}
+              </div>
+            </div>
+            <div className="text-xs text-stone-500 font-semibold">
+              {t("Based on 2,450+ verified buyers")}
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {reviewsList.map((rev, idx) => (
+            <div key={idx} className="bg-white border border-stone-200 p-6 rounded-2xl space-y-3 shadow-xs">
+              <div className="flex items-center justify-between">
+                <div className="flex text-amber-500">
+                  {[...Array(rev.rating)].map((_, i) => (
+                    <Star key={i} size={14} className="fill-amber-500" />
+                  ))}
+                </div>
+                <span className="text-[11px] text-stone-400 font-medium">{rev.date}</span>
+              </div>
+              <p className="text-xs sm:text-sm text-stone-700 leading-relaxed italic">"{translateText(rev.comment)}"</p>
+              <div className="flex items-center gap-2 pt-2 border-t border-stone-100">
+                <span className="text-xs font-bold text-stone-900">{rev.name}</span>
+                <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">
+                  {t("Verified Buyer")}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* SECTION 3: Why It Works / Key Benefits */}
       <section className="bg-emerald-950 text-white py-16 px-4 sm:px-8 border-y border-emerald-900">
         <div className="max-w-7xl mx-auto text-center space-y-12">
           <div>
@@ -1028,7 +1171,7 @@ export default function SingleProduct({ id, initialProduct }: { id: string; init
         </div>
       </section>
 
-      {/* SECTION 3: Real Results Backed by User Studies */}
+      {/* SECTION 4: Real Results Backed by User Studies */}
       <section className="bg-white py-14 px-4 sm:px-8 border-b border-stone-200">
         <div className="max-w-6xl mx-auto space-y-8">
           <div>
@@ -1059,7 +1202,7 @@ export default function SingleProduct({ id, initialProduct }: { id: string; init
         </div>
       </section>
 
-      {/* SECTION 4: Herbal Ingredients & Composition Table (NO IMAGES) */}
+      {/* SECTION 5: Herbal Ingredients & Composition Table (NO IMAGES) */}
       <section className="py-16 px-4 sm:px-8 max-w-7xl mx-auto space-y-10">
         <div className="text-center max-w-2xl mx-auto space-y-1">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-stone-900 tracking-tight">
@@ -1177,7 +1320,7 @@ export default function SingleProduct({ id, initialProduct }: { id: string; init
         )}
       </section>
 
-      {/* SECTION 5: How To Use Step-by-Step */}
+      {/* SECTION 6: How To Use Step-by-Step */}
       <section className="bg-emerald-900/5 border-y border-emerald-900/10 py-16 px-4 sm:px-8">
         <div className="max-w-5xl mx-auto text-center space-y-12">
           <div>
@@ -1200,53 +1343,6 @@ export default function SingleProduct({ id, initialProduct }: { id: string; init
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* SECTION 6: Customer Reviews */}
-      <section className="py-16 px-4 sm:px-8 max-w-7xl mx-auto space-y-10">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-stone-200 pb-8">
-          <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-3.5 py-1 rounded-full">
-              {t("Verified Reviews")}
-            </span>
-            <h2 className="text-3xl font-extrabold text-stone-900 mt-3">{t("Customer Experiences")}</h2>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="text-center">
-              <div className="text-3xl font-extrabold text-stone-950">{rating}</div>
-              <div className="flex text-amber-500 justify-center">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} size={14} className="fill-amber-500" />
-                ))}
-              </div>
-            </div>
-            <div className="text-xs text-stone-500 font-semibold">
-              {t("Based on 2,450+ verified buyers")}
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {reviewsList.map((rev, idx) => (
-            <div key={idx} className="bg-white border border-stone-200 p-6 rounded-2xl space-y-3 shadow-xs">
-              <div className="flex items-center justify-between">
-                <div className="flex text-amber-500">
-                  {[...Array(rev.rating)].map((_, i) => (
-                    <Star key={i} size={14} className="fill-amber-500" />
-                  ))}
-                </div>
-                <span className="text-[11px] text-stone-400 font-medium">{rev.date}</span>
-              </div>
-              <p className="text-xs sm:text-sm text-stone-700 leading-relaxed italic">"{translateText(rev.comment)}"</p>
-              <div className="flex items-center gap-2 pt-2 border-t border-stone-100">
-                <span className="text-xs font-bold text-stone-900">{rev.name}</span>
-                <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">
-                  {t("Verified Buyer")}
-                </span>
-              </div>
-            </div>
-          ))}
         </div>
       </section>
 

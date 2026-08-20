@@ -615,17 +615,20 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
               <div key={i} className="bg-white sm:space-y-6 space-y-8">
                 <div className="grid sm:grid-cols-3 items-center gap-4">
                   <div className="sm:col-span-2 flex sm:items-center max-sm:flex-col gap-6">
-                    <div className="w-40 h-40 shrink-0 bg-white p-2 rounded-md">
+                    <Link href={`/shop/${p.productId}`} className="w-40 h-40 shrink-0 bg-white p-2 rounded-md block hover:opacity-90 transition-opacity cursor-pointer">
                       <img
                         src={p.image[0]}
+                        alt={p.name}
                         className="w-full h-full object-contain"
                       />
-                    </div>
+                    </Link>
 
                     <div>
-                      <h4 className="text-[25px] font-semibold text-slate-900">
-                        {p.name}
-                      </h4>
+                      <Link href={`/shop/${p.productId}`} className="hover:text-emerald-700 transition-colors">
+                        <h4 className="text-[25px] font-semibold text-slate-900 hover:text-emerald-700 transition-colors">
+                          {p.name}
+                        </h4>
+                      </Link>
                       {p.quantity >= 2 && (
                         <span className="inline-block mt-1 text-[11px] font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-md">
                           🔥 10% Multi-Buy Discount Applied!
