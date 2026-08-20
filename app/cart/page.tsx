@@ -9,7 +9,7 @@ export type ProductType = {
   image: string[];
   name: string;
   price: number;
-  productId: number;
+  productId: string | number;
   quantity: number;
 };
 const page = () => {

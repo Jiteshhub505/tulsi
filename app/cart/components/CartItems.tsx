@@ -20,7 +20,7 @@ type PropType = {
 };
 export type Details = {
   cartItemId: string;
-  productId: number;
+  productId: string | number;
 };
 
 export const CartItems = ({ loading, products, setProducts }: PropType) => {
@@ -184,13 +184,29 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
       }
     }
   };
-  // 1️⃣ Subtotal (after discount, WITH quantity)
-  const subtotal = products.reduce((sum, p) => {
-    const unitPrice = p.discountPrice ?? p.price;
-    return sum + unitPrice * p.quantity;
+  // 1️⃣ Calculate effective unit price & line total (10% OFF for 2+ quantity)
+  const getItemUnitPrice = (p: ProductType) => {
+    const base = p.discountPrice ?? p.price;
+    return p.quantity >= 2 ? Math.round(base * 0.9) : base;
+  };
+
+  const getItemLineTotal = (p: ProductType) => {
+    return getItemUnitPrice(p) * p.quantity;
+  };
+
+  // Subtotal with multi-buy discount applied
+  const subtotal = products.reduce((sum, p) => sum + getItemLineTotal(p), 0);
+
+  // Multi-buy savings total (10% off on items with quantity >= 2)
+  const multiBuySavings = products.reduce((sum, p) => {
+    if (p.quantity >= 2) {
+      const base = p.discountPrice ?? p.price;
+      return sum + (base * p.quantity - getItemLineTotal(p));
+    }
+    return sum;
   }, 0);
 
-  // 2️⃣ Total discount (ONLY for display)
+  // Total discount (catalog discount)
   const totalDiscount = products.reduce((sum, p) => {
     if (!p.discountPrice) return sum;
     return sum + (p.price - p.discountPrice) * p.quantity;
@@ -202,7 +218,7 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
   useEffect(() => {}, [products]);
 
   const updateQuantity = async (
-    productId: number,
+    productId: string | number,
     productQuantity: number,
     cartItemId: string
   ) => {
@@ -221,7 +237,7 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
   };
 
   const debouncedServer = useDebouncedCallback(updateQuantity, 1000);
-  const decreaseQuantity = (productId: number) => {
+  const decreaseQuantity = (productId: string | number) => {
     setProducts((prev) =>
       prev.map((p) => {
         if (p.productId !== productId) return p;
@@ -245,7 +261,7 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
     );
   };
 
-  const increaseQuantity = (productId: number) => {
+  const increaseQuantity = (productId: string | number) => {
     setProducts((prev) =>
       prev.map((p) => {
         if (p.productId !== productId) return p;
@@ -592,6 +608,11 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
                       <h4 className="text-[25px] font-semibold text-slate-900">
                         {p.name}
                       </h4>
+                      {p.quantity >= 2 && (
+                        <span className="inline-block mt-1 text-[11px] font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-md">
+                          🔥 10% Multi-Buy Discount Applied!
+                        </span>
+                      )}
 
                       <h6
                         onClick={() => {
@@ -646,10 +667,15 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
                   </div>
 
                   {/* PRICE */}
-                  <div className="sm:ml-auto">
-                    <h4 className="text-[15px] font-semibold text-slate-900">
-                      ₹{p.price * p.quantity}
+                  <div className="sm:ml-auto text-right">
+                    <h4 className="text-[16px] font-bold text-slate-900">
+                      ₹{getItemLineTotal(p).toLocaleString()}
                     </h4>
+                    {p.quantity >= 2 && (
+                      <span className="text-xs text-stone-400 line-through block">
+                        ₹{((p.discountPrice ?? p.price) * p.quantity).toLocaleString()}
+                      </span>
+                    )}
                   </div>
                 </div>
                 <br />
@@ -665,6 +691,14 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
             <hr className="border-gray-300 mt-4 mb-8" />
 
             <ul className="text-slate-500 font-medium mt-8 space-y-4">
+              {multiBuySavings > 0 && (
+                <li className="flex flex-wrap gap-4 text-sm text-emerald-700 font-bold">
+                  Multi-Buy Savings (10% OFF for 2+ items)
+                  <span className="ml-auto text-emerald-700 font-bold">
+                    -₹{multiBuySavings.toLocaleString()}
+                  </span>
+                </li>
+              )}
               <li className="flex flex-wrap gap-4 text-sm">
                 Discount{" "}
                 <span className="ml-auto text-slate-900 font-semibold">
@@ -678,7 +712,7 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
                 </span>
               </li>
               <li className="flex flex-wrap gap-4 text-sm text-slate-900">
-                Total <span className="ml-auto font-semibold">₹{total}</span>
+                Total <span className="ml-auto font-semibold">₹{total.toLocaleString()}</span>
               </li>
             </ul>
 

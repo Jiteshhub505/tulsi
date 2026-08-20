@@ -39,7 +39,7 @@ const products = [
     description:
       "Carefully selected Ayurvedic ingredients to support overall nutrition and consistent lifestyle habits.",
     galleryImages: ["/gym_foods.png"],
-    inStock: 0,
+    inStock: 25,
   },
   {
     name: "Daily Wellness Combo",
@@ -49,7 +49,7 @@ const products = [
     description:
       "A balanced combination formulated to complement everyday wellness and recovery routines.",
     galleryImages: ["/gym_foods.png"],
-    inStock: 0,
+    inStock: 25,
   },
   {
     name: "Herbal Metabolism Support",
@@ -59,7 +59,7 @@ const products = [
     description:
       "Designed to support metabolic activity and daily energy as part of an active lifestyle.",
     galleryImages: ["/gym_foods.png"],
-    inStock: 0,
+    inStock: 25,
   },
   {
     name: "Ayurvedic Nutrition Blend",
@@ -69,7 +69,7 @@ const products = [
     description:
       "A clean Ayurvedic blend created to support daily nutritional intake and overall wellness.",
     galleryImages: ["/gym_foods.png"],
-    inStock: 0,
+    inStock: 25,
   },
   {
     name: "Active Lifestyle Support",
@@ -79,7 +79,7 @@ const products = [
     description:
       "Formulated to complement regular physical activity, balanced meals, and disciplined routines.",
     galleryImages: ["/gym_foods.png"],
-    inStock: 0,
+    inStock: 25,
   },
   {
     name: "Herbal Wellness Formula",
@@ -89,7 +89,7 @@ const products = [
     description:
       "Traditional Ayurvedic ingredients selected to support general wellness and consistency.",
     galleryImages: ["/gym_foods.png"],
-    inStock: 0,
+    inStock: 25,
   },
 
   // ── Health & Fitness ────────────────────────────────────────────────
@@ -109,7 +109,7 @@ const products = [
     price: 2000,
     description: "Designed to complement workout routines.",
     galleryImages: ["/mens_health.png"],
-    inStock: 0,
+    inStock: 25,
   },
   {
     name: "Wellness Combo Pack",
@@ -118,7 +118,7 @@ const products = [
     price: 2499,
     description: "Balanced support for nutrition and recovery.",
     galleryImages: ["/mens_health.png"],
-    inStock: 0,
+    inStock: 25,
   },
 
   // ── Skin ────────────────────────────────────────────────────────────
@@ -130,7 +130,7 @@ const products = [
     description:
       "An Ayurvedic skincare formulation designed to support daily skin nourishment and a healthy-looking glow when used as part of a regular skincare routine.",
     galleryImages: ["/skin_care.png"],
-    inStock: 0,
+    inStock: 25,
   },
   {
     name: "Herbal Skin Hydration Gel",
@@ -140,7 +140,7 @@ const products = [
     description:
       "A lightweight herbal gel formulated to support skin hydration and comfort for everyday use.",
     galleryImages: ["/skin_care.png"],
-    inStock: 0,
+    inStock: 25,
   },
   {
     name: "Ayurvedic Skin Balance Serum",
@@ -150,7 +150,7 @@ const products = [
     description:
       "Carefully selected Ayurvedic ingredients designed to support balanced-looking skin as part of a consistent skincare routine.",
     galleryImages: ["/skin_care.png"],
-    inStock: 0,
+    inStock: 25,
   },
   {
     name: "Daily Herbal Face Cleanser",
@@ -160,7 +160,7 @@ const products = [
     description:
       "A gentle herbal cleanser created to support daily cleansing without stripping natural skin moisture.",
     galleryImages: ["/skin_care.png"],
-    inStock: 0,
+    inStock: 25,
   },
   {
     name: "Ayurvedic Skin Nourish Lotion",
@@ -170,7 +170,7 @@ const products = [
     description:
       "A smooth Ayurvedic lotion designed to support skin softness and everyday care with regular use.",
     galleryImages: ["/skin_care.png"],
-    inStock: 0,
+    inStock: 25,
   },
 
   // ── Hygiene ─────────────────────────────────────────────────────────
@@ -182,7 +182,7 @@ const products = [
     description:
       "A gentle herbal shampoo designed to support everyday hair cleansing and freshness.",
     galleryImages: ["/womens_health.png"],
-    inStock: 0,
+    inStock: 25,
   },
   {
     name: "Ayurvedic Hair Cleanse Wash",
@@ -192,7 +192,7 @@ const products = [
     description:
       "Formulated with traditional herbs to support regular hair washing as part of a hygiene routine.",
     galleryImages: ["/womens_health.png"],
-    inStock: 0,
+    inStock: 25,
   },
   {
     name: "Herbal Hand Wash",
@@ -202,7 +202,7 @@ const products = [
     description:
       "A mild hand wash designed to support daily hand hygiene while being gentle on skin.",
     galleryImages: ["/womens_health.png"],
-    inStock: 0,
+    inStock: 25,
   },
   {
     name: "Ayurvedic Body Cleanser",
@@ -212,7 +212,7 @@ const products = [
     description:
       "A refreshing body cleanser created for everyday cleansing and skin comfort.",
     galleryImages: ["/womens_health.png"],
-    inStock: 0,
+    inStock: 25,
   },
   {
     name: "Herbal Hair Removal Cream",
@@ -222,7 +222,7 @@ const products = [
     description:
       "A personal care formulation designed to support easy and convenient hair removal.",
     galleryImages: ["/womens_health.png"],
-    inStock: 0,
+    inStock: 25,
   },
   {
     name: "Daily Face Wash",
@@ -232,7 +232,7 @@ const products = [
     description:
       "A gentle face wash formulated to support daily cleansing without harshness.",
     galleryImages: ["/womens_health.png"],
-    inStock: 0,
+    inStock: 25,
   },
   {
     name: "Herbal Intimate Wash",
@@ -242,7 +242,7 @@ const products = [
     description:
       "Carefully formulated to support daily intimate hygiene as part of a personal care routine.",
     galleryImages: ["/womens_health.png"],
-    inStock: 0,
+    inStock: 25,
   },
   {
     name: "Ayurvedic Liquid Soap",
@@ -252,7 +252,7 @@ const products = [
     description:
       "A smooth liquid soap designed for everyday hand and body cleansing.",
     galleryImages: ["/womens_health.png"],
-    inStock: 0,
+    inStock: 25,
   },
   {
     name: "Herbal Foaming Face Cleanser",
@@ -262,7 +262,7 @@ const products = [
     description:
       "A lightweight foaming cleanser created to support fresh and clean-feeling skin.",
     galleryImages: ["/womens_health.png"],
-    inStock: 0,
+    inStock: 25,
   },
   {
     name: "Daily Hygiene Combo",
@@ -272,7 +272,7 @@ const products = [
     description:
       "A curated set of essential hygiene products designed for everyday personal care needs.",
     galleryImages: ["/womens_health.png"],
-    inStock: 0,
+    inStock: 25,
   },
 ];
 

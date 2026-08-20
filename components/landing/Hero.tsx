@@ -59,6 +59,29 @@ export default function Hero() {
     setPage(([prev]) => [index, index > prev ? 1 : -1]);
   };
 
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const minSwipeDistance = 30;
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    if (distance > minSwipeDistance) {
+      nextSlide();
+    } else if (distance < -minSwipeDistance) {
+      prevSlide();
+    }
+  };
+
   // Autoplay loop every 5 seconds
   useEffect(() => {
     const timer = setInterval(nextSlide, 5000);
@@ -67,7 +90,10 @@ export default function Hero() {
 
   return (
     <section
-      className="relative w-full h-[calc(100vh-60px)] md:aspect-[16/9] md:h-auto xl:aspect-auto xl:h-[calc(100vh-70px)] overflow-hidden bg-[#fafdfb] shadow-xs"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      className="relative w-full h-[calc(100vh-60px)] md:aspect-[16/9] md:h-auto xl:aspect-auto xl:h-[calc(100vh-70px)] overflow-hidden bg-[#fafdfb] shadow-xs touch-pan-y select-none cursor-grab active:cursor-grabbing"
     >
       <AnimatePresence initial={false} custom={direction}>
         <motion.div

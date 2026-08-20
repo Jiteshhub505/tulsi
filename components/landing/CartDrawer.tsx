@@ -112,9 +112,23 @@ export default function CartDrawer() {
     }
   };
 
-  const subtotal = products.reduce((sum, p) => {
-    const unitPrice = p.discountPrice ?? p.price;
-    return sum + unitPrice * p.quantity;
+  const getItemUnitPrice = (p: ProductType) => {
+    const base = p.discountPrice ?? p.price;
+    return p.quantity >= 2 ? Math.round(base * 0.9) : base;
+  };
+
+  const getItemLineTotal = (p: ProductType) => {
+    return getItemUnitPrice(p) * p.quantity;
+  };
+
+  const subtotal = products.reduce((sum, p) => sum + getItemLineTotal(p), 0);
+
+  const multiBuySavings = products.reduce((sum, p) => {
+    if (p.quantity >= 2) {
+      const base = p.discountPrice ?? p.price;
+      return sum + (base * p.quantity - getItemLineTotal(p));
+    }
+    return sum;
   }, 0);
 
   const total = subtotal;
@@ -151,7 +165,8 @@ export default function CartDrawer() {
           {/* Scrollable list of items */}
           <div className="flex-1 overflow-y-auto pr-1 py-3 sm:py-4 space-y-3 sm:space-y-4">
             {products.map((p, i) => {
-              const price = p.discountPrice ?? p.price;
+              const basePrice = p.discountPrice ?? p.price;
+              const lineTotal = getItemLineTotal(p);
               return (
                 <div
                   key={i}
@@ -169,15 +184,24 @@ export default function CartDrawer() {
                     <h4 className="font-bold text-zinc-900 dark:text-zinc-50 text-sm line-clamp-2 leading-snug">
                       {translateText(p.name, (p as any).nameHi)}
                     </h4>
+                    {p.quantity >= 2 && (
+                      <span className="inline-block mt-1 text-[10px] font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-md">
+                        🔥 10% Multi-Buy Discount
+                      </span>
+                    )}
                     <div className="flex items-center gap-2 mt-1.5">
                       <span className="text-zinc-900 dark:text-zinc-50 font-bold text-base">
-                        ₹{price}
+                        ₹{lineTotal.toLocaleString()}
                       </span>
-                      {p.discountPrice && (
+                      {p.quantity >= 2 ? (
+                        <span className="line-through text-zinc-400 text-xs">
+                          ₹{(basePrice * p.quantity).toLocaleString()}
+                        </span>
+                      ) : p.discountPrice ? (
                         <span className="line-through text-zinc-400 text-xs">
                           ₹{p.price}
                         </span>
-                      )}
+                      ) : null}
                     </div>
 
                     {/* Qty Controls — large touch targets */}
@@ -220,8 +244,14 @@ export default function CartDrawer() {
             <div className="space-y-1.5 text-sm font-medium text-zinc-500 dark:text-zinc-400">
               <div className="flex justify-between">
                 <span>{t("Subtotal")}</span>
-                <span className="text-zinc-900 dark:text-zinc-50 font-semibold">₹{subtotal}</span>
+                <span className="text-zinc-900 dark:text-zinc-50 font-semibold">₹{subtotal.toLocaleString()}</span>
               </div>
+              {multiBuySavings > 0 && (
+                <div className="flex justify-between text-emerald-700 font-bold text-xs">
+                  <span>10% Multi-Buy Discount</span>
+                  <span>-₹{multiBuySavings.toLocaleString()}</span>
+                </div>
+              )}
               <div className="flex justify-between">
                 <span>Shipping</span>
                 <span className="text-emerald-700 font-semibold">Calculated at checkout</span>
@@ -229,7 +259,7 @@ export default function CartDrawer() {
               <Separator className="my-2" />
               <div className="flex justify-between text-base text-zinc-900 dark:text-zinc-50 font-bold">
                 <span>Total</span>
-                <span>₹{total}</span>
+                <span>₹{total.toLocaleString()}</span>
               </div>
             </div>
 

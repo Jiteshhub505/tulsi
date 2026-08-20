@@ -71,11 +71,36 @@ const defaultFeatures: Feature[] = [
 const Features = () => {
   const { t, translateText } = useLanguage();
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+  const minSwipeDistance = 30;
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    if (isLeftSwipe) {
+      setCurrentSlide((prev) => (prev + 1) % CAROUSEL_IMAGES.length);
+    } else if (isRightSwipe) {
+      setCurrentSlide((prev) => (prev - 1 + CAROUSEL_IMAGES.length) % CAROUSEL_IMAGES.length);
+    }
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % CAROUSEL_IMAGES.length);
-    }, 3000);
+    }, 4000);
     return () => clearInterval(timer);
   }, []);
 
@@ -84,15 +109,20 @@ const Features = () => {
       <div className="w-full space-y-8">
         
         {/* Infographic Image Carousel */}
-        <div className="relative w-full overflow-hidden group bg-stone-50">
+        <div
+          className="relative w-full overflow-hidden group bg-stone-50 touch-pan-y select-none cursor-grab active:cursor-grabbing"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
           <div
-            className="flex transition-transform duration-700 ease-in-out w-full"
+            className="flex transition-transform duration-500 ease-out w-full"
             style={{ transform: `translateX(-${currentSlide * 100}%)` }}
           >
             {CAROUSEL_IMAGES.map((img, idx) => (
               <div key={idx} className="w-full shrink-0 flex justify-center">
                 <img
-                  className="w-full h-[280px] xs:h-[340px] sm:h-[440px] md:h-[540px] lg:h-[640px] object-cover sm:object-contain object-center"
+                  className="w-full h-[280px] xs:h-[340px] sm:h-[440px] md:h-[540px] lg:h-[640px] object-cover sm:object-contain object-center pointer-events-none"
                   src={img}
                   alt={`Veda Shakti feature slide ${idx + 1}`}
                 />

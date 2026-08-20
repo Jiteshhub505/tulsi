@@ -61,12 +61,13 @@ export const POST = async (req: Request) => {
       products.map((p) => [p.id, p.discountPrice ?? p.price]),
     );
 
-    // Calculate subtotal
+    // Calculate subtotal (with 10% multi-buy discount for quantity >= 2)
     const subtotal = products.reduce((sum, p) => {
       const item = cartItems.find((ci) => ci.productId === p.id);
       const quantity = item ? item.quantity : 0;
-      const unitPrice = p.discountPrice ?? p.price;
-      return sum + unitPrice * quantity;
+      const basePrice = p.discountPrice ?? p.price;
+      const effectiveUnitPrice = quantity >= 2 ? Math.round(basePrice * 0.9) : basePrice;
+      return sum + effectiveUnitPrice * quantity;
     }, 0);
 
     // Apply Coupon (10% off for KRISH10)

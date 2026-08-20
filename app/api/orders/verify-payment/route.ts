@@ -64,8 +64,9 @@ export const POST = async (req: Request) => {
     const subtotal = products.reduce((sum, p) => {
       const item = cartItems.find((ci) => ci.productId === p.id);
       const quantity = item ? item.quantity : 0;
-      const unitPrice = p.discountPrice ?? p.price;
-      return sum + unitPrice * quantity;
+      const basePrice = p.discountPrice ?? p.price;
+      const effectiveUnitPrice = quantity >= 2 ? Math.round(basePrice * 0.9) : basePrice;
+      return sum + effectiveUnitPrice * quantity;
     }, 0);
 
     const safeCoupon = typeof couponCode === "string" ? couponCode.trim().toUpperCase() : "";

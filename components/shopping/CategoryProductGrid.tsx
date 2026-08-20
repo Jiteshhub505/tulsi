@@ -91,20 +91,19 @@ export default function CategoryProductGrid({
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {products.map((product, idx) => {
               const prodId = product.id || (product as any)._id || idx;
-              const inStock = !!product.inStock && product.inStock > 0;
+              const inStock = product.inStock === null || product.inStock === undefined || product.inStock > 0;
               const displayPrice = product.discountPrice ?? product.price;
               const image = product.galleryImages?.[0] ?? "/tulsiveda-logo.png";
 
               return (
                 <Link
                   key={prodId}
-                  href={inStock ? `/shop/${prodId}` : "#"}
-                  className={cn(!inStock && "pointer-events-none")}
+                  href={`/shop/${prodId}`}
                 >
                   <Card
                     className={cn(
                       "cursor-pointer group relative overflow-hidden transition hover:shadow-lg",
-                      !inStock && "pointer-events-none opacity-80",
+                      !inStock && "opacity-80",
                     )}
                   >
                     {/* IMAGE */}
@@ -140,9 +139,16 @@ export default function CategoryProductGrid({
                     {/* FOOTER */}
                     <CardFooter className="flex items-center justify-between">
                       <span className="text-lg font-semibold">₹{displayPrice}</span>
-                      <Button size="sm" disabled={!inStock}>
+                      <span
+                        className={cn(
+                          "inline-flex items-center justify-center rounded-md text-xs font-semibold px-4 py-2 transition-colors",
+                          inStock
+                            ? "bg-emerald-700 text-white group-hover:bg-emerald-800"
+                            : "bg-stone-200 text-stone-500 cursor-not-allowed"
+                        )}
+                      >
                         {inStock ? t("View Product") : t("Unavailable")}
-                      </Button>
+                      </span>
                     </CardFooter>
                   </Card>
                 </Link>
