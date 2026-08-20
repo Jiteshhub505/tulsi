@@ -5,12 +5,18 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
 const HERO_IMAGES = [
-  "/1w.png",
-  "/2w.png",
-  "/3w.png",
-  "/herom1.webp",
-  "/herom22.webp",
-  "/herom3.webp",
+  "/tul-web2.png",
+  "/tul-web3.png",
+  "/tul-web1.png",
+  "/tul-web4.png",
+  "/tul-web5.png",
+  "/tul-web6.png",
+  "/tul-mob1.png",
+  "/tul-mob2.webp",
+  "/tul-mob3.webp",
+  "/tul-mob4.png",
+  "/tul-mob5.png",
+  "/tul-mob6.png",
 ];
 
 export default function SiteInitialLoader() {

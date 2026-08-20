@@ -114,6 +114,7 @@ function SkeletonCard() {
 }
 
 // ─── Product card ──────────────────────────────────────────────────
+import { useQuery } from "@tanstack/react-query";
 import { isFavorite, toggleFavorite } from "@/lib/favorites";
 
 function ProductCard({ product }: { product: Product }) {
@@ -143,8 +144,14 @@ function ProductCard({ product }: { product: Product }) {
   const image = product.galleryImages?.[0] ?? "/tulsiveda-logo.png";
   const catConfig = CATEGORY_CONFIG[product.category] ?? CATEGORY_CONFIG["Digestion"];
 
-  // Generate a random rating between 4.0 and 5.0
-  const rating = (4.0 + Math.random()).toFixed(1);
+  // Deterministic rating per product ID
+  const rating = useMemo(() => {
+    let hash = 0;
+    for (let i = 0; i < prodId.length; i++) {
+      hash = prodId.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return (4.5 + (Math.abs(hash) % 5) / 10).toFixed(1);
+  }, [prodId]);
 
   return (
     <Link
@@ -168,7 +175,6 @@ function ProductCard({ product }: { product: Product }) {
           </div>
         )}
         
-
 
         {product.inStock === 0 && (
           <div className="absolute inset-0 bg-white/70 backdrop-blur-[2px] flex items-center justify-center">
@@ -225,14 +231,11 @@ function ShopPageContent() {
   const searchParams = useSearchParams();
   const categoryFromUrl = searchParams.get('category');
   
-  const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("featured");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 5000]);
   const [inStockOnly, setInStockOnly] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Set category from URL parameter on mount
@@ -242,25 +245,24 @@ function ShopPageContent() {
     }
   }, [categoryFromUrl]);
 
-  // Fetch products
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const [prodRes, catRes] = await Promise.all([
-          axios.get("/api/getproduct/all"),
-          axios.get("/api/getproduct/getcategory"),
-        ]);
-        if (prodRes.data.success) setProducts(prodRes.data.products);
-        if (catRes.data.success) setCategories(catRes.data.categories);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
+  // Fetch products with React Query for instant memory caching on back navigation
+  const { data: products = [], isLoading: loading } = useQuery<Product[]>({
+    queryKey: ["all-products"],
+    queryFn: async () => {
+      const res = await axios.get("/api/getproduct/all");
+      return res.data.success ? res.data.products : [];
+    },
+    staleTime: 10 * 60 * 1000,
+  });
+
+  const { data: categories = [] } = useQuery<string[]>({
+    queryKey: ["all-categories"],
+    queryFn: async () => {
+      const res = await axios.get("/api/getproduct/getcategory");
+      return res.data.success ? res.data.categories : [];
+    },
+    staleTime: 10 * 60 * 1000,
+  });
 
   // Dynamic max price
   const maxPrice = useMemo(() => {

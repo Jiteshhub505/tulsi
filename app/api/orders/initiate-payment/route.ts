@@ -43,9 +43,22 @@ export const POST = async (req: Request) => {
     const subtotalAfterCoupon = subtotal - discount;
     const amount = subtotalAfterCoupon;
 
+    const keyId = process.env.RAZORPAY_KEY_ID || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+    const keySecret = process.env.RAZORPAY_KEY_SECRET;
+
+    if (!keyId || !keySecret) {
+      return Response.json(
+        {
+          success: false,
+          message: "Razorpay credentials (RAZORPAY_KEY_ID / RAZORPAY_KEY_SECRET) are missing in environment variables.",
+        },
+        { status: 400 }
+      );
+    }
+
     const razorpay = new Razorpay({
-      key_id: process.env.RAZORPAY_KEY_ID || "",
-      key_secret: process.env.RAZORPAY_KEY_SECRET || "",
+      key_id: keyId,
+      key_secret: keySecret,
     });
 
     const rzpOrder = await razorpay.orders.create({
@@ -56,13 +69,22 @@ export const POST = async (req: Request) => {
 
     return Response.json({
       success: true,
-      keyId: process.env.RAZORPAY_KEY_ID,
+      keyId,
       id: rzpOrder.id,
       amount: rzpOrder.amount,
       currency: rzpOrder.currency,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("INITIATE_PAYMENT_ERROR", error);
-    return Response.json({ success: false, message: "Failed to initiate payment" }, { status: 500 });
+    const isAuthError =
+      error?.statusCode === 401 ||
+      error?.error?.code === "BAD_REQUEST_ERROR" ||
+      error?.error?.description?.toLowerCase().includes("auth");
+
+    const message = isAuthError
+      ? "Razorpay authentication failed. Please check RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in your .env configuration."
+      : error?.error?.description || error?.message || "Failed to initiate payment";
+
+    return Response.json({ success: false, message }, { status: isAuthError ? 400 : 500 });
   }
 };

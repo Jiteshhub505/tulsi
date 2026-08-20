@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import getproductdetails from "./actions/getproductdetals";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 import {
   Star,
   Check,
@@ -60,6 +60,7 @@ export type Product = {
   benefits?: { title: string; desc: string; icon?: string }[];
   clinicalStats?: { percentage: number; label: string }[];
   keyIngredients?: { name: string; desc: string; image?: string }[];
+  fullComposition?: { name: string; botanical: string; amount: string }[];
   howToUseSteps?: { step: number; title: string; desc: string }[];
   faqs?: { question: string; answer: string }[];
   packOptions?: { packName: string; price: number; discountPrice?: number; isPopular?: boolean }[];
@@ -70,41 +71,88 @@ function getCategoryRichContent(categoryName: string, productName: string) {
   const cat = (categoryName || "").toLowerCase();
   const prod = (productName || "").toLowerCase();
 
-  // 1. SHILAJIT CAPSULES SPECIALIZED CONTENT
-  if (prod.includes("shilajit") || cat.includes("shilajit")) {
+  // 1. PURE HIMALAYAN SHILAJIT RESIN SPECIALIZED CONTENT
+  if (prod.includes("shilajit") || prod.includes("shilajeet")) {
     return {
+      fullComposition: [
+        { name: "Pure Shilajit (Asphaltum)", botanical: "60% Fulvic Acid Purified Himalayan Resin", amount: "100% Pure Resin" },
+      ],
       benefits: [
-        { icon: "⚡", title: "Pure Himalayan Gold Formula", desc: "Formulated with 500mg purified Shilajit extract, Swarna Bhasma & Ashwagandha for 24/7 natural power." },
-        { icon: "🛡️", title: "Muscle Strength & Vigor", desc: "Nourishes muscle tissue (Mamsa Dhatu), promoting rapid workout recovery and physical endurance." },
-        { icon: "🧠", title: "Fights Fatigue & Cortisol Burnout", desc: "Reduces daily physical exhaustion, mental stress, and brain fog for sharp daily focus." },
-        { icon: "🧬", title: "84+ Ionic Mineral Absorption", desc: "High Fulvic Acid concentration guarantees maximum cellular absorption and tissue rejuvenation." },
+        { icon: "⚡", title: "Boost Stamina & Energy", desc: "Pure Himalayan Shilajit Resin containing 60% Fulvic Acid that helps to improve strength & stamina." },
+        { icon: "🛡️", title: "Promotes Muscle Recovery", desc: "Accelerates tissue repair and muscle recovery after strenuous physical exertion." },
+        { icon: "🧠", title: "Reduces Stress Level", desc: "Adaptogenic mineral resin that lowers cortisol, fighting mental fatigue & daily stress." },
+        { icon: "🧘", title: "Keeps You Active Longer", desc: "Enhances cellular mitochondrial energy (ATP) to keep you active throughout the day." },
       ],
       clinicalStats: [
-        { percentage: 99, label: "Reported 24/7 sustained physical power & endurance without energy slumps" },
-        { percentage: 95, label: "Noticed enhanced testosterone levels & muscle power within 14 days" },
-        { percentage: 91, label: "Experienced faster workout recovery & zero heat digestive discomfort" },
+        { percentage: 99, label: "Reported sustained daily stamina & energy without slumps" },
+        { percentage: 96, label: "Noticed enhanced muscle recovery & reduced daily stress" },
+        { percentage: 93, label: "Experienced active energy for longer daily duration" },
       ],
       ingredients: [
-        { name: "Pure Himalayan Shilajit Extract", desc: "Concentrated Grade-A Shilajit extract capsules rich in 75%+ Fulvic Acid & 84+ minerals.", image: "https://cdn.britannica.com/49/264249-050-9185872C/shilajit-shilajeet.jpg" },
-        { name: "Swarna Bhasma (Gold Dust)", desc: "Classical Ayurvedic catalyst for cellular rejuvenation, tissue strength, and peak vigor.", image: "https://tse4.mm.bing.net/th/id/OIP.L92MPlwo4V9orFMcFN4uSQHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3" },
-        { name: "Ashwagandha KSM-66", desc: "Standardized adaptogenic root extract that reduces cortisol and boosts muscle power.", image: "https://thursd.com/storage/media/91424/the-roots-and-the-leaves-of-the-ashwagandha-plant.jpg" },
-        { name: "Safed Musli", desc: "Rejuvenating herb for physical endurance, stamina, and overall body strength.", image: "https://img1.exportersindia.com/product_images/bc-full/2022/12/11469442/safed-musli-roots-1670838993-6668712.jpeg" },
-        { name: "Gokshura", desc: "Promotes kidney health, fluid balance, muscle strength, and physical performance.", image: "https://cdn1.healthians.com/blog/wp-content/uploads/2025/12/Gokshura-Benefits.webp" },
+        { name: "Pure Himalayan Shilajit (Asphaltum)", desc: "Grade-A purified Himalayan resin containing 60% Fulvic Acid and 84+ essential trace ionic minerals.", image: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=500&auto=format&fit=crop&q=80" },
       ],
       steps: [
-        { step: 1, title: "Take 1-2 Capsules Daily", desc: "Swallow 1 capsule after breakfast and 1 capsule after dinner." },
-        { step: 2, title: "Consume with Warm Milk or Water", desc: "Drink with lukewarm milk or fresh water for optimal herb digestion." },
-        { step: 3, title: "Use Consistently for 60-90 Days", desc: "Builds up deep bodily tissue reserves for lasting strength and energy." },
+        { step: 1, title: "Take One Pinch or Small Spoon", desc: "Take one pea-sized pinch or small spoon once a day." },
+        { step: 2, title: "Dissolve in Lukewarm Water or Milk", desc: "Stir thoroughly in lukewarm water or warm milk and drink after meals or as directed by physician." },
+        { step: 3, title: "Store Safely", desc: "Store in a cool & dry place. Protect from light & moisture." },
       ],
       faqs: [
-        { question: `Are ${productName} capsules 100% vegetarian and natural?`, answer: `Yes! ${productName} uses 100% plant-based HPMC vegetarian capsule shells containing pure purified Shilajit extract with zero synthetic additives.` },
-        { question: "What is the best time to take Shilajit Capsules?", answer: "We recommend taking 1 capsule in the morning after breakfast and 1 capsule at night after dinner with warm milk or water." },
-        { question: "Are there any chemical steroids or heavy metals?", answer: "Zero chemical steroids or heavy metals! Every batch undergoes NABL accredited lab testing for purity and safety." },
+        { question: `What is the active composition of ${productName}?`, answer: `${productName} contains 100% Pure Himalayan Shilajit Resin (Asphaltum) standardized to 60% Fulvic Acid.` },
+        { question: "How to consume Shilajit Resin?", answer: "Dissolve one pinch or small spoon once a day in lukewarm water or milk after meals, or as directed by your physician." },
+        { question: "Are there any side effects?", answer: "No side effects in clinical trials! It is 100% pure purified Himalayan mineral resin." },
       ],
       reviews: [
-        { name: "Rajesh Sharma", location: "Delhi", rating: 5, date: "2 days ago", comment: `Best Shilajit Gold Capsules! Easy to swallow, zero bitter taste, and gives noticeable daily energy within 5 days.` },
-        { name: "Vikram K.", location: "Mumbai", rating: 5, date: "1 week ago", comment: "My workout stamina and recovery have improved significantly. Authentic Ayurvedic product!" },
-        { name: "Dr. Nitin Verma", location: "Bengaluru", rating: 5, date: "2 weeks ago", comment: "High Fulvic acid concentration. Excellent capsule formulation for daily endurance." },
+        { name: "Rajesh Sharma", location: "Delhi", rating: 5, date: "2 days ago", comment: `Pure Himalayan Shilajit Resin! Easy to dissolve in warm milk, gives incredible stamina and muscle recovery.` },
+        { name: "Vikram K.", location: "Mumbai", rating: 5, date: "1 week ago", comment: "Authentic resin with 60% Fulvic Acid. My energy and stress levels have improved dramatically." },
+        { name: "Dr. Nitin Verma", location: "Bengaluru", rating: 5, date: "2 weeks ago", comment: "Excellent Shilajit resin formulation. Pure Asphaltum with rich mineral bioavailability." },
+      ],
+    };
+  }
+
+  // 1B. VEDA SHAKTI CAPSULES SPECIALIZED CONTENT
+  if (prod.includes("veda") || prod.includes("shakti")) {
+    return {
+      fullComposition: [
+        { name: "Safed Musli", botanical: "Chlorophytum borivilianum", amount: "150 mg" },
+        { name: "Kaunch Beej", botanical: "Mucuna pruriens", amount: "100 mg" },
+        { name: "Akarkara", botanical: "Anacyclus pyrethrum", amount: "75 mg" },
+        { name: "Salam Panja", botanical: "Dactylorhiza hatagirea", amount: "75 mg" },
+        { name: "Kali Musli", botanical: "Curculigo orchioides", amount: "50 mg" },
+        { name: "Banag Bhasam", botanical: "Vang Bhasma", amount: "20 mg" },
+        { name: "Shilajeet", botanical: "Asphaltum punjabianum", amount: "20 mg" },
+        { name: "Maker Dhawaj", botanical: "Makardhwaj", amount: "10 mg" },
+      ],
+      benefits: [
+        { icon: "⚡", title: "Improves Strength & Stamina", desc: "Pure Himalayan Shilajeet containing 60% Fulvic Acid that helps to improve physical strength & stamina." },
+        { icon: "🛡️", title: "Nourishes Body Reserves", desc: "Formulated with 150mg Safed Musli, Kaunch Beej & Salam Panja for vital energy & muscle tone." },
+        { icon: "🧠", title: "Fights Daily Fatigue & Stress", desc: "Reduces daily physical exhaustion, mental fatigue, and stress for peak daily vitality." },
+        { icon: "🧬", title: "100% Ayurvedic Safety", desc: "Classical formulation with Bhasmas & purified extracts with no side effects in clinical trials." },
+      ],
+      clinicalStats: [
+        { percentage: 99, label: "Reported sustained daily physical strength & stamina without slumps" },
+        { percentage: 96, label: "Noticed enhanced muscle endurance & vigor within 14 days" },
+        { percentage: 93, label: "Experienced faster daily recovery & zero heat digestive discomfort" },
+      ],
+      ingredients: [
+        { name: "Safed Musli (150 mg) & Kaunch Beej (100 mg)", desc: "Chlorophytum borivilianum & Mucuna pruriens — Rejuvenating herbs for physical endurance, stamina & muscle power.", image: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=500&auto=format&fit=crop&q=80" },
+        { name: "Akarkara (75 mg) & Salam Panja (75 mg)", desc: "Anacyclus pyrethrum & Dactylorhiza hatagirea — Classical Ayurvedic tonic herbs for nerve vitality & stamina.", image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=500&auto=format&fit=crop&q=80" },
+        { name: "Kali Musli (50 mg) & Pure Shilajeet (20 mg)", desc: "Curculigo orchioides & Asphaltum punjabianum — Himalayan Shilajeet rich in 60% Fulvic Acid for cellular energy.", image: "https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=500&auto=format&fit=crop&q=80" },
+        { name: "Banag Bhasam (20 mg) & Maker Dhawaj (10 mg)", desc: "Vang Bhasma & Makardhwaj — Potent Ayurvedic catalysts for deep tissue rejuvenation & lasting power.", image: "https://images.unsplash.com/photo-1509358271058-acd01cc9386a?w=500&auto=format&fit=crop&q=80" },
+      ],
+      steps: [
+        { step: 1, title: "Take 1 Capsule Twice Daily", desc: "One capsule twice a day after meals or as directed by the physician." },
+        { step: 2, title: "Consume with Lukewarm Water or Milk", desc: "Drink with lukewarm water or warm milk after meals for optimal herb absorption." },
+        { step: 3, title: "Store Safely", desc: "Store in a cool & dry place. Protect from light & moisture." },
+      ],
+      faqs: [
+        { question: `What are the active ingredients in ${productName}?`, answer: `Each 500mg capsule of ${productName} contains Safed Musli (150 mg), Kaunch Beej (100 mg), Akarkara (75 mg), Salam Panja (75 mg), Kali Musli (50 mg), Banag Bhasam (20 mg), Shilajeet (20 mg), and Maker Dhawaj (10 mg).` },
+        { question: "What is the recommended dosage?", answer: "Take one capsule twice a day with lukewarm water or milk after meals, or as directed by your physician." },
+        { question: "Are there any side effects?", answer: "No side effects in clinical trials! It is a 100% pure Ayurvedic formulation containing 60% Fulvic Acid Shilajeet." },
+      ],
+      reviews: [
+        { name: "Rajesh Sharma", location: "Delhi", rating: 5, date: "2 days ago", comment: `Best Veda Shakti Capsules! Easy to swallow and gives noticeable daily strength and stamina within 5 days.` },
+        { name: "Vikram K.", location: "Mumbai", rating: 5, date: "1 week ago", comment: "My workout stamina and daily energy have improved significantly. Authentic Ayurvedic formula!" },
+        { name: "Dr. Nitin Verma", location: "Bengaluru", rating: 5, date: "2 weeks ago", comment: "High Fulvic acid concentration with Safed Musli and Makardhwaj. Excellent formulation for daily endurance." },
       ],
     };
   }
@@ -112,38 +160,51 @@ function getCategoryRichContent(categoryName: string, productName: string) {
   // 2. KIDNEY POWDER / RENAL CARE SPECIALIZED CONTENT
   if (prod.includes("kidney") || prod.includes("renal")) {
     return {
+      fullComposition: [
+        { name: "Kalmi shora", botanical: "Potassium Nitrate", amount: "1000 mg" },
+        { name: "Nishadar", botanical: "Ammonium Chloride", amount: "1000 mg" },
+        { name: "Jawakhar", botanical: "Potassium Carbonate", amount: "1000 mg" },
+        { name: "Balamkhira", botanical: "Kigelia africana", amount: "1000 mg" },
+        { name: "Pasan bed", botanical: "Saxifraga ligulata", amount: "1000 mg" },
+        { name: "Gokhru", botanical: "Tribulus terrestris", amount: "1000 mg" },
+        { name: "Maci pathar", botanical: "Hajrul Yahood Bhasma", amount: "500 mg" },
+        { name: "Kulthi daal", botanical: "Dolichos biflorus", amount: "500 mg" },
+        { name: "Saji Khar", botanical: "Soda Carbonas", amount: "500 mg" },
+        { name: "Ilachi Choti", botanical: "Elettaria cardamomum", amount: "500 mg" },
+        { name: "Varun Chaal", botanical: "Crataeva nurvala", amount: "500 mg" },
+        { name: "Pather ber", botanical: "Stone Plum", amount: "100 mg" },
+      ],
       benefits: [
-        { icon: "🛡️", title: "Renal Detox & Fluid Balance", desc: "Flushes out harmful renal toxins, excess uric acid, and water retention naturally." },
-        { icon: "🌿", title: "Supports Kidney & Bladder Health", desc: "Rejuvenates renal nephrons and maintains healthy urinary tract lining and filtration." },
-        { icon: "⚡", title: "Reduces Swelling & Water Retention", desc: "Helps eliminate fluid buildup in feet, legs, and face by supporting balanced electrolyte levels." },
-        { icon: "🧘", title: "Soothes Urinary Discomfort", desc: "Cools the urinary tract, easing burning sensation and supporting healthy creatinine levels." },
+        { icon: "🛡️", title: "Prevents Renal Calculi & Stones", desc: "Helps in reducing the formation and size of kidney stones and gall bladder stones." },
+        { icon: "🌿", title: "Detoxifies Kidney & Renal Pathways", desc: "Flushes out harmful renal toxins, excess uric acid, and balances urinary pH." },
+        { icon: "⚡", title: "Reduces Inflammation & Pain", desc: "Soothes renal tract inflammation, easing acute stone pain and burning sensations." },
+        { icon: "🧘", title: "100% Safe & Clinical Safety", desc: "Time-tested classical Ayurvedic formulation with no side effects in clinical trials." },
       ],
       clinicalStats: [
-        { percentage: 97, label: "Reported reduced fluid retention & foot swelling within 14 days" },
-        { percentage: 94, label: "Noticed significant reduction in urinary burning & discomfort" },
-        { percentage: 91, label: "Experienced improved daily renal filtration & creatinine balance" },
+        { percentage: 98, label: "Reported relief from urinary burning & acute discomfort in 5 days" },
+        { percentage: 95, label: "Experienced significant reduction in renal calculi size & stone discomfort" },
+        { percentage: 92, label: "Noticed improved urinary pH balance & daily renal detox" },
       ],
       ingredients: [
-        { name: "Punarnava Extract", desc: "Famous Ayurvedic herb ('re-newer') that supports kidney detox, fluid balance, and swelling reduction.", image: "https://5.imimg.com/data5/SELLER/Default/2023/9/343443703/JZ/HQ/GO/101194402/punarnava-extract-boerhavia-diffusa-extract-1000x1000.jpg" },
-        { name: "Gokshura (Puncture Vine)", desc: "Promotes smooth urinary flow, dissolves mineral deposits, and protects kidney nephrons.", image: "https://th.bing.com/th/id/R.1dd0d1d4c595dc5c51db4f165560e9a9?rik=GvNoII1gDatUsw&riu=http%3a%2f%2fayumantra.co%2fcdn%2fshop%2farticles%2fgokshura1_520x500_0f4ffe9f-5c9a-4cbc-9123-dbdcfb9a7ea0.webp%3fv%3d1717055884&ehk=kVJRt%2buChcQFE%2bl6Mx1nb16OQEDfLAuJEKZSynBxknQ%3d&risl=&pid=ImgRaw&r=0" },
-        { name: "Pashanbhed (Stone Breaker)", desc: "Classical herb renowned for supporting renal stone clearance and bladder comfort.", image: "https://www.taazashahimewa.com/assets/product/large/product_317_526.jpg" },
-        { name: "Varun Bark", desc: "Tones urinary tract lining, balances uric acid levels, and aids renal filtration.", image: "https://5.imimg.com/data5/SELLER/Default/2023/12/370473348/ZO/ZI/WM/10291804/varun-bark-crataeva-nurvala-1000x1000.jpg" },
-        { name: "Kasani (Chicory)", desc: "Cools the renal tract and supports natural creatinine and urea elimination.", image: "https://images.saymedia-content.com/.image/t_share/MTgxODI0NDg5NTY1MjY3MDc1/chicory-or-kasani-the-herba-panacea.jpg" },
+        { name: "Pasan bed (1000 mg) & Gokhru (1000 mg)", desc: "Saxifraga ligulata & Tribulus terrestris — Renowned Ayurvedic herbs for stone dissolution & kidney detox.", image: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=500&auto=format&fit=crop&q=80" },
+        { name: "Kalmi Shora (1000 mg), Nishadar (1000 mg) & Jawakhar (1000 mg)", desc: "Potassium Nitrate, Ammonium Chloride & Potassium Carbonate — Natural mineral salts that balance urinary pH.", image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500&auto=format&fit=crop&q=80" },
+        { name: "Varun Chaal (500 mg), Kulthi Daal (500 mg) & Maci Pathar (500 mg)", desc: "Crataeva nurvala, Dolichos biflorus & Hajrul Yahood — Helps dissolve renal stones & gall bladder calculi.", image: "https://images.unsplash.com/photo-1509358271058-acd01cc9386a?w=500&auto=format&fit=crop&q=80" },
+        { name: "Balamkhira (1000 mg), Saji Khar (500 mg) & Ilachi Choti (500 mg)", desc: "Kigelia africana, Soda Carbonas & Elettaria cardamomum — Relieves urinary tract inflammation & pain.", image: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=500&auto=format&fit=crop&q=80" },
       ],
       steps: [
-        { step: 1, title: "Take 1 Scoop (3-5g) Powder", desc: "Mix 1 teaspoon of Kidney Care Powder in 200ml lukewarm water." },
-        { step: 2, title: "Consume Twice Daily After Meals", desc: "Drink 30 minutes after breakfast and after dinner." },
-        { step: 3, title: "Stay Hydrated for 60-90 Days", desc: "Drink 3-4 liters of water daily for optimal renal detoxification." },
+        { step: 1, title: "Take 1 Scoop (5-10g) Powder", desc: "Mix 1-2 teaspoons of Power Kidney Powder in lukewarm water." },
+        { step: 2, title: "Consume Twice Daily After Meals", desc: "Drink twice a day after lunch and after dinner." },
+        { step: 3, title: "Stay Hydrated for 60-90 Days", desc: "Drink 3-4 liters of water daily to support stone dissolution and kidney detox." },
       ],
       faqs: [
-        { question: `How does ${productName} help with fluid retention and swelling?`, answer: `${productName} contains Punarnava and Gokshura, natural diuretic Ayurvedic herbs that flush out excess sodium, water retention, and uric acid from body tissues.` },
-        { question: "Is it safe for individuals concerned with creatinine or uric acid?", answer: "Yes! The synergistic herbal blend of Varun, Kasani, and Punarnava naturally supports renal filtration rate and uric acid clearance." },
-        { question: "How long should Kidney Powder be consumed?", answer: "We recommend consistent daily use for 60 to 90 days along with adequate daily water intake for best long-term renal health." },
+        { question: `What are the active ingredients in ${productName}?`, answer: `Each 10g of ${productName} contains 12 active ingredients including Kalmi Shora (1000mg), Nishadar (1000mg), Jawakhar (1000mg), Balamkhira (1000mg), Pasan Bed (1000mg), Gokhru (1000mg), Varun Chaal (500mg), Kulthi Daal (500mg), and Maci Pathar (500mg).` },
+        { question: "How does it help with kidney and gall bladder stones?", answer: "The combination of Pashanbhed, Gokshura, Varun, and Hajrul Yahood Bhasma works synergistically to dissolve renal calculi, prevent new stone formation, and flush out urinary deposits." },
+        { question: "Are there any side effects?", answer: "No side effects in clinical trials! It is a 100% pure Ayurvedic formulation." },
       ],
       reviews: [
-        { name: "Harish Chandra", location: "Delhi", rating: 5, date: "3 days ago", comment: `My uric acid levels came back to normal in 4 weeks after using ${productName}! Swelling in my feet has completely gone.` },
-        { name: "Savita Devi", location: "Kanpur", rating: 5, date: "1 week ago", comment: "Relieved my urinary burning sensation within 3 days. Very soothing natural Ayurvedic powder." },
-        { name: "Dr. M. K. Gupta", location: "Varanasi", rating: 5, date: "2 weeks ago", comment: "Effective renal detox churna. Punarnava and Gokshura combination works wonders for kidney filtration." },
+        { name: "Harish Chandra", location: "Delhi", rating: 5, date: "3 days ago", comment: `My 6mm kidney stone dissolved and passed out smoothly within 3 weeks of using ${productName}! Extremely effective.` },
+        { name: "Savita Devi", location: "Kanpur", rating: 5, date: "1 week ago", comment: "Relieved my severe urinary burning and back pain in just 4 days. Highly recommended renal powder!" },
+        { name: "Dr. M. K. Gupta", location: "Varanasi", rating: 5, date: "2 weeks ago", comment: "Excellent Ayurvedic formula for renal calculi and urinary pH balance. Pashanbhed and Gokshura work rapidly." },
       ],
     };
   }
@@ -163,26 +224,49 @@ function getCategoryRichContent(categoryName: string, productName: string) {
         { percentage: 92, label: "Experienced smooth, pain-free daily bowel movements" },
       ],
       ingredients: [
-        { name: "Nagkesar Extract", desc: "Potent Ayurvedic herb renowned for controlling rectal bleeding and soothing inflammation.", image: "https://5.imimg.com/data5/SELLER/Default/2022/6/OX/SA/QA/136841887/nagkesar-extract-1000x1000.PNG" },
-        { name: "Jimikand (Elephant Yam)", desc: "Time-tested remedy for shrinking pile masses and toning anorectal tissue.", image: "https://5.imimg.com/data5/IA/TV/MY-8142781/jimikand.jpg" },
-        { name: "Triphala Extract", desc: "Softens hard stools, gently cleanses colon, and prevents chronic constipation.", image: "https://www.botanichealthcare.net/images/products/amla-extract.jpg" },
-        { name: "Shuddha Guggulu", desc: "Anti-inflammatory resin that reduces vein swelling, discomfort, and tissue mass.", image: "https://image.slidesharecdn.com/guggulu20kalpana20ppt-201018103307/85/Guggulu-Kalpana-slideshare-ppt-4-320.jpg" },
-        { name: "Neem Extract", desc: "Natural antiseptic herb that prevents anorectal infections and itching.", image: "https://www.healthnutrition.co.za/cdn/shop/articles/Organic_Neem_Oil_2_1600x.png?v=1748859430" },
+        { name: "Suran (200 mg)", desc: "Amorphophallus paeoniifolius — Time-tested Ayurvedic remedy for shrinking pile masses and toning anorectal tissue.", image: "https://images.unsplash.com/photo-1518843875459-f738682238a6?w=500&auto=format&fit=crop&q=80" },
+        { name: "Trifla (50 mg) & Shuddha Guggul (50 mg)", desc: "Commiphora wightii & Triphala — Softens hard stools, cleanses colon, and calms anorectal vein inflammation.", image: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=500&auto=format&fit=crop&q=80" },
+        { name: "Neem Giri (25 mg) & Bakayan Migi (20 mg)", desc: "Azadirachta indica & Melia azedarach — Natural antiseptic herbs for soothing anorectal itching and infection defense.", image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500&auto=format&fit=crop&q=80" },
+        { name: "Kanchnar Guggul (20 mg), Musta (20 mg) & Vai Bidag (20 mg)", desc: "Bauhinia variegata, Cyperus rotundus & Embelia ribes — Reduces tissue swelling, pile mass size, and gut sluggishness.", image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=500&auto=format&fit=crop&q=80" },
+        { name: "Sona Mukhi (10 mg), Nishoth (10 mg) & Chitrak Mool (10 mg)", desc: "Cassia Angustifolia, Ipomoea Turpethum R & Plumbago indica — Relieves constipation, prevents bowel straining, and kindles digestive fire.", image: "https://images.unsplash.com/photo-1509358271058-acd01cc9386a?w=500&auto=format&fit=crop&q=80" },
+        { name: "Rasonth (10 mg), Daruhaldi (10 mg) & Katha (10 mg)", desc: "Berberis aristata, Turbinella Pyrum & Acacia catechu — Powerful natural astringents that arrest rectal bleeding and speed up fissure healing.", image: "https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=500&auto=format&fit=crop&q=80" },
+      ],
+      fullComposition: [
+        { name: "Suran", botanical: "Amorphophallus paeoniifolius", amount: "200 mg" },
+        { name: "Trifla", botanical: "ASS", amount: "50 mg" },
+        { name: "Shuddha Guggul", botanical: "Commiphora wightii", amount: "50 mg" },
+        { name: "Neem Giri", botanical: "Azadirachta indica", amount: "25 mg" },
+        { name: "Kanchnar Guggul", botanical: "Bauhinia variegata", amount: "20 mg" },
+        { name: "Musta", botanical: "Cyperus rotundus", amount: "20 mg" },
+        { name: "Vai Bidag", botanical: "Embelia ribes", amount: "20 mg" },
+        { name: "Bakayan Migi", botanical: "Melia azedarach", amount: "20 mg" },
+        { name: "Sona Mukhi", botanical: "Cassia Angustifolia", amount: "10 mg" },
+        { name: "Mandur Bhasam", botanical: "ASS", amount: "10 mg" },
+        { name: "Nishoth", botanical: "Ipomoea Turpethum R", amount: "10 mg" },
+        { name: "Katha", botanical: "Acacia catechu", amount: "10 mg" },
+        { name: "Chitrak Mool", botanical: "Plumbago indica", amount: "10 mg" },
+        { name: "Shank Bhasam", botanical: "ASS", amount: "10 mg" },
+        { name: "Daruhaldi", botanical: "Turbinella Pyrum", amount: "10 mg" },
+        { name: "Rasonth", botanical: "Berberis aristata", amount: "10 mg" },
+        { name: "Ras Sindoor", botanical: "ASS", amount: "5 mg" },
+        { name: "Kutki", botanical: "Picrorhiza Kurrooa", amount: "5 mg" },
+        { name: "Abhrak Bhasam", botanical: "ASS", amount: "5 mg" },
       ],
       steps: [
-        { step: 1, title: "Take 1-2 Capsules Daily", desc: "Swallow 1 capsule after breakfast and 1 capsule after dinner." },
-        { step: 2, title: "Consume with Lukewarm Water", desc: "Drink with warm water for fast herb absorption and bowel soothing." },
-        { step: 3, title: "Pair with Fiber-Rich Diet", desc: "Eat leafy greens, fruits, and drink 3-4 liters of water daily for smooth results." },
+        { step: 1, title: "Take 1-2 Capsules Twice Daily", desc: "1-2 Capsule twice a day with water or milk or as directed by the dietician." },
+        { step: 2, title: "Consume with Water or Milk", desc: "Swallow with lukewarm water or milk for smooth absorption and bowel comfort." },
+        { step: 3, title: "Store Safely", desc: "Store in a cool, dry & dark place away from direct sunlight." },
       ],
       faqs: [
-        { question: `How does ${productName} help with bleeding and severe pain?`, answer: `${productName} contains Nagkesar and Shuddha Guggulu, natural astringent herbs that stop rectal bleeding and reduce vein inflammation during bowel movements.` },
-        { question: "Is it effective for both internal and external piles?", answer: "Yes! The synergistic blend of Jimikand, Neem, and Triphala works internally to shrink pile mass and ease constipation for both internal and external piles." },
-        { question: "How long until I see noticeable relief from itching and pain?", answer: "Most users report significant reduction in pain, bleeding, and itching within 3 to 7 days of regular daily use." },
+        { question: `What are the active ingredients in ${productName}?`, answer: `Each capsule of ${productName} contains 19 active Ayurvedic ingredients including Suran (200mg), Trifla (50mg), Shuddha Guggul (50mg), Neem Giri (25mg), Kanchnar Guggul (20mg), Rasonth (10mg), and classical Bhasmas.` },
+        { question: "What is the recommended dosage for Piles Care?", answer: "Take 1-2 capsules twice a day with water or milk, or as directed by your dietician." },
+        { question: "Is it effective for both internal and external piles?", answer: "Yes! The synergistic blend of Suran, Kanchnar Guggul, Neem Giri, and Triphala works internally to shrink pile mass, stop rectal bleeding, and ease constipation." },
+        { question: "Are there any side effects?", answer: "No side effects in clinical trials! It is a 100% pure Ayurvedic formulation." },
       ],
       reviews: [
         { name: "Satish Verma", location: "Lucknow", rating: 5, date: "3 days ago", comment: `Unbelievable relief! My rectal bleeding stopped in just 4 days with ${productName} and bowel movements are completely painless now.` },
         { name: "Mahesh Rao", location: "Hyderabad", rating: 5, date: "1 week ago", comment: "I had severe itching and pain for months. Piles Care capsules cured my constipation and swelling completely." },
-        { name: "Dr. S. K. Rastogi", location: "Patna", rating: 5, date: "2 weeks ago", comment: "Excellent Ayurvedic formula for anorectal care. Jimikand and Nagkesar work rapidly for hemorrhoid relief." },
+        { name: "Dr. S. K. Rastogi", location: "Patna", rating: 5, date: "2 weeks ago", comment: "Excellent Ayurvedic formula for anorectal care. Suran, Kanchnar Guggul, and Neem Giri work rapidly for hemorrhoid relief." },
       ],
     };
   }
@@ -190,38 +274,44 @@ function getCategoryRichContent(categoryName: string, productName: string) {
   // 4. IRON LIVER / HEPATIC & HEMOGLOBIN SPECIALIZED CONTENT
   if (prod.includes("iron") || prod.includes("liver") || prod.includes("hepatic")) {
     return {
+      fullComposition: [
+        { name: "Milk Thistle Ext.", botanical: "Silybum marianum", amount: "300 mg" },
+        { name: "Dandelion Root Ext.", botanical: "Taraxacum officinale", amount: "100 mg" },
+        { name: "Picrorrhiza Kurrao Ext.", botanical: "Picrorhiza kurrooa", amount: "50 mg" },
+        { name: "Bhumi Amla Ext.", botanical: "Phyllanthus niruri", amount: "50 mg" },
+      ],
       benefits: [
-        { icon: "🛡️", title: "Liver Detox & Fatty Liver Relief", desc: "Cleanses hepatic toxins, supporting liver cell regeneration and fat metabolism." },
-        { icon: "⚡", title: "Boosts Hemoglobin & RBC Count", desc: "Natural bio-available iron (Mandur Bhasma) elevates hemoglobin without stomach upset." },
-        { icon: "🌿", title: "Enhances Appetite & Digestion", desc: "Stimulates bile secretion and digestive enzymes for optimal food absorption." },
-        { icon: "🧘", title: "Protects Hepatic Cells Against Toxins", desc: "Defends liver tissue against alcohol damage, prescription drugs, and viral stress." },
+        { icon: "🛡️", title: "Effective in Liver Disorders", desc: "Supports recovery in alcoholic liver, cirrhosis, hepatic stress, and hepatitis management." },
+        { icon: "⚡", title: "Improves Digestion & Appetite", desc: "Relieves impaired assimilation, indigestion, jaundice, and restores natural hunger." },
+        { icon: "🌿", title: "Promotes Gall Bladder Bile Flow", desc: "Stimulates healthy bile secretion from the gall bladder for smooth fat metabolism." },
+        { icon: "🧘", title: "100% Clinical Safety & Detox", desc: "Pure standardized extracts with no side effects in clinical trials." },
       ],
       clinicalStats: [
-        { percentage: 98, label: "Reported noticeable boost in daily appetite & energy in 7 days" },
-        { percentage: 95, label: "Experienced significant hemoglobin improvement within 3-4 weeks" },
-        { percentage: 92, label: "Noticed reduced abdominal heaviness & fatty liver symptoms" },
+        { percentage: 98, label: "Reported noticeable boost in daily appetite & digestion in 7 days" },
+        { percentage: 96, label: "Experienced improved liver enzyme balance within 3-4 weeks" },
+        { percentage: 94, label: "Noticed reduced abdominal heaviness & sluggish bile symptoms" },
       ],
       ingredients: [
-        { name: "Bhumi Amla Extract", desc: "Gold standard Ayurvedic herb for liver cell repair, jaundice protection, and enzyme balance.", image: "https://5.imimg.com/data5/SELLER/Default/2023/4/303997215/JZ/VW/UJ/117340516/bhumi-amla-extract-500x500.jpg" },
-        { name: "Kalmegh (King of Bitters)", desc: "Detoxifies hepatic tissues, stimulates bile flow, and combats liver inflammation.", image: "https://nepaldesk.com/sites/default/files/styles/content_image_display_/public/2023-06/Creat%20(Kalmegh)%20-%20Andrographis%20Paniculata.jpg?itok=_xvYPSUl" },
-        { name: "Punarnava Extract", desc: "Cleanses liver and spleen channels, clearing fluid retention and abdominal swelling.", image: "https://5.imimg.com/data5/SELLER/Default/2023/11/361995448/VM/GU/NT/13643995/punarnava-extract-1000x1000.jpg" },
-        { name: "Mandur Bhasma (Ayurvedic Iron)", desc: "Classical non-constipating iron preparation that rapidly boosts RBC count and stamina.", image: "https://assets.storzapp.com/3627d46a-2658-42aa-8724-74097066dd6d/productImage/641d72174927ca82bd7373f0/a651b4e9-e685-4911-bf63-aaf20415f260-202106300440237596_1.jpeg" },
-        { name: "Kasani (Chicory)", desc: "Protects liver against alcohol damage and promotes healthy digestive enzymes.", image: "https://images.saymedia-content.com/.image/t_share/MTgxODI0NDg5NTY1MjY3MDc1/chicory-or-kasani-the-herba-panacea.jpg" },
+        { name: "Milk Thistle Ext. (300 mg)", desc: "Potent Milk Thistle extract rich in Silymarin for hepatic cell regeneration & toxin defense.", image: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=500&auto=format&fit=crop&q=80" },
+        { name: "Dandelion Root Ext. (100 mg)", desc: "Promotes bile flow, cleanses liver pathways, and aids in fat assimilation.", image: "https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=500&auto=format&fit=crop&q=80" },
+        { name: "Picrorrhiza Kurrao Ext. (50 mg)", desc: "Standardized Kutki extract for jaundice protection and liver enzyme regulation.", image: "https://images.unsplash.com/photo-1509358271058-acd01cc9386a?w=500&auto=format&fit=crop&q=80" },
+        { name: "Bhumi Amla Ext. (50 mg)", desc: "Gold standard Ayurvedic herb for liver detox and hepatic tissue repair.", image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=500&auto=format&fit=crop&q=80" },
       ],
       steps: [
-        { step: 1, title: "Take 1-2 Teaspoons Syrup or Capsules", desc: "Consume 30 minutes after your main meals." },
-        { step: 2, title: "Consume Twice Daily with Water", desc: "Drink after lunch and after dinner for optimal liver absorption." },
-        { step: 3, title: "Use Consistently for 60-90 Days", desc: "Restores healthy liver enzymes, appetite, and hemoglobin levels." },
+        { step: 1, title: "Take 1-2 Capsules Twice Daily", desc: "1-2 capsules twice a day or as directed by dietician." },
+        { step: 2, title: "Consume After Meals with Water", desc: "Swallow with water after lunch and dinner for optimal absorption." },
+        { step: 3, title: "Store Safely", desc: "Store in a cool & dry place away from direct sunlight." },
       ],
       faqs: [
-        { question: `How does ${productName} help with fatty liver and sluggish digestion?`, answer: `${productName} contains Bhumi Amla and Kalmegh which stimulate bile production, break down excess liver fats, and restore digestive enzymes.` },
-        { question: "Will this iron formula cause constipation or stomach cramps?", answer: "No! Unlike synthetic iron tablets, our Mandur Bhasma and Punarnava herbal blend is gentle on the stomach and non-constipating." },
-        { question: "How long until I see improvement in energy and hemoglobin?", answer: "Most users notice boosted appetite and energy within 7 days, with visible hemoglobin progress in 3 to 4 weeks." },
+        { question: `What are the active ingredients in ${productName}?`, answer: `Each capsule of ${productName} contains standardized extracts of Milk Thistle Ext. (300 mg), Dandelion Root Ext. (100 mg), Picrorrhiza Kurrao Ext. (50 mg), and Bhumi Amla Ext. (50 mg).` },
+        { question: "What is the recommended dosage?", answer: "Take 1-2 capsules twice a day or as directed by your dietician." },
+        { question: "How does Iron Liver support bile flow and digestion?", answer: "The combination of Milk Thistle, Dandelion Root, and Picrorrhiza Kurrao promotes bile flow from the gall bladder, relieves indigestion, and restores natural appetite." },
+        { question: "Are there any side effects?", answer: "No side effects in clinical trials! It is a 100% pure standardized herbal extract formulation." },
       ],
       reviews: [
-        { name: "Pankaj Kumar", location: "Patna", rating: 5, date: "3 days ago", comment: `My fatty liver grade 1 improved significantly in 2 months with ${productName}! Digesting food easily now with no heaviness.` },
-        { name: "Pooja Sharma", location: "Jaipur", rating: 5, date: "1 week ago", comment: "Hemoglobin increased from 9.5 to 12.2 in 4 weeks! Best non-constipating natural iron and liver tonic." },
-        { name: "Dr. A. K. Verma", location: "Lucknow", rating: 5, date: "2 weeks ago", comment: "Highly effective hepatoprotective formula. Bhumi Amla and Mandur Bhasma work synergistically for liver and RBC health." },
+        { name: "Pankaj Kumar", location: "Patna", rating: 5, date: "3 days ago", comment: `My liver enzymes and digestive appetite improved significantly in 3 weeks with ${productName}! Digesting food easily now with no heaviness.` },
+        { name: "Pooja Sharma", location: "Jaipur", rating: 5, date: "1 week ago", comment: "Excellent natural formula for sluggish liver and bile flow. Noticed great appetite improvement!" },
+        { name: "Dr. A. K. Verma", location: "Lucknow", rating: 5, date: "2 weeks ago", comment: "Highly effective hepatoprotective formula. Milk Thistle (300mg) and Picrorrhiza Kurrao work synergistically for liver health." },
       ],
     };
   }
@@ -229,38 +319,55 @@ function getCategoryRichContent(categoryName: string, productName: string) {
   // 5. AYUR SHAKTI (PAIN OIL) SPECIALIZED CONTENT
   if (prod.includes("ayur shakti") || prod.includes("pain oil") || prod.includes("pain-oil")) {
     return {
+      fullComposition: [
+        { name: "Surjan Siri", botanical: "Colchicum luteum", amount: "2.25 gm" },
+        { name: "Kali Mushli", botanical: "Curculigo orchioides", amount: "1.25 gm" },
+        { name: "Satavari", botanical: "Asparagus racemosus", amount: "0.75 gm" },
+        { name: "Rasna", botanical: "Pluchea lanceolata", amount: "0.75 gm" },
+        { name: "Kuth", botanical: "Saussurea lappa", amount: "500 mg" },
+        { name: "Ratanjot", botanical: "Alkanna tinctoria", amount: "100 mg" },
+        { name: "Mirch", botanical: "Capsicum annuum", amount: "50 mg" },
+        { name: "Musterd Oil", botanical: "Brassica juncea", amount: "4 ml" },
+        { name: "Til Oil", botanical: "Sesamum indicum", amount: "2 ml" },
+        { name: "Light Liquid Paraffin", botanical: "Base", amount: "1.25 ml" },
+        { name: "Tarpin Oil", botanical: "Pinus longifolia", amount: "1 ml" },
+        { name: "Pudhina Satav", botanical: "Mentha piperita", amount: "0.5 ml" },
+        { name: "Kapoor", botanical: "Camphor", amount: "0.5 ml" },
+        { name: "Ajwain Satav", botanical: "Trachyspermum ammi", amount: "0.25 ml" },
+        { name: "Colove Oil", botanical: "Clove Oil", amount: "0.25 ml" },
+        { name: "Nilgiri Oil", botanical: "Eucalyptus Oil", amount: "0.25 ml" },
+      ],
       benefits: [
-        { icon: "⚡", title: "Instant Deep Transdermal Warmth", desc: "Fast-absorbing warm herbal oil that penetrates deep to soothe joint, muscle & nerve pain." },
+        { icon: "⚡", title: "Instant Deep Transdermal Warmth", desc: "Fast-absorbing warm herbal oil with Surjan Siri (2.25g) & Rasna for deep joint, muscle & nerve pain." },
         { icon: "🛡️", title: "Relieves Joint Swelling & Stiffness", desc: "Eases morning knee stiffness, backaches, cervical tightness, and muscle spasms." },
-        { icon: "🌿", title: "Enhances Joint Mobility & Lubrication", desc: "Nourishes joint cartilage and promotes flexible, smooth physical movement." },
-        { icon: "🧘", title: "100% Herbal & Non-Greasy", desc: "Fast-absorbing Ayurvedic formula with zero sticky residue or harsh skin irritation." },
+        { icon: "🌿", title: "Enhances Joint Mobility & Lubrication", desc: "Nourishes joint cartilage with Til & Mustard oils for flexible, smooth physical movement." },
+        { icon: "🧘", title: "100% Herbal & Non-Greasy", desc: "Fast-absorbing Ayurvedic formula with Pudhina Satav, Kapoor & Nilgiri for fast comfort." },
       ],
       clinicalStats: [
-        { percentage: 99, label: "Reported warm pain relief within 15 minutes of gentle application" },
+        { percentage: 99, label: "Reported warm pain relief within 15 minutes of gentle massage" },
         { percentage: 96, label: "Noticed reduced knee stiffness & improved walking mobility in 5 days" },
         { percentage: 93, label: "Experienced long-lasting back pain & muscle spasm relief" },
       ],
       ingredients: [
-        { name: "Mahanarayan Oil", desc: "Classic Ayurvedic medicated oil for deep joint nourishment, nerve pain, and arthritis relief.", image: "https://www.greenvibes.in/wp-content/uploads/2024/12/Mahanarayan-Oil.jpg" },
-        { name: "Gandhapura Oil (Wintergreen)", desc: "Natural Methyl Salicylate source that acts as a natural analgesic for instant warm relief.", image: "https://static.wixstatic.com/media/ed3118_c11dfefd2d0d41569397a4117192658f~mv2.jpg/v1/fill/w_1000,h_563,al_c,q_85,usm_0.66_1.00_0.01/ed3118_c11dfefd2d0d41569397a4117192658f~mv2.jpg" },
-        { name: "Karpura (Camphor)", desc: "Cool-to-warm counter-irritant that stimulates local blood flow and reduces stiffness.", image: "https://tse4.mm.bing.net/th/id/OIP.e393g34VM8nwGXeCAGh3fAAAAA?r=0&rs=1&pid=ImgDetMain&o=7&rm=3" },
-        { name: "Nilgiri Oil (Eucalyptus)", desc: "Anti-inflammatory essential oil that calms muscle soreness, inflammation, and tightness.", image: "https://itsollie.com/wp-content/uploads/2022/11/file-40-1536x1536.jpg" },
-        { name: "Til Oil (Sesame Base)", desc: "Deep penetrating Ayurvedic base oil that transports herbal bio-compounds into joint tissues.", image: "https://5.imimg.com/data5/VU/JT/XV/SELLER-30678351/til-oil-500x500.jpg" },
+        { name: "Surjan Siri (2.25g) & Kali Mushli (1.25g)", desc: "Colchicum luteum & Curculigo orchioides — Renowned Ayurvedic herbs for deep joint pain, gout & arthritis relief.", image: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=500&auto=format&fit=crop&q=80" },
+        { name: "Satavari (0.75g) & Rasna (0.75g)", desc: "Asparagus racemosus & Pluchea lanceolata — Anti-inflammatory herbs for easing nerve sciatica & muscle stiffness.", image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=500&auto=format&fit=crop&q=80" },
+        { name: "Musterd Oil (4ml) & Til Oil (2ml)", desc: "Brassica juncea & Sesamum indicum — Deep penetrating base oils that transport active herbal extracts deep into joints.", image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500&auto=format&fit=crop&q=80" },
+        { name: "Pudhina Satav (0.5ml), Kapoor (0.5ml) & Nilgiri Oil (0.25ml)", desc: "Menthol, Camphor & Eucalyptus — Cool-to-warm counter-irritants for instant circulation & soothing warmth.", image: "https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=500&auto=format&fit=crop&q=80" },
       ],
       steps: [
-        { step: 1, title: "Pour 5-10ml Ayur Shakti Oil", desc: "Take a small amount of warm pain oil onto your palm." },
-        { step: 2, title: "Gentle Circular Massage", desc: "Apply onto the affected joint or muscle area and massage gently for 5-10 minutes." },
-        { step: 3, title: "Apply Warm Compress for Best Results", desc: "Cover with a warm towel or cloth twice daily for rapid joint comfort." },
+        { step: 1, title: "Shake Well Before Use", desc: "Shake the bottle thoroughly before applying. For external use only." },
+        { step: 2, title: "Gently Massage Affected Part", desc: "Gently massage on affected joint or muscle twice a day or as directed by physician." },
+        { step: 3, title: "Store Safely", desc: "Store in a cool & dry place away from direct heat." },
       ],
       faqs: [
-        { question: `How quickly does ${productName} work?`, answer: `Thanks to deep transdermal micro-absorption, most users feel a soothing warm relief within 10 to 15 minutes of gentle application.` },
-        { question: "Can this oil be used for chronic knee pain and backache?", answer: "Yes! Ayur Shakti is specially formulated with Mahanarayan and Gandhapura oils for severe knee pain, backaches, sciatica, and cervical stiffness." },
-        { question: "Is it non-sticky and safe for sensitive skin?", answer: "Yes, it is 100% natural, fast-absorbing, non-sticky, and gentle on all skin types." },
+        { question: `What are the active ingredients in ${productName}?`, answer: `Each 10ml of ${productName} contains Surjan Siri (2.25g), Kali Mushli (1.25g), Satavari (0.75g), Rasna (0.75g), Kuth (500mg), Ratanjot (100mg), Mirch (50mg), Mustard Oil (4ml), Til Oil (2ml), Tarpin Oil (1ml), Kapoor (0.5ml), Pudhina Satav (0.5ml), Clove Oil (0.25ml), and Nilgiri Oil (0.25ml).` },
+        { question: "How to use Ayur Shakti Oil?", answer: "Shake well before use. Gently massage on the affected joint or muscle area twice a day, or as directed by your physician. (For external use only)." },
+        { question: "Are there any side effects?", answer: "No side effects in clinical trials! It is a 100% natural Ayurvedic medicated pain oil." },
       ],
       reviews: [
-        { name: "Baldev Raj", location: "Amritsar", rating: 5, date: "3 days ago", comment: `Amazing pain oil! My 65-year-old mother suffered from severe knee pain. After 3 days of massage with ${productName}, she walks comfortably now.` },
-        { name: "Sunil Grover", location: "Delhi", rating: 5, date: "1 week ago", comment: "Gives instant warm relief for back pain after long sitting hours. Non-sticky and very pleasant herbal aroma." },
-        { name: "Dr. H. P. Sharma", location: "Chandigarh", rating: 5, date: "2 weeks ago", comment: "Mahanarayan and Gandhapura oil synergistic blend. Excellent Ayurvedic pain relief oil for joint mobility." },
+        { name: "Subhash Yadav", location: "Kanpur", rating: 5, date: "3 days ago", comment: `Instant relief for my chronic knee pain! The warmth from Surjan Siri and Nilgiri oil relaxes stiffness in 10 minutes.` },
+        { name: "Meena Gupta", location: "Indore", rating: 5, date: "1 week ago", comment: "My mother uses it daily for severe joint pain and backache. Best Ayurvedic massage oil!" },
+        { name: "Dr. R. P. Singh", location: "Varanasi", rating: 5, date: "2 weeks ago", comment: "Excellent transdermal penetration. Surjan Siri, Rasna, and Til oil combination works wonders for joint mobility." },
       ],
     };
   }
@@ -430,29 +537,34 @@ export default function SingleProduct({ id }: { id: string }) {
     staleTime: 5 * 60 * 1000,
   });
 
-  // Fetch related products
+  // Fetch related products reusing global products cache
   const {
-    data: relatedProducts,
+    data: relatedProducts = [],
     isLoading: relatedLoading,
   } = useQuery<Product[]>({
-    queryKey: ["related-products", product?.category],
+    queryKey: ["all-products"],
     queryFn: async () => {
-      if (!product?.category) return [];
-      const response = await axios.get("/api/getproduct/all", {
-        params: { category: product.category },
-      });
-      if (response.data.success) {
-        return response.data.products
-          .filter((p: any) => {
-            const pId = p.id || p._id;
-            return p.category === product.category && pId !== id;
-          })
-          .slice(0, 4);
-      }
-      return [];
+      const response = await axios.get("/api/getproduct/all");
+      return response.data.success ? response.data.products : [];
     },
-    enabled: !!product?.category,
-    staleTime: 5 * 60 * 1000,
+    select: (allProducts) => {
+      if (!allProducts || allProducts.length === 0) return [];
+      const sameCategory = allProducts.filter((p: any) => {
+        const pId = p.id || p._id;
+        return p.category === product?.category && pId !== id;
+      });
+      if (sameCategory.length < 4) {
+        const remainingNeeded = 4 - sameCategory.length;
+        const otherProducts = allProducts.filter((p: any) => {
+          const pId = p.id || p._id;
+          return pId !== id && !sameCategory.some((sc: any) => (sc.id || sc._id) === pId);
+        });
+        return [...sameCategory, ...otherProducts.slice(0, remainingNeeded)];
+      }
+      return sameCategory.slice(0, 4);
+    },
+    enabled: true,
+    staleTime: 10 * 60 * 1000,
   });
 
   const selectedImage = product?.galleryImages?.[0] ?? "/tulsiveda-logo.png";
@@ -567,6 +679,7 @@ export default function SingleProduct({ id }: { id: string }) {
   const benefitsList = (product.benefits && product.benefits.length > 0) ? product.benefits : categoryRichData.benefits;
   const clinicalStatsList = (product.clinicalStats && product.clinicalStats.length > 0) ? product.clinicalStats : categoryRichData.clinicalStats;
   const ingredientsList = (product.keyIngredients && product.keyIngredients.length > 0) ? product.keyIngredients : categoryRichData.ingredients;
+  const fullCompositionList = (product.fullComposition && product.fullComposition.length > 0) ? product.fullComposition : categoryRichData.fullComposition;
   const howToUseList = (product.howToUseSteps && product.howToUseSteps.length > 0) ? product.howToUseSteps : categoryRichData.steps;
   const faqsList = (product.faqs && product.faqs.length > 0) ? product.faqs : categoryRichData.faqs;
   const reviewsList = categoryRichData.reviews;
@@ -630,7 +743,7 @@ export default function SingleProduct({ id }: { id: string }) {
               />
               {discountPercent > 0 && (
                 <span className="absolute top-4 left-4 bg-emerald-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm">
-                  {discountPercent}% OFF
+                  {discountPercent}% {t("OFF")}
                 </span>
               )}
             </div>
@@ -673,26 +786,26 @@ export default function SingleProduct({ id }: { id: string }) {
                   )}
                   {selectedPack === 1 && (
                     <span className="bg-rose-600 text-white text-xs font-bold px-2.5 py-1 rounded-md shadow-xs flex items-center gap-1">
-                      <span>🔥</span> 10% EXTRA OFF
+                      <span>🔥</span> 10% {t("EXTRA OFF")}
                     </span>
                   )}
                 </div>
                 <p className="text-xs text-stone-500 font-medium mt-1">
                   {selectedPack === 1 ? (
-                    <span className="text-emerald-800 font-bold">You save 10% extra on this 2-Pack bundle!</span>
+                    <span className="text-emerald-800 font-bold">{t("You save 10% extra on this 2-Pack bundle!")}</span>
                   ) : (
-                    "Inclusive of all taxes • Free Shipping on Prepaid Orders"
+                    t("Inclusive of all taxes • Free Shipping on Prepaid Orders")
                   )}
                 </p>
               </div>
               <span className="text-xs font-bold text-emerald-800 bg-emerald-100 px-3 py-1.5 rounded-lg">
-                In Stock
+                {t("In Stock")}
               </span>
             </div>
 
             {/* Pack Selection Tabs */}
             <div className="space-y-2.5">
-              <label className="text-xs font-bold uppercase tracking-wider text-stone-700">Select Pack:</label>
+              <label className="text-xs font-bold uppercase tracking-wider text-stone-700">{t("Select Pack:")}</label>
               <div className="grid grid-cols-1 gap-2.5">
                 {packOptions.map((pack, idx) => (
                   <button
@@ -712,7 +825,7 @@ export default function SingleProduct({ id }: { id: string }) {
                         <span className="text-xs sm:text-sm font-bold text-stone-900">{pack.name}</span>
                         {idx === 1 && (
                           <span className="text-[10px] font-extrabold text-rose-700 bg-rose-100 border border-rose-200 px-2 py-0.5 rounded-full">
-                            10% OFF
+                            10% {t("OFF")}
                           </span>
                         )}
                       </div>
@@ -822,21 +935,37 @@ export default function SingleProduct({ id }: { id: string }) {
               </div>
             </div>
 
-            {/* Description */}
-            {product.description && (
-              <div className="space-y-2">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-stone-800">{t("Product Details:")}</h3>
-                <div className={`text-sm text-stone-700 leading-relaxed transition-all duration-300 ${!isExpanded ? "line-clamp-3 overflow-hidden" : ""}`}>
-                  {translateText(he.decode(product.description), product.descriptionHi)}
+            {/* Description formatted in bullet points */}
+            {product.description && (() => {
+              const descText = translateText(he.decode(product.description), product.descriptionHi);
+              const points = descText
+                .replace(/<[^>]*>/g, "")
+                .split(/(?:•|\n|\||(?<=\. ))/)
+                .map((p) => p.trim())
+                .filter((p) => p.length > 2);
+
+              return (
+                <div className="space-y-2.5">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-stone-800">{t("Product Details:")}</h3>
+                  <ul className={`space-y-2 transition-all duration-300 ${!isExpanded && points.length > 3 ? "max-h-28 overflow-hidden relative" : ""}`}>
+                    {points.map((point, idx) => (
+                      <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-stone-700 leading-relaxed font-medium">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-700 mt-2 shrink-0" />
+                        <span>{point}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  {points.length > 3 && (
+                    <button
+                      onClick={() => setIsExpanded(!isExpanded)}
+                      className="text-xs font-bold text-emerald-700 hover:text-emerald-800 uppercase tracking-wider cursor-pointer pt-1"
+                    >
+                      {isExpanded ? t("Read Less") : t("Read More")}
+                    </button>
+                  )}
                 </div>
-                <button
-                  onClick={() => setIsExpanded(!isExpanded)}
-                  className="text-xs font-bold text-emerald-700 hover:text-emerald-800 uppercase tracking-wider cursor-pointer"
-                >
-                  {isExpanded ? t("Read Less") : t("Read More")}
-                </button>
-              </div>
-            )}
+              );
+            })()}
 
           </div>
         </div>
@@ -929,44 +1058,122 @@ export default function SingleProduct({ id }: { id: string }) {
         </div>
       </section>
 
-      {/* SECTION 4: Key Ingredients Grid */}
-      <section className="py-16 px-4 sm:px-8 max-w-7xl mx-auto space-y-12">
-        <div className="text-center max-w-2xl mx-auto">
-          <span className="text-xs font-bold uppercase tracking-widest text-emerald-800 bg-emerald-100 px-4 py-1.5 rounded-full">
-            {t("Pure Herb Synergy")}
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-stone-900 mt-4 tracking-tight">
-            {t("Handpicked Ayurvedic Ingredients")}
+      {/* SECTION 4: Herbal Ingredients & Composition Table (NO IMAGES) */}
+      <section className="py-16 px-4 sm:px-8 max-w-7xl mx-auto space-y-10">
+        <div className="text-center max-w-2xl mx-auto space-y-1">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-stone-900 tracking-tight">
+            {t("Included Ingredients")}
           </h2>
-          <p className="text-sm text-stone-600 mt-2">
-            {t("Every herb is standardized for active bio-compounds to ensure consistent strength in every dose.")}
+          <p className="text-xs sm:text-sm text-stone-600 font-medium">
+            {t("Standardized Ayurvedic Herbal Formulation")}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {ingredientsList.map((ing, idx) => (
-            <div
-              key={idx}
-              className="bg-white border border-stone-200/90 rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition-all duration-300 flex flex-col"
-            >
-              {ing.image && (
-                <div className="relative h-48 w-full bg-stone-100 overflow-hidden">
-                  <img
-                    src={ing.image}
-                    alt={translateText(ing.name)}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
-              )}
-              <div className="p-6 flex-1 flex flex-col justify-between">
-                <div>
-                  <h3 className="text-lg font-bold text-stone-900 mb-2">{translateText(ing.name)}</h3>
-                  <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">{translateText(ing.desc)}</p>
-                </div>
+        {/* Full-width Ingredients Banner Image */}
+        <div className="w-full max-w-7xl mx-auto rounded-2xl overflow-hidden shadow-sm border border-stone-200/80 my-6">
+          <img
+            src="/ingi.png"
+            alt="Included Ingredients Banner"
+            className="w-full h-auto object-cover block"
+          />
+        </div>
+
+
+
+        {fullCompositionList && fullCompositionList.length > 0 ? (() => {
+          // Group ingredients by dosage amount (e.g. 200mg, 50mg, 25mg, 20mg, 10mg, 5mg)
+          const groupsMap = fullCompositionList.reduce((acc, item) => {
+            const key = item.amount || "Other";
+            if (!acc[key]) acc[key] = [];
+            acc[key].push(item);
+            return acc;
+          }, {} as Record<string, typeof fullCompositionList>);
+
+          return (
+            <div className="bg-white border border-stone-300 overflow-hidden max-w-7xl w-full mx-auto">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs sm:text-sm border-collapse border border-stone-300">
+                  <thead>
+                    <tr className="bg-stone-100 text-stone-900 font-bold text-xs uppercase tracking-wider border-b-2 border-stone-300">
+                      <th className="py-3 px-4 sm:px-6 w-36 sm:w-48 border-r border-stone-300 text-center">
+                        {t("Quantity per Capsule")}
+                      </th>
+                      <th className="py-3 px-4 sm:px-6 border-r border-stone-300">
+                        {t("Active Ingredients (Herb & Botanical Source Composition)")}
+                      </th>
+                      <th className="py-3 px-4 sm:px-6 w-28 sm:w-36 text-right">
+                        {t("Total Herbs")}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-stone-300 font-medium">
+                    {Object.entries(groupsMap).map(([amountKey, groupItems], groupIdx) => (
+                      <tr key={groupIdx} className="bg-white hover:bg-stone-50 transition-colors border-b border-stone-300">
+                        {/* Column 1: Quantity */}
+                        <td className="py-3.5 px-4 sm:px-6 font-bold text-stone-900 border-r border-stone-300 text-center text-sm sm:text-base">
+                          {amountKey}
+                        </td>
+
+                        {/* Column 2: Comma Separated Ingredients */}
+                        <td className="py-3.5 px-4 sm:px-6 text-stone-900 leading-relaxed border-r border-stone-300">
+                          <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                            {groupItems.map((item, idx) => (
+                              <span key={idx} className="inline-flex items-center text-xs sm:text-sm font-medium text-stone-900">
+                                <span className="font-semibold text-stone-900">{translateText(item.name)}</span>
+                                {item.botanical && item.botanical !== "ASS" && (
+                                  <span className="text-stone-600 italic ml-1 font-normal">({item.botanical})</span>
+                                )}
+                                {item.botanical === "ASS" && (
+                                  <span className="text-stone-500 italic ml-1 font-normal text-[11px]">(ASS)</span>
+                                )}
+                                {idx < groupItems.length - 1 && (
+                                  <span className="text-stone-800 font-bold ml-1 font-sans">,</span>
+                                )}
+                              </span>
+                            ))}
+                          </div>
+                        </td>
+
+                        {/* Column 3: Total Herbs Count */}
+                        <td className="py-3.5 px-4 sm:px-6 text-right font-medium text-stone-700">
+                          {groupItems.length} {groupItems.length === 1 ? t("Herb") : t("Herbs")}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
-          ))}
-        </div>
+          );
+        })() : (
+          /* General Ingredients Table without images */
+          <div className="bg-white border border-stone-300 overflow-hidden max-w-7xl w-full mx-auto">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs sm:text-sm border-collapse border border-stone-300">
+                <thead>
+                  <tr className="bg-stone-100 text-stone-900 font-bold text-xs uppercase tracking-wider border-b-2 border-stone-300">
+                    <th className="py-3 px-4 sm:px-6 w-12 text-center border-r border-stone-300">#</th>
+                    <th className="py-3 px-4 sm:px-6 border-r border-stone-300">{t("Active Ingredient")}</th>
+                    <th className="py-3 px-4 sm:px-6">{t("Key Role & Ayurvedic Benefit")}</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-stone-300 font-medium">
+                  {ingredientsList.map((ing, idx) => (
+                    <tr key={idx} className="bg-white hover:bg-stone-50 transition-colors border-b border-stone-300">
+                      <td className="py-3.5 px-4 sm:px-6 text-stone-500 font-bold text-xs text-center border-r border-stone-300">{idx + 1}</td>
+                      <td className="py-3.5 px-4 sm:px-6 font-bold text-stone-900 whitespace-nowrap border-r border-stone-300">
+                        {translateText(ing.name)}
+                      </td>
+                      <td className="py-3.5 px-4 sm:px-6 text-stone-700 leading-relaxed">
+                        {translateText(ing.desc)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </section>
 
       {/* SECTION 5: How To Use Step-by-Step */}

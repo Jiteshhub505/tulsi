@@ -13,12 +13,12 @@ import {
   TrendingUp,
   WandSparkles,
   Activity,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
-import Link from "next/link";
-import { ShoppingBag, ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage } from "@/context/language-context";
 
 interface Feature {
@@ -39,38 +39,184 @@ const defaultFeatures: Feature[] = [
   {
     headingKey: "Ashwagandha",
     descriptionKey: "Ashwagandha Desc",
-    icon: <BatteryCharging className="size-6" />,
+    icon: <BatteryCharging className="size-6 text-emerald-700" />,
   },
   {
     headingKey: "Amla Extract",
     descriptionKey: "Amla Desc",
-    icon: <ShieldCheck className="size-6" />,
+    icon: <ShieldCheck className="size-6 text-emerald-700" />,
   },
   {
     headingKey: "Gokshura",
     descriptionKey: "Gokshura Desc",
-    icon: <Flame className="size-6" />,
+    icon: <Flame className="size-6 text-emerald-700" />,
   },
   {
     headingKey: "Pippali",
     descriptionKey: "Pippali Desc",
-    icon: <HeartPulse className="size-6" />,
+    icon: <HeartPulse className="size-6 text-emerald-700" />,
   },
   {
     headingKey: "Kaunch Beej",
     descriptionKey: "Kaunch Beej Desc",
-    icon: <Activity className="size-6" />,
+    icon: <Activity className="size-6 text-emerald-700" />,
+  },
+  {
+    headingKey: "Safed Musli",
+    descriptionKey: "Safed Musli Desc",
+    icon: <TrendingUp className="size-6 text-emerald-700" />,
+  },
+  {
+    headingKey: "Shatavari",
+    descriptionKey: "Shatavari Desc",
+    icon: <WandSparkles className="size-6 text-emerald-700" />,
+  },
+  {
+    headingKey: "Pure Shilajit",
+    descriptionKey: "Shilajit Desc",
+    icon: <Layers className="size-6 text-emerald-700" />,
+  },
+  {
+    headingKey: "Vidarikand",
+    descriptionKey: "Vidarikand Desc",
+    icon: <SquareKanban className="size-6 text-emerald-700" />,
+  },
+  {
+    headingKey: "Akarkara",
+    descriptionKey: "Akarkara Desc",
+    icon: <RadioTower className="size-6 text-emerald-700" />,
+  },
+  {
+    headingKey: "Salam Panja",
+    descriptionKey: "Salam Panja Desc",
+    icon: <GitPullRequest className="size-6 text-emerald-700" />,
+  },
+  {
+    headingKey: "Giloy (Guduchi)",
+    descriptionKey: "Giloy Desc",
+    icon: <ShieldCheck className="size-6 text-emerald-700" />,
+  },
+  {
+    headingKey: "Punarnava",
+    descriptionKey: "Punarnava Desc",
+    icon: <Activity className="size-6 text-emerald-700" />,
+  },
+  {
+    headingKey: "Brahmi",
+    descriptionKey: "Brahmi Desc",
+    icon: <WandSparkles className="size-6 text-emerald-700" />,
+  },
+  {
+    headingKey: "Shankhpushpi",
+    descriptionKey: "Shankhpushpi Desc",
+    icon: <HeartPulse className="size-6 text-emerald-700" />,
+  },
+  {
+    headingKey: "Yashad Bhasma",
+    descriptionKey: "Yashad Bhasma Desc",
+    icon: <Flame className="size-6 text-emerald-700" />,
+  },
+  {
+    headingKey: "Swarna Bhasma",
+    descriptionKey: "Swarna Bhasma Desc",
+    icon: <TrendingUp className="size-6 text-emerald-700" />,
+  },
+  {
+    headingKey: "Tulsi Extract",
+    descriptionKey: "Tulsi Desc",
+    icon: <Leaf className="size-6 text-emerald-700" />,
+  },
+  {
+    headingKey: "Haritaki",
+    descriptionKey: "Haritaki Desc",
+    icon: <Layers className="size-6 text-emerald-700" />,
+  },
+  {
+    headingKey: "Triphala",
+    descriptionKey: "Triphala Desc",
+    icon: <ShieldCheck className="size-6 text-emerald-700" />,
+  },
+  {
+    headingKey: "Neem Giri",
+    descriptionKey: "Neem Giri Desc",
+    icon: <Leaf className="size-6 text-emerald-700" />,
+  },
+  {
+    headingKey: "Kanchnar Guggul",
+    descriptionKey: "Kanchnar Guggul Desc",
+    icon: <Flame className="size-6 text-emerald-700" />,
+  },
+  {
+    headingKey: "Musta",
+    descriptionKey: "Musta Desc",
+    icon: <Activity className="size-6 text-emerald-700" />,
+  },
+  {
+    headingKey: "Vai Bidag",
+    descriptionKey: "Vai Bidag Desc",
+    icon: <WandSparkles className="size-6 text-emerald-700" />,
+  },
+  {
+    headingKey: "Bakayan Migi",
+    descriptionKey: "Bakayan Migi Desc",
+    icon: <ShieldCheck className="size-6 text-emerald-700 text-emerald-700" />,
+  },
+  {
+    headingKey: "Sona Mukhi",
+    descriptionKey: "Sona Mukhi Desc",
+    icon: <TrendingUp className="size-6 text-emerald-700" />,
+  },
+  {
+    headingKey: "Mandur Bhasam",
+    descriptionKey: "Mandur Bhasam Desc",
+    icon: <BatteryCharging className="size-6 text-emerald-700" />,
+  },
+  {
+    headingKey: "Nishoth",
+    descriptionKey: "Nishoth Desc",
+    icon: <Leaf className="size-6 text-emerald-700" />,
+  },
+  {
+    headingKey: "Katha",
+    descriptionKey: "Katha Desc",
+    icon: <Layers className="size-6 text-emerald-700" />,
+  },
+  {
+    headingKey: "Chitrak Mool",
+    descriptionKey: "Chitrak Mool Desc",
+    icon: <Flame className="size-6 text-emerald-700" />,
+  },
+  {
+    headingKey: "Shank Bhasam",
+    descriptionKey: "Shank Bhasam Desc",
+    icon: <ShieldCheck className="size-6 text-emerald-700" />,
+  },
+  {
+    headingKey: "Daruhaldi",
+    descriptionKey: "Daruhaldi Desc",
+    icon: <WandSparkles className="size-6 text-emerald-700" />,
+  },
+  {
+    headingKey: "Rasonth",
+    descriptionKey: "Rasonth Desc",
+    icon: <HeartPulse className="size-6 text-emerald-700" />,
+  },
+  {
+    headingKey: "Kutki",
+    descriptionKey: "Kutki Desc",
+    icon: <Activity className="size-6 text-emerald-700" />,
   },
   {
     headingKey: "100% Natural",
     descriptionKey: "Natural Formula Desc",
-    icon: <Leaf className="size-6" />,
+    icon: <Leaf className="size-6 text-emerald-700" />,
   },
 ];
 
 const Features = () => {
   const { t, translateText } = useLanguage();
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [showAllFeatures, setShowAllFeatures] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
@@ -104,8 +250,10 @@ const Features = () => {
     return () => clearInterval(timer);
   }, []);
 
+  const visibleFeatures = showAllFeatures ? defaultFeatures : defaultFeatures.slice(0, 9);
+
   return (
-    <section className="pt-6 w-full pb-2">
+    <section className="pt-6 w-full pb-8">
       <div className="w-full space-y-8">
         
         {/* Infographic Image Carousel */}
@@ -165,10 +313,11 @@ const Features = () => {
           </div>
         </div>
 
+        {/* Ingredients Grid Cards */}
         <div className="mx-auto max-w-7xl px-4 sm:px-6 grid gap-0 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          {defaultFeatures.map((feature, i) => (
+          {visibleFeatures.map((feature, i) => (
             <div key={i} className="flex flex-col bg-white dark:bg-zinc-900 p-8 border border-zinc-100 dark:border-zinc-800 transition-all hover:shadow-md hover:z-10">
-              <div className="bg-primary/10 text-primary mb-4 flex size-12 items-center justify-center rounded-full">
+              <div className="bg-emerald-100/80 text-emerald-800 mb-4 flex size-12 items-center justify-center rounded-full border border-emerald-200/60">
                 {feature.icon}
               </div>
               <h3 className="mb-2 text-lg font-bold text-zinc-900 dark:text-zinc-100">{t(feature.headingKey)}</h3>
@@ -177,14 +326,19 @@ const Features = () => {
           ))}
         </div>
 
-        {/* Shop CTA */}
-        <div className="flex justify-center py-10">
-          <Link href="/shop/148c338c-bf9f-49c2-8c86-1fda31b15a88">
-            <button className="inline-flex items-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-8 py-4 rounded-xl shadow-lg shadow-emerald-700/20 transition-all duration-300 hover:-translate-y-0.5 cursor-pointer text-sm tracking-wide">
-              <ShoppingBag size={18} />
-              {t("Shop Veda Shakti")}
-            </button>
-          </Link>
+        {/* Show More / Show Less Button */}
+        <div className="flex justify-center pt-4 pb-4">
+          <button
+            onClick={() => setShowAllFeatures(!showAllFeatures)}
+            className="inline-flex items-center gap-2 bg-emerald-800 hover:bg-emerald-900 text-white font-bold px-8 py-3.5 rounded-full shadow-md transition-all duration-300 hover:-translate-y-0.5 cursor-pointer text-sm tracking-wide"
+          >
+            <span>
+              {showAllFeatures
+                ? t("Show Less")
+                : `${t("Show More Ingredients")} (${defaultFeatures.length - 9} ${t("More")})`}
+            </span>
+            <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${showAllFeatures ? "rotate-180" : ""}`} />
+          </button>
         </div>
       </div>
     </section>

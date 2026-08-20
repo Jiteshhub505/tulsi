@@ -62,13 +62,12 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
   }, [searchParams]);
 
   useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
-    script.async = true;
-    document.body.appendChild(script);
-    return () => {
-      document.body.removeChild(script);
-    };
+    if (!document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]')) {
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.async = true;
+      document.body.appendChild(script);
+    }
   }, []);
 
   const handleApplyCoupon = () => {
@@ -112,17 +111,31 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
         }
       } else {
         // Razorpay flow
-        const response = await axios.post("/api/orders/initiate-payment", {
-          couponCode: appliedCoupon,
-        });
+        let response;
+        try {
+          response = await axios.post("/api/orders/initiate-payment", {
+            couponCode: appliedCoupon,
+          });
+        } catch (err: any) {
+          const errMsg = err.response?.data?.message || "Failed to initiate Razorpay payment. Please check API keys or use COD.";
+          toast.error(errMsg);
+          setPlacingOrder(false);
+          return;
+        }
 
-        if (!response.data.success) {
-          toast.error(response.data.message || "Failed to initiate payment");
+        if (!response.data?.success) {
+          toast.error(response.data?.message || "Failed to initiate payment");
           setPlacingOrder(false);
           return;
         }
 
         const { keyId, id, amount, currency } = response.data;
+
+        if (typeof window === "undefined" || !(window as any).Razorpay) {
+          toast.error("Razorpay SDK not loaded yet. Please refresh the page or select Cash on Delivery.");
+          setPlacingOrder(false);
+          return;
+        }
 
         const options = {
           key: keyId,
@@ -173,6 +186,11 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
         };
 
         const rzp = new (window as any).Razorpay(options);
+        rzp.on("payment.failed", function (resp: any) {
+          console.error("Razorpay Payment Failed:", resp.error);
+          toast.error(resp.error?.description || "Payment failed or was cancelled.");
+          setPlacingOrder(false);
+        });
         rzp.open();
       }
     } catch (error: any) {

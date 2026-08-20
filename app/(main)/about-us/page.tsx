@@ -17,8 +17,11 @@ import {
   TestTube,
   TreePine
 } from "lucide-react";
+import { useLanguage } from "@/context/language-context";
 
 export default function AboutUsPage() {
+  const { t } = useLanguage();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-50 to-amber-50/30">
       
@@ -33,29 +36,28 @@ export default function AboutUsPage() {
         <div className="max-w-6xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-emerald-100 px-4 py-2 rounded-full mb-6">
             <Leaf size={16} className="text-emerald-700" />
-            <span className="text-sm font-semibold text-emerald-900">About TulsiVeda</span>
+            <span className="text-sm font-semibold text-emerald-900">{t("About TulsiVeda")}</span>
           </div>
           
           <h1 className="text-4xl md:text-6xl font-bold text-stone-900 mb-6 leading-tight">
-            Ancient Ayurvedic Wisdom<br />
-            <span className="text-emerald-700">for Modern Wellness</span>
+            {t("Ancient Ayurvedic Wisdom")}<br />
+            <span className="text-emerald-700">{t("for Modern Wellness")}</span>
           </h1>
           
           <p className="text-lg md:text-xl text-stone-600 max-w-3xl mx-auto leading-relaxed mb-12">
-            Bringing you 5000+ years of traditional Ayurvedic knowledge combined with modern science 
-            to create authentic, natural wellness solutions for everyday life.
+            {t("About Us Hero Subtitle")}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/shop">
               <button className="bg-emerald-700 hover:bg-emerald-800 text-white font-semibold px-8 py-4 rounded-lg transition-all cursor-pointer inline-flex items-center gap-2 shadow-lg hover:shadow-xl">
-                Explore Our Products
+                {t("Explore Our Products")}
                 <ArrowRight size={18} />
               </button>
             </Link>
             <a href="https://www.instagram.com/tulsiveda2/" target="_blank" rel="noopener noreferrer">
               <button className="border-2 border-stone-300 text-stone-700 hover:bg-stone-100 font-semibold px-8 py-4 rounded-lg transition-all cursor-pointer">
-                Get in Touch
+                {t("Get in Touch")}
               </button>
             </a>
           </div>
@@ -68,19 +70,19 @@ export default function AboutUsPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
               <div className="text-3xl md:text-4xl font-bold text-emerald-700 mb-2">5000+</div>
-              <div className="text-sm text-stone-600 font-medium">Years of Ayurvedic Wisdom</div>
+              <div className="text-sm text-stone-600 font-medium">{t("Years of Ayurvedic Wisdom")}</div>
             </div>
             <div>
               <div className="text-3xl md:text-4xl font-bold text-emerald-700 mb-2">50K+</div>
-              <div className="text-sm text-stone-600 font-medium">Happy Customers</div>
+              <div className="text-sm text-stone-600 font-medium">{t("Happy Customers")}</div>
             </div>
             <div>
               <div className="text-3xl md:text-4xl font-bold text-emerald-700 mb-2">100+</div>
-              <div className="text-sm text-stone-600 font-medium">Natural Products</div>
+              <div className="text-sm text-stone-600 font-medium">{t("Natural Products")}</div>
             </div>
             <div>
               <div className="text-3xl md:text-4xl font-bold text-emerald-700 mb-2">100%</div>
-              <div className="text-sm text-stone-600 font-medium">Natural & Pure</div>
+              <div className="text-sm text-stone-600 font-medium">{t("Natural & Pure")}</div>
             </div>
           </div>
         </div>
@@ -93,24 +95,12 @@ export default function AboutUsPage() {
             {/* Text Content */}
             <div>
               <h2 className="text-3xl md:text-4xl font-bold text-stone-900 mb-6">
-                Our Story: Bridging Tradition & Science
+                {t("Our Story: Bridging Tradition & Science")}
               </h2>
               <div className="space-y-4 text-stone-700 leading-relaxed">
-                <p>
-                  TulsiVeda was founded on a profound belief that ancient Ayurvedic wisdom holds the solutions 
-                  to modern health challenges. In a world filled with synthetic remedies, we recognized the need 
-                  to return to nature's healing power.
-                </p>
-                <p>
-                  Our journey began when a group of Ayurvedic practitioners and research scientists came together 
-                  with a shared vision: to make authentic Ayurvedic wellness accessible to everyone. We studied 
-                  traditional formulations passed down through generations and validated them with modern scientific research.
-                </p>
-                <p>
-                  Today, every product we create honors the 5000-year-old Ayurvedic tradition while meeting the 
-                  highest standards of quality and safety. We source only the purest herbs, test rigorously, and 
-                  craft formulations that truly work.
-                </p>
+                <p>{t("Our Story Paragraph 1")}</p>
+                <p>{t("Our Story Paragraph 2")}</p>
+                <p>{t("Our Story Paragraph 3")}</p>
               </div>
             </div>
 
@@ -138,7 +128,7 @@ export default function AboutUsPage() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-stone-900 mb-4">
-              Our Mission & Vision
+              {t("Our Mission & Vision")}
             </h2>
           </div>
 
@@ -148,11 +138,9 @@ export default function AboutUsPage() {
               <div className="w-16 h-16 bg-emerald-600 rounded-full flex items-center justify-center mb-6">
                 <Target size={32} className="text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-stone-900 mb-4">Our Mission</h3>
+              <h3 className="text-2xl font-bold text-stone-900 mb-4">{t("Our Mission")}</h3>
               <p className="text-stone-600 leading-relaxed text-[15px]">
-                To empower individuals to achieve optimal health through authentic Ayurvedic products that are 
-                scientifically validated, sustainably sourced, and accessible to all. We make ancient wisdom 
-                a practical part of modern life.
+                {t("Mission Text")}
               </p>
             </div>
 
@@ -161,11 +149,9 @@ export default function AboutUsPage() {
               <div className="w-16 h-16 bg-amber-600 rounded-full flex items-center justify-center mb-6">
                 <Eye size={32} className="text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-stone-900 mb-4">Our Vision</h3>
+              <h3 className="text-2xl font-bold text-stone-900 mb-4">{t("Our Vision")}</h3>
               <p className="text-stone-600 leading-relaxed text-[15px]">
-                To become the world's most trusted Ayurvedic wellness brand, recognized for unwavering commitment 
-                to quality, authenticity, and customer wellbeing. We envision natural healing as the first choice 
-                for millions worldwide.
+                {t("Vision Text")}
               </p>
             </div>
           </div>
@@ -177,10 +163,10 @@ export default function AboutUsPage() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-stone-900 mb-4">
-              What We Stand For
+              {t("What We Stand For")}
             </h2>
             <p className="text-stone-500 text-base max-w-2xl mx-auto">
-              Our core values define our commitment to you and the planet
+              {t("What We Stand For Subtitle")}
             </p>
           </div>
 
@@ -190,9 +176,9 @@ export default function AboutUsPage() {
               <div className="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center mb-6">
                 <Leaf size={28} className="text-emerald-700" />
               </div>
-              <h3 className="text-lg font-bold text-stone-900 mb-3">100% Natural</h3>
+              <h3 className="text-lg font-bold text-stone-900 mb-3">{t("100% Natural")}</h3>
               <p className="text-stone-600 text-sm leading-relaxed">
-                Only the purest herbs and natural ingredients. Zero harmful chemicals, zero synthetic additives.
+                {t("Natural Value Desc")}
               </p>
             </div>
 
@@ -201,9 +187,9 @@ export default function AboutUsPage() {
               <div className="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mb-6">
                 <TestTube size={28} className="text-blue-700" />
               </div>
-              <h3 className="text-lg font-bold text-stone-900 mb-3">Scientifically Tested</h3>
+              <h3 className="text-lg font-bold text-stone-900 mb-3">{t("Scientifically Tested")}</h3>
               <p className="text-stone-600 text-sm leading-relaxed">
-                Every product undergoes rigorous testing to ensure safety, efficacy, and quality standards.
+                {t("Tested Value Desc")}
               </p>
             </div>
 
@@ -212,9 +198,9 @@ export default function AboutUsPage() {
               <div className="w-14 h-14 bg-rose-100 rounded-full flex items-center justify-center mb-6">
                 <Heart size={28} className="text-rose-700" />
               </div>
-              <h3 className="text-lg font-bold text-stone-900 mb-3">Holistic Wellness</h3>
+              <h3 className="text-lg font-bold text-stone-900 mb-3">{t("Holistic Wellness")}</h3>
               <p className="text-stone-600 text-sm leading-relaxed">
-                We treat the whole person through time-tested Ayurvedic principles for complete wellbeing.
+                {t("Holistic Value Desc")}
               </p>
             </div>
 
@@ -223,9 +209,9 @@ export default function AboutUsPage() {
               <div className="w-14 h-14 bg-amber-100 rounded-full flex items-center justify-center mb-6">
                 <Award size={28} className="text-amber-700" />
               </div>
-              <h3 className="text-lg font-bold text-stone-900 mb-3">Certified Quality</h3>
+              <h3 className="text-lg font-bold text-stone-900 mb-3">{t("Certified Quality")}</h3>
               <p className="text-stone-600 text-sm leading-relaxed">
-                Certified by health authorities and trusted by healthcare professionals worldwide.
+                {t("Quality Value Desc")}
               </p>
             </div>
           </div>
@@ -237,12 +223,10 @@ export default function AboutUsPage() {
         <div className="max-w-6xl mx-auto">
           <div className="max-w-3xl mx-auto text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Why Choose Ayurveda?
+              {t("Why Choose Ayurveda?")}
             </h2>
             <p className="text-emerald-50 text-lg leading-relaxed">
-              Ayurveda is not just medicine—it's a complete system of wellness that has healed millions 
-              for over 5000 years. Unlike modern treatments that often address symptoms, Ayurveda targets 
-              the root cause of imbalance.
+              {t("Why Choose Ayurveda Subtitle")}
             </p>
           </div>
 
@@ -252,8 +236,8 @@ export default function AboutUsPage() {
                 <CheckCircle2 size={18} className="text-emerald-200" />
               </div>
               <div>
-                <h4 className="font-semibold text-lg mb-2">Natural & Safe</h4>
-                <p className="text-emerald-100 text-sm">Gentle on your body with no harsh side effects</p>
+                <h4 className="font-semibold text-lg mb-2">{t("Natural & Safe")}</h4>
+                <p className="text-emerald-100 text-sm">{t("Natural & Safe Subtitle")}</p>
               </div>
             </div>
 
@@ -262,8 +246,8 @@ export default function AboutUsPage() {
                 <CheckCircle2 size={18} className="text-emerald-200" />
               </div>
               <div>
-                <h4 className="font-semibold text-lg mb-2">Personalized Approach</h4>
-                <p className="text-emerald-100 text-sm">Tailored to your unique body constitution (Dosha)</p>
+                <h4 className="font-semibold text-lg mb-2">{t("Personalized Approach")}</h4>
+                <p className="text-emerald-100 text-sm">{t("Personalized Approach Subtitle")}</p>
               </div>
             </div>
 
@@ -272,8 +256,8 @@ export default function AboutUsPage() {
                 <CheckCircle2 size={18} className="text-emerald-200" />
               </div>
               <div>
-                <h4 className="font-semibold text-lg mb-2">Preventive Care</h4>
-                <p className="text-emerald-100 text-sm">Strengthens immunity and prevents disease before it starts</p>
+                <h4 className="font-semibold text-lg mb-2">{t("Preventive Care")}</h4>
+                <p className="text-emerald-100 text-sm">{t("Preventive Care Subtitle")}</p>
               </div>
             </div>
 
@@ -282,8 +266,8 @@ export default function AboutUsPage() {
                 <CheckCircle2 size={18} className="text-emerald-200" />
               </div>
               <div>
-                <h4 className="font-semibold text-lg mb-2">Sustainable Wellness</h4>
-                <p className="text-emerald-100 text-sm">Long-term health without dependency on medications</p>
+                <h4 className="font-semibold text-lg mb-2">{t("Sustainable Wellness")}</h4>
+                <p className="text-emerald-100 text-sm">{t("Sustainable Wellness Subtitle")}</p>
               </div>
             </div>
           </div>
@@ -295,10 +279,10 @@ export default function AboutUsPage() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-stone-900 mb-4">
-              The TulsiVeda Promise
+              {t("The TulsiVeda Promise")}
             </h2>
             <p className="text-stone-600 text-lg max-w-2xl mx-auto">
-              Our commitment to you goes beyond just products
+              {t("The TulsiVeda Promise Subtitle")}
             </p>
           </div>
 
@@ -308,10 +292,9 @@ export default function AboutUsPage() {
               <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Shield size={32} className="text-emerald-700" />
               </div>
-              <h3 className="text-xl font-bold text-stone-900 mb-3">Purity Guaranteed</h3>
+              <h3 className="text-xl font-bold text-stone-900 mb-3">{t("Purity Guaranteed")}</h3>
               <p className="text-stone-600 leading-relaxed">
-                Every batch is tested for purity, potency, and safety. We publish certificates of analysis 
-                for complete transparency.
+                {t("Purity Promise Desc")}
               </p>
             </div>
 
@@ -320,10 +303,9 @@ export default function AboutUsPage() {
               <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <TreePine size={32} className="text-emerald-700" />
               </div>
-              <h3 className="text-xl font-bold text-stone-900 mb-3">Sustainably Sourced</h3>
+              <h3 className="text-xl font-bold text-stone-900 mb-3">{t("Sustainably Sourced")}</h3>
               <p className="text-stone-600 leading-relaxed">
-                We partner with organic farms and ethical suppliers who share our commitment to protecting 
-                the environment.
+                {t("Source Promise Desc")}
               </p>
             </div>
 
@@ -332,10 +314,9 @@ export default function AboutUsPage() {
               <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Users size={32} className="text-emerald-700" />
               </div>
-              <h3 className="text-xl font-bold text-stone-900 mb-3">Customer First</h3>
+              <h3 className="text-xl font-bold text-stone-900 mb-3">{t("Customer First")}</h3>
               <p className="text-stone-600 leading-relaxed">
-                Your satisfaction and wellbeing are our top priorities. We offer expert guidance and 
-                hassle-free returns.
+                {t("Customer Promise Desc")}
               </p>
             </div>
           </div>
@@ -347,10 +328,10 @@ export default function AboutUsPage() {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-stone-900 mb-4">
-              Our Journey
+              {t("Our Journey")}
             </h2>
             <p className="text-stone-600 text-lg">
-              Milestones that shaped TulsiVeda
+              {t("Milestones Subtitle")}
             </p>
           </div>
 
@@ -361,10 +342,9 @@ export default function AboutUsPage() {
                 01
               </div>
               <div className="flex-1 pt-2">
-                <h3 className="text-xl font-bold text-stone-900 mb-2">Ancient Ayurvedic Foundation</h3>
+                <h3 className="text-xl font-bold text-stone-900 mb-2">{t("Timeline 1 Title")}</h3>
                 <p className="text-stone-600 leading-relaxed">
-                  Our roots trace back 5000+ years to ancient Ayurvedic texts and formulations that have 
-                  healed generations. We honor this timeless wisdom in every product.
+                  {t("Timeline 1 Desc")}
                 </p>
               </div>
             </div>
@@ -375,10 +355,9 @@ export default function AboutUsPage() {
                 02
               </div>
               <div className="flex-1 pt-2">
-                <h3 className="text-xl font-bold text-stone-900 mb-2">Founded with Vision (2015)</h3>
+                <h3 className="text-xl font-bold text-stone-900 mb-2">{t("Timeline 2 Title")}</h3>
                 <p className="text-stone-600 leading-relaxed">
-                  TulsiVeda was born from a mission to make authentic Ayurveda accessible to modern lifestyles. 
-                  A team of practitioners and scientists joined forces.
+                  {t("Timeline 2 Desc")}
                 </p>
               </div>
             </div>
@@ -389,10 +368,9 @@ export default function AboutUsPage() {
                 03
               </div>
               <div className="flex-1 pt-2">
-                <h3 className="text-xl font-bold text-stone-900 mb-2">Innovation Meets Tradition (2018)</h3>
+                <h3 className="text-xl font-bold text-stone-900 mb-2">{t("Timeline 3 Title")}</h3>
                 <p className="text-stone-600 leading-relaxed">
-                  We established our state-of-the-art facility where traditional preparation methods meet 
-                  modern technology and quality control.
+                  {t("Timeline 3 Desc")}
                 </p>
               </div>
             </div>
@@ -403,10 +381,9 @@ export default function AboutUsPage() {
                 04
               </div>
               <div className="flex-1 pt-2">
-                <h3 className="text-xl font-bold text-stone-900 mb-2">Trusted Nationwide (2024)</h3>
+                <h3 className="text-xl font-bold text-stone-900 mb-2">{t("Timeline 4 Title")}</h3>
                 <p className="text-stone-600 leading-relaxed">
-                  Today, we proudly serve 50,000+ happy customers across the country with 100+ authentic 
-                  Ayurvedic products for complete wellness.
+                  {t("Timeline 4 Desc")}
                 </p>
               </div>
             </div>
@@ -425,28 +402,27 @@ export default function AboutUsPage() {
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
             <Sparkles size={16} />
-            <span className="text-sm font-medium">Start Your Journey</span>
+            <span className="text-sm font-medium">{t("Start Your Journey")}</span>
           </div>
           
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Experience the Power of Ayurveda
+            {t("Experience the Power of Ayurveda")}
           </h2>
           
           <p className="text-emerald-50 text-lg mb-8 max-w-2xl mx-auto">
-            Join thousands of satisfied customers who have transformed their health with TulsiVeda's 
-            authentic, natural, and scientifically-backed Ayurvedic wellness products.
+            {t("Final CTA Subtitle")}
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/shop">
               <button className="bg-white text-emerald-900 hover:bg-emerald-50 font-semibold px-8 py-4 rounded-lg transition-all cursor-pointer inline-flex items-center gap-2 shadow-lg">
-                Shop Products
+                {t("Shop Products")}
                 <ArrowRight size={18} />
               </button>
             </Link>
             <a href="https://www.instagram.com/tulsiveda2/" target="_blank" rel="noopener noreferrer">
               <button className="border-2 border-white text-white hover:bg-white/10 font-semibold px-8 py-4 rounded-lg transition-all cursor-pointer">
-                Contact Us
+                {t("Contact Us")}
               </button>
             </a>
           </div>
@@ -456,15 +432,15 @@ export default function AboutUsPage() {
             <div className="grid grid-cols-3 gap-8">
               <div className="text-center">
                 <div className="text-2xl font-bold mb-1">100%</div>
-                <div className="text-emerald-100 text-sm">Natural Ingredients</div>
+                <div className="text-emerald-100 text-sm">{t("Natural Ingredients")}</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold mb-1">99%</div>
-                <div className="text-emerald-100 text-sm">Customer Satisfaction</div>
+                <div className="text-emerald-100 text-sm">{t("Customer Satisfaction")}</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold mb-1">24/7</div>
-                <div className="text-emerald-100 text-sm">Expert Support</div>
+                <div className="text-emerald-100 text-sm">{t("Expert Support")}</div>
               </div>
             </div>
           </div>

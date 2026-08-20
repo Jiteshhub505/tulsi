@@ -19,11 +19,11 @@ type Product = {
   galleryImages: string[];
 };
 
+import { useQuery } from "@tanstack/react-query";
+
 export default function HeroFIlterProducts() {
   const { t, translateText } = useLanguage();
-  const [products, setProducts] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("Health Disease");
-  const [loading, setLoading] = useState(true);
   const [favorites, setFavorites] = useState<string[]>([]);
 
   useEffect(() => {
@@ -33,25 +33,21 @@ export default function HeroFIlterProducts() {
     return () => window.removeEventListener("favorites-updated", handleUpdate);
   }, []);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await axios.get("/api/getproduct/all");
-        if (res.data.success) {
-          const list = (res.data.products || []).map((p: any) => ({
-            ...p,
-            id: p.id || p._id,
-          }));
-          setProducts(list);
-        }
-      } catch (err) {
-        console.error("Error fetching products:", err);
-      } finally {
-        setLoading(false);
+  const { data: products = [], isLoading: loading } = useQuery<Product[]>({
+    queryKey: ["all-products"],
+    queryFn: async () => {
+      const res = await axios.get("/api/getproduct/all");
+      if (res.data.success) {
+        const list = (res.data.products || []).map((p: any) => ({
+          ...p,
+          id: p.id || p._id,
+        }));
+        return [...list].reverse();
       }
-    };
-    fetchProducts();
-  }, []);
+      return [];
+    },
+    staleTime: 5 * 60 * 1000,
+  });
 
   const categories = ["Health Disease", "Digestion", "Health & Fitness", "Stamina and Power"];
 

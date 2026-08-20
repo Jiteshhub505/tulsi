@@ -17,15 +17,19 @@ export default function PromoBanner() {
       />
       
       {/* Central content overlay */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4 z-10">
-        <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold text-zinc-900 tracking-tight mb-5 sm:mb-7 uppercase">
-          {t("GET UPTO 25% OFF")}
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4 z-10 bg-black/10 backdrop-brightness-[0.95]">
+        <span className="text-[11px] sm:text-sm font-bold uppercase tracking-wider sm:tracking-widest text-emerald-950 bg-emerald-100/90 px-3 py-1 rounded-full mb-2.5 sm:mb-3 shadow-xs">
+          {t("Empower Your Daily Health")}
+        </span>
+
+        <h2 className="text-xl xs:text-2xl sm:text-4xl md:text-5xl font-extrabold text-zinc-900 tracking-tight mb-4 sm:mb-7 uppercase max-w-[280px] xs:max-w-xs sm:max-w-3xl leading-snug sm:leading-tight">
+          {t("Pure Herbal Formulas For Complete Wellness")}
         </h2>
         
         <div>
           <Link href="/shop">
             <button className="bg-zinc-900 hover:bg-black text-white font-semibold text-xs sm:text-sm tracking-widest px-8 py-3.5 sm:px-10 sm:py-4 rounded-full uppercase transition-all duration-300 transform active:scale-95 shadow-md hover:shadow-lg cursor-pointer">
-              {t("Shop Now")}
+              {t("Explore Products")}
             </button>
           </Link>
         </div>

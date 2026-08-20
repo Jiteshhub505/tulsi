@@ -63,10 +63,10 @@ const DEFAULT_BEST_SELLERS: Product[] = [
   },
 ];
 
+import { useQuery } from "@tanstack/react-query";
+
 export default function Products() {
   const { t, translateText } = useLanguage();
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
   const [favorites, setFavorites] = useState<string[]>([]);
 
   useEffect(() => {
@@ -76,33 +76,26 @@ export default function Products() {
     return () => window.removeEventListener("favorites-updated", handleUpdate);
   }, []);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get("/api/getproduct/all");
-        if (response.data.success) {
-          const fetchedProducts = (response.data.products || []).map((p: any) => ({
-            ...p,
-            id: p.id || p._id,
-          }));
-          // Filter products that are marked as best seller and in-stock
-          const displayProducts = fetchedProducts.filter(
-            (p: Product) => p.isBestSeller && (p.inStock === null || p.inStock > 0)
-          );
-          setProducts(displayProducts.length > 0 ? displayProducts : fetchedProducts.slice(0, 4));
-        } else {
-          setProducts(DEFAULT_BEST_SELLERS);
-        }
-      } catch (error) {
-        console.error("Error fetching products:", error);
-        setProducts(DEFAULT_BEST_SELLERS);
-      } finally {
-        setLoading(false);
+  const { data: products = [], isLoading: loading } = useQuery<Product[]>({
+    queryKey: ["all-products"],
+    queryFn: async () => {
+      const response = await axios.get("/api/getproduct/all");
+      if (response.data.success) {
+        const fetchedProducts = (response.data.products || []).map((p: any) => ({
+          ...p,
+          id: p.id || p._id,
+        }));
+        // Include all in-stock products, newest first
+        const inStockProducts = fetchedProducts.filter(
+          (p: Product) => p.inStock === null || p.inStock > 0
+        );
+        const sortedList = [...inStockProducts].reverse();
+        return sortedList.length > 0 ? sortedList : [...fetchedProducts].reverse();
       }
-    };
-
-    fetchProducts();
-  }, []);
+      return DEFAULT_BEST_SELLERS;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
 
   const displayList = products.length > 0 ? products : DEFAULT_BEST_SELLERS;
 
@@ -113,7 +106,7 @@ export default function Products() {
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="text-center space-y-3 max-w-xl mx-auto">
             <h2 className="text-3xl md:text-4xl lg:text-[40px] font-bold tracking-tight text-slate-900">
-              {t("Our Best Sellers")}
+              {t("Our Products")}
             </h2>
             <p className="text-slate-500 text-sm md:text-base font-medium">
               {t("Best Sellers Subtitle")}
@@ -143,7 +136,7 @@ export default function Products() {
         {/* Section Heading */}
         <div className="text-center space-y-3 max-w-xl mx-auto">
           <h2 className="text-3xl md:text-4xl lg:text-[40px] font-bold tracking-tight text-slate-900">
-            {t("Our Best Sellers")}
+            {t("Our Products")}
           </h2>
           <p className="text-slate-500 text-sm md:text-base font-medium">
             {t("Best Sellers Subtitle")}
