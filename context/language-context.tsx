@@ -214,6 +214,146 @@ const uiTranslations: Record<string, Record<Language, string>> = {
   "Herbs": { en: "Herbs", hi: "जड़ी-बूटियाँ" },
   "Show More Ingredients": { en: "Show More Ingredients", hi: "और सामग्री देखें" },
   "More": { en: "More", hi: "अधिक" },
+  "Ashwagandha Desc": {
+    en: "Reduces stress and daily fatigue while supporting optimal muscle growth and endurance.",
+    hi: "तनाव और दैनिक थकान को कम करता है और मांसपेशियों के विकास का समर्थन करता है।",
+  },
+  "Amla Desc": {
+    en: "Boosts immunity and improves digestion with rich natural Vitamin C antioxidants.",
+    hi: "प्राकृतिक विटामिन सी के साथ प्रतिरक्षा बढ़ाता है और पाचन में सुधार करता है।",
+  },
+  "Gokshura Desc": {
+    en: "Supports active muscle vitality, stamina, and healthy physical performance.",
+    hi: "सक्रिय मांसपेशियों के विकास का समर्थन करता है और समग्र जीवन शक्ति को बढ़ाता है।",
+  },
+  "Pippali Desc": {
+    en: "Enhances healthy appetite, stimulates metabolism, and maximizes nutrient absorption.",
+    hi: "स्वस्थ भूख को बढ़ाता है और पोषक तत्वों के अवशोषण को अधिकतम करता है।",
+  },
+  "Kaunch Beej Desc": {
+    en: "Helps in rapid muscle recovery, builds endurance, and boosts nervous system strength.",
+    hi: "तेजी से मांसपेशियों की रिकवरी में मदद करता है और ऊर्जा तथा सहनशक्ति बढ़ाता है।",
+  },
+  "Safed Musli Desc": {
+    en: "Rejuvenating herb for physical endurance, stamina, and natural muscle vigor.",
+    hi: "शारीरिक सहनशक्ति, स्टैमिना और समग्र शरीर की ताकत के लिए कायाकल्प करने वाली जड़ी-बूटी।",
+  },
+  "Shatavari Desc": {
+    en: "Deeply nourishes body tissues, enhances vitality, and supports healthy daily balance.",
+    hi: "शरीर के ऊतकों को पोषण देता है, सहनशक्ति बढ़ाता है और मांसपेशियों की रिकवरी का समर्थन करता है।",
+  },
+  "Shilajit Desc": {
+    en: "Grade-A Himalayan resin rich in 60%+ Fulvic Acid and 84+ minerals for cellular energy.",
+    hi: "सेलुलर ऊर्जा और सहनशक्ति के लिए 60%+ फुलविक एसिड और 84+ खनिजों से समृद्ध हिमालयन शिलाजीत।",
+  },
+  "Vidarikand Desc": {
+    en: "Promotes healthy weight gain, muscle bulk, and deep physical nourishment.",
+    hi: "मांसपेशियों की कमजोरी को कम करते हुए स्वस्थ वजन बढ़ाने और शारीरिक ताकत को बढ़ावा देता है।",
+  },
+  "Akarkara Desc": {
+    en: "Classical Ayurvedic nerve tonic herb for muscle vigor and sustained physical stamina.",
+    hi: "मांसपेशियों की ताकत, शारीरिक सहनशक्ति और तंत्रिका सक्रियण के लिए शास्त्रीय टॉनिक।",
+  },
+  "Salam Panja Desc": {
+    en: "Rejuvenating botanical root that boosts daily energy reserves and vital stamina.",
+    hi: "दैनिक ऊर्जा भंडार, सहनशक्ति और शारीरिक जीवन शक्ति को बढ़ाने वाली कायाकल्प जड़।",
+  },
+  "Giloy Desc": {
+    en: "Detoxifies body tissues, purifies blood, and strengthens natural immune defense.",
+    hi: "शरीर के ऊतकों को डिटॉक्सीफाई करता है, रक्त को शुद्ध करता है और प्रतिरक्षा मजबूत करता है।",
+  },
+  "Punarnava Desc": {
+    en: "Natural diuretic herb supporting kidney detoxification, fluid balance, and urinary wellness.",
+    hi: "किडनी डिटॉक्सिफिकेशन, द्रव संतुलन और मूत्र स्वास्थ्य का समर्थन करने वाली प्राकृतिक जड़ी-बूटी।",
+  },
+  "Brahmi Desc": {
+    en: "Supports cognitive function, mental clarity, and nervous system equilibrium.",
+    hi: "मानसिक स्पष्टता, संज्ञानात्मक कार्य और तंत्रिका तंत्र संतुलन का समर्थन करता है।",
+  },
+  "Shankhpushpi Desc": {
+    en: "Calms mental stress, promotes deep restful sleep, and rejuvenates brain vitality.",
+    hi: "मानसिक तनाव को शांत करता है, गहरी आरामदायक नींद को बढ़ावा देता है।",
+  },
+  "Yashad Bhasma Desc": {
+    en: "Purified Ayurvedic zinc catalyst that boosts cellular immunity and tissue recovery.",
+    hi: "शुद्ध आयुर्वेदिक जिंक जो कोशिकीय प्रतिरक्षा और ऊतकों की रिकवरी को बढ़ाता है।",
+  },
+  "Swarna Bhasma Desc": {
+    en: "Precious nano-gold preparation for deep longevity, cellular rejuvenation, and strength.",
+    hi: "गहरे दीर्घायु, कोशिकीय कायाकल्प और शक्ति के लिए शुद्ध नैनो-स्वर्ण भस्म।",
+  },
+  "Tulsi Desc": {
+    en: "Holy Basil with powerful adaptogenic, antimicrobial, and respiratory benefits.",
+    hi: "शक्तिशाली एडाप्टोजेनिक, रोगाणुरोधी और श्वसन लाभों से भरपूर पवित्र तुलसी।",
+  },
+  "Haritaki Desc": {
+    en: "King of herbs for gut cleansing, gentle bowel regularity, and digestive fire (Agni).",
+    hi: "पेट की सफाई, आंतों की नियमितता और पाचन अग्नि के लिए जड़ी-बूटियों का राजा।",
+  },
+  "Triphala Desc": {
+    en: "Classic 3-fruit Ayurvedic formula that gently cleanses colon, supports digestion & gut detox.",
+    hi: "क्लासिक 3-फल आयुर्वेदिक फॉर्मूला जो पेट को साफ करता है और पाचन को बढ़ावा देता है।",
+  },
+  "Neem Giri Desc": {
+    en: "Natural antiseptic & blood purifying herb that calms skin, soothing tissue inflammation.",
+    hi: "प्राकृतिक एंटीसेप्टिक और रक्त शुद्ध करने वाली जड़ी-बूटी जो सूजन को शांत करती है।",
+  },
+  "Kanchnar Guggul Desc": {
+    en: "Detoxifies lymphatic channels, supports glandular health, and manages tissue swelling.",
+    hi: "लसीका चैनलों को डिटॉक्सीफाई करता है और ऊतकों की सूजन को नियंत्रित करता है।",
+  },
+  "Musta Desc": {
+    en: "Improves digestion, regulates metabolism, and relieves abdominal discomfort.",
+    hi: "पाचन में सुधार करता है, चयापचय को नियंत्रित करता है और पेट की परेशानी से राहत देता है।",
+  },
+  "Vai Bidag Desc": {
+    en: "Traditional anthelmintic herb that cleanses intestinal microflora and aids digestion.",
+    hi: "पारंपरिक जड़ी-बूटी जो आंतों के माइक्रोफ्लोरा को साफ करती है और पाचन में मदद करती है।",
+  },
+  "Bakayan Migi Desc": {
+    en: "Soothes inflamed hemorrhoidal veins and assists in healthy anorectal recovery.",
+    hi: "सूजी हुई बवासीर की नसों को शांत करता है और एनोरेक्टल रिकवरी में सहायता करता है।",
+  },
+  "Sona Mukhi Desc": {
+    en: "Supports natural peristalsis and smooth morning bowel evacuation without strain.",
+    hi: "बिना तनाव के सुचारू सुबह के मल त्याग और आंतों की गति का समर्थन करता है।",
+  },
+  "Mandur Bhasam Desc": {
+    en: "Bioavailable Ayurvedic iron that improves hemoglobin and combats fatigue.",
+    hi: "जैवउपलब्ध आयुर्वेदिक आयरन जो हीमोग्लोबिन में सुधार करता है और थकान से लड़ता है।",
+  },
+  "Nishoth Desc": {
+    en: "Gentle herbal laxative that eliminates toxic buildup (Ama) from the lower digestive tract.",
+    hi: "सौम्य हर्बल रेचक जो पाचन तंत्र से विषाक्त पदार्थों (आम) को बाहर निकालता है।",
+  },
+  "Katha Desc": {
+    en: "Astringent botanical that helps arrest bleeding and tightens damaged mucosal tissues.",
+    hi: "रक्तस्राव को रोकने और क्षतिग्रस्त ऊतकों को ठीक करने में मदद करने वाला हर्बल एस्ट्रिंजेंट।",
+  },
+  "Chitrak Mool Desc": {
+    en: "Potent digestive stimulant that kindles gastric fire and aids complete nutrient uptake.",
+    hi: "शक्तिशाली पाचन उत्तेजक जो जठराग्नि को प्रज्वलित करता है और पोषक तत्वों के अवशोषण में मदद करता है।",
+  },
+  "Shank Bhasam Desc": {
+    en: "Natural alkaline calcium source that neutralizes hyperacidity, gas, and burning sensations.",
+    hi: "प्राकृतिक क्षारीय कैल्शियम स्रोत जो एसिडिटी, गैस और जलन को बेअसर करता है।",
+  },
+  "Daruhaldi Desc": {
+    en: "Rich in natural berberine for deep antibacterial, liver, and glycemic support.",
+    hi: "प्राकृतिक बर्बेरिन से भरपूर जो जीवाणुरोधी, लिवर और ग्लाइसेमिक सहायता प्रदान करता है।",
+  },
+  "Rasonth Desc": {
+    en: "Purified extract of Indian Barberry known for anti-inflammatory healing action.",
+    hi: "भारतीय दारूहल्दी का शुद्ध अर्क जो सूजन-रोधी उपचार क्रिया के लिए जाना जाता है।",
+  },
+  "Kutki Desc": {
+    en: "Premium liver tonic and bitter herb that stimulates bile secretion and cellular detox.",
+    hi: "प्रीमियम लिवर टॉनिक जो पित्त स्राव और कोशिकीय डिटॉक्स को उत्तेजित करता है।",
+  },
+  "Natural Formula Desc": {
+    en: "Pure plant-based Ayurvedic formulation free from chemicals, parabens, and heavy metals.",
+    hi: "रसायनों, पैराबेन्स और भारी धातुओं से मुक्त शुद्ध पादप-आधारित आयुर्वेदिक फॉर्मूला।",
+  },
   "Included Ingredients": { en: "Included Ingredients", hi: "शामिल सामग्री" },
   "Quantity per Capsule": { en: "Quantity per Capsule", hi: "प्रति कैप्सूल मात्रा" },
   "Total Herbs": { en: "Total Herbs", hi: "कुल जड़ी-बूटियाँ" },
