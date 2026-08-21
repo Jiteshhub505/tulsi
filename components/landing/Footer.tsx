@@ -8,8 +8,8 @@ export default function Footer() {
   const { t } = useLanguage();
 
   return (
-    <footer className="py-4 bg-white dark:bg-zinc-950 border-t border-zinc-100 dark:border-zinc-900 w-full">
-      <div className="mx-auto max-w-5xl px-6">
+    <footer className="py-6 2xl:py-10 bg-white dark:bg-zinc-950 border-t border-zinc-100 dark:border-zinc-900 w-full">
+      <div className="mx-auto max-w-7xl 2xl:max-w-screen-2xl px-6 2xl:px-12">
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
           {/* Logo */}

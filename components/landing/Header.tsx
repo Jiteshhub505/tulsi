@@ -242,8 +242,8 @@ export const Header = () => {
 
   return (
     <>
-      <nav className="sticky top-0 z-50 w-full bg-emerald-50/90 backdrop-blur-md border-b border-emerald-100/80 shadow-sm px-6 md:px-12 lg:px-16 transition-all duration-300">
-        <div className="max-w-7xl mx-auto flex items-center justify-between py-3 md:py-4">
+      <nav className="sticky top-0 z-50 w-full bg-emerald-50/90 backdrop-blur-md border-b border-emerald-100/80 shadow-sm px-6 md:px-12 lg:px-16 2xl:px-24 transition-all duration-300">
+        <div className="max-w-7xl 2xl:max-w-screen-2xl mx-auto flex items-center justify-between py-3 md:py-4 2xl:py-5">
 
           {/* Left: Hamburger (Mobile) */}
           <button
@@ -255,14 +255,14 @@ export const Header = () => {
           </button>
 
           {/* Left: Nav Links (Desktop) */}
-          <div className="hidden lg:flex items-center gap-8">
-            <Link href="/" className="text-slate-700 font-semibold hover:text-emerald-700 transition-colors text-[14px]">
+          <div className="hidden lg:flex items-center gap-8 2xl:gap-12">
+            <Link href="/" className="text-slate-700 font-semibold hover:text-emerald-700 transition-colors text-[14px] 2xl:text-[16px]">
               Home
             </Link>
-            <Link href="/shop" className="text-slate-600 font-semibold hover:text-emerald-700 transition-colors text-[14px]">
+            <Link href="/shop" className="text-slate-600 font-semibold hover:text-emerald-700 transition-colors text-[14px] 2xl:text-[16px]">
               Shop
             </Link>
-            <Link href="/about-us" className="text-slate-600 font-semibold hover:text-emerald-700 transition-colors text-[14px]">
+            <Link href="/about-us" className="text-slate-600 font-semibold hover:text-emerald-700 transition-colors text-[14px] 2xl:text-[16px]">
               About Us
             </Link>
           </div>
@@ -273,7 +273,7 @@ export const Header = () => {
               <img
                 src="/tulsiveda-logo.webp"
                 alt="Tulsiveda Logo"
-                className="h-14 md:h-16 w-auto object-contain transition-transform duration-300 hover:scale-105"
+                className="h-14 md:h-16 2xl:h-20 w-auto object-contain transition-transform duration-300 hover:scale-105"
               />
             </Link>
           </div>
