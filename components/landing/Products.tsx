@@ -3,10 +3,9 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Star, Heart } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import axios from "axios";
-import { getFavorites, toggleFavorite } from "@/lib/favorites";
-
+import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/context/language-context";
 
 type Product = {
@@ -20,61 +19,8 @@ type Product = {
   isBestSeller?: boolean;
 };
 
-const DEFAULT_BEST_SELLERS: Product[] = [
-  {
-    id: "bs-1",
-    name: "Ayurvedic Fat Burner",
-    category: "Digestion",
-    price: 600,
-    discountPrice: 499,
-    inStock: 25,
-    galleryImages: ["/digestion.png"],
-    isBestSeller: true,
-  },
-  {
-    id: "bs-2",
-    name: "Ayurvedic Weight Gainer",
-    category: "Health & Fitness",
-    price: 600,
-    discountPrice: 499,
-    inStock: 25,
-    galleryImages: ["/health&fitness.png"],
-    isBestSeller: true,
-  },
-  {
-    id: "bs-3",
-    name: "Veda Shakti",
-    category: "Stamina and Power",
-    price: 1299,
-    discountPrice: 999,
-    inStock: 15,
-    galleryImages: ["/staminaandpower.png"],
-    isBestSeller: true,
-  },
-  {
-    id: "bs-4",
-    name: "Piles Care Formula",
-    category: "Health Disease",
-    price: 899,
-    discountPrice: 699,
-    inStock: 20,
-    galleryImages: ["/healthdisease.png"],
-    isBestSeller: true,
-  },
-];
-
-import { useQuery } from "@tanstack/react-query";
-
 export default function Products() {
   const { t, translateText } = useLanguage();
-  const [favorites, setFavorites] = useState<string[]>([]);
-
-  useEffect(() => {
-    setFavorites(getFavorites());
-    const handleUpdate = () => setFavorites(getFavorites());
-    window.addEventListener("favorites-updated", handleUpdate);
-    return () => window.removeEventListener("favorites-updated", handleUpdate);
-  }, []);
 
   const { data: products = [], isLoading: loading } = useQuery<Product[]>({
     queryKey: ["all-products"],
@@ -93,18 +39,14 @@ export default function Products() {
       }
       return [];
     },
-    initialData: DEFAULT_BEST_SELLERS,
     staleTime: 10 * 1000,
     refetchOnMount: "always",
     refetchOnWindowFocus: true,
   });
 
-  const displayList = products.length > 0 ? products : DEFAULT_BEST_SELLERS;
-
-
   if (loading) {
     return (
-      <section id="bestsellers" className="w-full py-20 bg-[#f9fcfb] px-6 md:px-12 lg:px-16 border-t border-emerald-950/5">
+      <section id="bestsellers" className="w-full py-10 md:py-20 bg-[#f9fcfb] px-4 md:px-12 lg:px-16 border-t border-emerald-950/5">
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="text-center space-y-3 max-w-xl mx-auto">
             <h2 className="text-3xl md:text-4xl lg:text-[40px] font-bold tracking-tight text-slate-900">
@@ -116,11 +58,11 @@ export default function Products() {
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 md:gap-8">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="bg-white rounded-2xl overflow-hidden animate-pulse">
+              <div key={i} className="bg-white rounded-2xl border border-gray-100 overflow-hidden animate-pulse shadow-sm">
                 <div className="aspect-square bg-stone-200"></div>
-                <div className="p-6 space-y-3">
-                  <div className="h-4 bg-stone-200 rounded w-2/3"></div>
-                  <div className="h-6 bg-stone-200 rounded"></div>
+                <div className="p-3 sm:p-5 md:p-6 space-y-3">
+                  <div className="h-3 bg-stone-200 rounded w-1/3"></div>
+                  <div className="h-5 bg-stone-200 rounded w-3/4"></div>
                   <div className="h-4 bg-stone-200 rounded w-1/2"></div>
                 </div>
               </div>
@@ -129,6 +71,10 @@ export default function Products() {
         </div>
       </section>
     );
+  }
+
+  if (products.length === 0) {
+    return null;
   }
 
   return (
@@ -147,7 +93,7 @@ export default function Products() {
 
         {/* 4-Product Responsive Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 md:gap-8">
-          {displayList.map((product, index) => {
+          {products.map((product, index) => {
             const productId = product.id || (product as any)._id || `product-${index}`;
             const discount = product.discountPrice
               ? Math.round(((product.price - product.discountPrice) / product.price) * 100)
@@ -177,8 +123,6 @@ export default function Products() {
                       {discount}% OFF
                     </span>
                   )}
-
-
                 </div>
 
                 {/* Product Info */}
@@ -217,4 +161,5 @@ export default function Products() {
     </section>
   );
 }
+
 

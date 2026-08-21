@@ -92,7 +92,14 @@ export default function HeroFIlterProducts() {
         {loading ? (
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="bg-white rounded-2xl aspect-[3/4] animate-pulse" />
+              <div key={i} className="bg-white rounded-2xl border border-stone-200/80 overflow-hidden animate-pulse shadow-xs">
+                <div className="aspect-square bg-stone-200" />
+                <div className="p-4 space-y-3">
+                  <div className="h-3 bg-stone-200 rounded w-1/3" />
+                  <div className="h-4 bg-stone-200 rounded w-3/4" />
+                  <div className="h-4 bg-stone-200 rounded w-1/2 mt-4" />
+                </div>
+              </div>
             ))}
           </div>
         ) : (
