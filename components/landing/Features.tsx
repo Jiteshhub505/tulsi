@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { useLanguage } from "@/context/language-context";
 
 interface Feature {
@@ -28,12 +29,12 @@ interface Feature {
 }
 
 const CAROUSEL_IMAGES = [
-  "/f1.png",
-  "/f2.png",
-  "/f3.png",
-  "/f4.png",
-  "/f5.png",
-  "/f6.png",
+  "/f1.webp",
+  "/f2.webp",
+  "/f3.webp",
+  "/f4.webp",
+  "/f5.webp",
+  "/f6.webp",
 ];
 
 const defaultFeatures: Feature[] = [
@@ -269,11 +270,15 @@ const Features = () => {
             style={{ transform: `translateX(-${currentSlide * 100}%)` }}
           >
             {CAROUSEL_IMAGES.map((img, idx) => (
-              <div key={idx} className="w-full shrink-0 flex justify-center">
-                <img
-                  className="w-full h-[280px] xs:h-[340px] sm:h-[440px] md:h-[540px] lg:h-[640px] object-cover sm:object-contain object-center pointer-events-none"
+              <div key={idx} className="relative w-full shrink-0 h-[280px] xs:h-[340px] sm:h-[440px] md:h-[540px] lg:h-[640px] flex justify-center">
+                <Image
                   src={img}
                   alt={`Veda Shakti feature slide ${idx + 1}`}
+                  fill
+                  priority={idx === 0}
+                  loading={idx === 0 ? "eager" : "lazy"}
+                  sizes="(max-width: 768px) 100vw, 1200px"
+                  className="object-cover sm:object-contain object-center pointer-events-none"
                 />
               </div>
             ))}

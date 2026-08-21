@@ -7,6 +7,7 @@ import { ArrowRight } from "lucide-react";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/context/language-context";
+import { getOptimizedImageUrl } from "@/lib/image-utils";
 
 type Product = {
   id: string;
@@ -99,7 +100,7 @@ export default function Products() {
               ? Math.round(((product.price - product.discountPrice) / product.price) * 100)
               : null;
             const displayPrice = product.discountPrice ?? product.price;
-            const image = product.galleryImages?.[0] ?? "/tulsiveda-logo.png";
+            const image = getOptimizedImageUrl(product.galleryImages?.[0], { width: 600 });
             
             return (
               <Link 
@@ -113,7 +114,7 @@ export default function Products() {
                     src={image}
                     alt={translateText(product.name)}
                     fill
-                    sizes="(max-width: 768px) 100vw, 25vw"
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                   

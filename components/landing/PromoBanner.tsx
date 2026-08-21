@@ -11,7 +11,7 @@ export default function PromoBanner() {
     <section className="relative w-full h-[280px] sm:h-[360px] md:h-[420px] lg:h-[480px] overflow-hidden bg-white">
       {/* Background image container */}
       <div 
-        className="absolute inset-0 bg-[url('/25off.png')] bg-cover bg-center bg-no-repeat"
+        className="absolute inset-0 bg-[url('/25off.webp')] bg-cover bg-center bg-no-repeat"
         style={{ backgroundPosition: "center center" }}
         aria-hidden="true"
       />

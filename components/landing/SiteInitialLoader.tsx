@@ -5,18 +5,10 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
 const HERO_IMAGES = [
-  "/tul-web2.png",
-  "/tul-web3.png",
-  "/tul-web1.png",
-  "/tul-web4.png",
-  "/tul-web5.png",
-  "/tul-web6.png",
-  "/tul-mob1.png",
+  "/tul-web2.webp",
+  "/tul-mob1.webp",
+  "/tul-web3.webp",
   "/tul-mob2.webp",
-  "/tul-mob3.webp",
-  "/tul-mob4.png",
-  "/tul-mob5.png",
-  "/tul-mob6.png",
 ];
 
 export default function SiteInitialLoader() {
@@ -32,19 +24,23 @@ export default function SiteInitialLoader() {
       return;
     }
 
-    // Preload hero images in background memory
-    HERO_IMAGES.forEach((src) => {
-      const img = new window.Image();
-      img.src = src;
-    });
+    // Preload essential first hero slide images in background
+    if (typeof window !== "undefined") {
+      requestAnimationFrame(() => {
+        HERO_IMAGES.forEach((src) => {
+          const img = new window.Image();
+          img.src = src;
+        });
+      });
+    }
 
-    // Hide loader after 1.5 seconds so 0.5s fade completes at exactly 2.0s
+    // Smooth dismiss loader
     const timer = setTimeout(() => {
       setLoading(false);
       if (typeof window !== "undefined") {
         sessionStorage.setItem("tulsiveda_loader_shown", "true");
       }
-    }, 1500);
+    }, 1200);
 
     return () => clearTimeout(timer);
   }, []);
@@ -69,7 +65,7 @@ export default function SiteInitialLoader() {
               {/* Tulsi Veda Brand Logo inside */}
               <div className="relative w-20 h-20 rounded-full overflow-hidden flex items-center justify-center bg-white shadow-xs">
                 <Image
-                  src="/tulsiveda-logo.png"
+                  src="/tulsiveda-logo.webp"
                   alt="Tulsi Veda Logo"
                   width={64}
                   height={64}

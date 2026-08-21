@@ -12,22 +12,22 @@ export default function Categories() {
   const categories = [
     {
       nameKey: "Digestion",
-      image: "/digestion.png",
+      image: "/digestion.webp",
       link: "/shop?category=Digestion",
     },
     {
       nameKey: "Health & Fitness",
-      image: "/health&fitness.png",
+      image: "/health&fitness.webp",
       link: "/shop?category=Health%20%26%20Fitness",
     },
     {
       nameKey: "Stamina and Power",
-      image: "/staminaandpower.png",
+      image: "/staminaandpower.webp",
       link: "/shop?category=Stamina%20and%20Power",
     },
     {
       nameKey: "Health Disease",
-      image: "/healthdisease.png",
+      image: "/healthdisease.webp",
       link: "/shop?category=Health%20Disease",
     },
   ];

@@ -11,38 +11,38 @@ import { useLanguage } from "@/context/language-context";
 const slides = [
   {
     id: 1,
-    desktopImage: "/tul-web2.png",
-    mobileImage: "/tul-mob1.png",
+    desktopImage: "/tul-web2.webp",
+    mobileImage: "/tul-mob1.webp",
     alt: "Piles Care - Relief, Comfort, Freedom",
   },
   {
     id: 2,
-    desktopImage: "/tul-web3.png",
+    desktopImage: "/tul-web3.webp",
     mobileImage: "/tul-mob2.webp",
     alt: "Pure Shilajit - Vitality and Vigor",
   },
   {
     id: 3,
-    desktopImage: "/tul-web1.png",
+    desktopImage: "/tul-web1.webp",
     mobileImage: "/tul-mob3.webp",
     alt: "Veda Shakti - Natural Power, Stronger You",
   },
   {
     id: 4,
-    desktopImage: "/tul-web4.png",
-    mobileImage: "/tul-mob4.png",
+    desktopImage: "/tul-web4.webp",
+    mobileImage: "/tul-mob4.webp",
     alt: "Tulsi Veda Premium Wellness",
   },
   {
     id: 5,
-    desktopImage: "/tul-web5.png",
-    mobileImage: "/tul-mob5.png",
+    desktopImage: "/tul-web5.webp",
+    mobileImage: "/tul-mob5.webp",
     alt: "Pure Ayurvedic Formulations",
   },
   {
     id: 6,
-    desktopImage: "/tul-web6.png",
-    mobileImage: "/tul-mob6.png",
+    desktopImage: "/tul-web6.webp",
+    mobileImage: "/tul-mob6.webp",
     alt: "Natural Health & Vitality",
   },
 ];

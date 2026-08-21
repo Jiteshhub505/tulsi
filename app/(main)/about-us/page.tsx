@@ -108,7 +108,7 @@ export default function AboutUsPage() {
             <div className="relative">
               <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-white">
                 <Image
-                  src="/hero-tulsiveda.png"
+                  src="/hero-tulsiveda.webp"
                   alt="TulsiVeda Natural Products"
                   width={600}
                   height={600}

@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import getproductdetails from "./actions/getproductdetals";
+import { getOptimizedImageUrl } from "@/lib/image-utils";
 import React, { useEffect, useState, Fragment } from "react";
 import {
   Star,
@@ -581,7 +582,7 @@ export default function SingleProduct({ id, initialProduct }: { id: string; init
     staleTime: 10 * 60 * 1000,
   });
 
-  const selectedImage = product?.galleryImages?.[0] ?? "/tulsiveda-logo.png";
+  const selectedImage = getOptimizedImageUrl(product?.galleryImages?.[0], { width: 1000 });
 
   // ---------------- STATES ----------------
   const [activeImage, setActiveImage] = useState<string>("");
@@ -735,7 +736,13 @@ export default function SingleProduct({ id, initialProduct }: { id: string; init
                       : "border-stone-200 hover:border-stone-400"
                   }`}
                 >
-                  <Image src={img} alt={`thumbnail-${i}`} fill className="object-cover" />
+                  <Image
+                    src={getOptimizedImageUrl(img, { width: 160 })}
+                    alt={`thumbnail-${i}`}
+                    fill
+                    sizes="80px"
+                    className="object-cover"
+                  />
                 </button>
               ))}
             </div>
@@ -751,10 +758,11 @@ export default function SingleProduct({ id, initialProduct }: { id: string; init
                 </div>
               )}
               <Image
-                src={activeImage || selectedImage}
+                src={getOptimizedImageUrl(activeImage || selectedImage, { width: 1000 })}
                 alt={translateText(product.name, product.nameHi)}
                 fill
                 priority
+                sizes="(max-width: 768px) 100vw, 50vw"
                 onLoad={() => setImageLoaded(true)}
                 className={`object-contain p-4 transition-all duration-500 group-hover:scale-105 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
               />
@@ -1136,7 +1144,7 @@ export default function SingleProduct({ id, initialProduct }: { id: string; init
         {/* Full-width Ingredients Banner Image */}
         <div className="w-full max-w-7xl mx-auto rounded-2xl overflow-hidden shadow-sm border border-stone-200/80 my-6">
           <img
-            src="/ingi.png"
+            src="/ingi.webp"
             alt="Included Ingredients Banner"
             className="w-full h-auto object-cover block"
           />
@@ -1320,7 +1328,7 @@ export default function SingleProduct({ id, initialProduct }: { id: string; init
                 ? Math.round(((relatedProduct.price - relatedProduct.discountPrice) / relatedProduct.price) * 100)
                 : null;
               const displayPrice = relatedProduct.discountPrice ?? relatedProduct.price;
-              const image = relatedProduct.galleryImages?.[0] ?? "/tulsiveda-logo.png";
+              const image = getOptimizedImageUrl(relatedProduct.galleryImages?.[0], { width: 600 });
 
               return (
                 <Link
@@ -1333,6 +1341,7 @@ export default function SingleProduct({ id, initialProduct }: { id: string; init
                       src={image}
                       alt={translateText(relatedProduct.name, relatedProduct.nameHi)}
                       fill
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     {discount && discount > 0 && (

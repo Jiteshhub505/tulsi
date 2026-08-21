@@ -82,10 +82,10 @@ const CATEGORY_CONFIG: Record<
 
 // Category image map for the top category pills
 const CATEGORY_IMAGES: Record<string, string> = {
-  Digestion: "/digestion.png",
-  "Health & Fitness": "/health&fitness.png",
-  "Stamina and Power": "/staminaandpower.png",
-  "Health Disease": "/healthdisease.png",
+  Digestion: "/digestion.webp",
+  "Health & Fitness": "/health&fitness.webp",
+  "Stamina and Power": "/staminaandpower.webp",
+  "Health Disease": "/healthdisease.webp",
 };
 
 const SORT_OPTIONS = [
@@ -116,6 +116,7 @@ function SkeletonCard() {
 // ─── Product card ──────────────────────────────────────────────────
 import { useQuery } from "@tanstack/react-query";
 import { isFavorite, toggleFavorite } from "@/lib/favorites";
+import { getOptimizedImageUrl } from "@/lib/image-utils";
 
 function ProductCard({ product }: { product: Product }) {
   const { t, translateText } = useLanguage();
@@ -141,7 +142,7 @@ function ProductCard({ product }: { product: Product }) {
       )
     : null;
   const displayPrice = product.discountPrice ?? product.price;
-  const image = product.galleryImages?.[0] ?? "/tulsiveda-logo.png";
+  const image = getOptimizedImageUrl(product.galleryImages?.[0], { width: 600 });
   const catConfig = CATEGORY_CONFIG[product.category] ?? CATEGORY_CONFIG["Digestion"];
 
   // Deterministic rating per product ID
@@ -164,7 +165,7 @@ function ProductCard({ product }: { product: Product }) {
           src={image}
           alt={translateText(product.name)}
           fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
           className="object-cover transition-transform duration-700 group-hover:scale-110"
         />
         

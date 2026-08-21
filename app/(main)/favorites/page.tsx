@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Heart, ArrowRight } from "lucide-react";
 import axios from "axios";
 import { getFavorites, toggleFavorite } from "@/lib/favorites";
+import { getOptimizedImageUrl } from "@/lib/image-utils";
 import toast from "react-hot-toast";
 
 type Product = {
@@ -91,7 +92,7 @@ export default function FavoritesPage() {
                 ? Math.round(((product.price - product.discountPrice) / product.price) * 100)
                 : null;
               const displayPrice = product.discountPrice ?? product.price;
-              const image = product.galleryImages?.[0] ?? "/tulsiveda-logo.png";
+              const image = getOptimizedImageUrl(product.galleryImages?.[0], { width: 600 });
 
               return (
                 <div key={product.id} className="relative">
@@ -105,7 +106,7 @@ export default function FavoritesPage() {
                         src={image}
                         alt={product.name}
                         fill
-                        sizes="(max-width: 768px) 100vw, 25vw"
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                         className="object-cover transition-transform duration-700 group-hover:scale-105"
                       />
                       

@@ -10,6 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 import { useLanguage } from "@/context/language-context";
+import { getOptimizedImageUrl } from "@/lib/image-utils";
 
 type Product = {
   id: string;
@@ -93,7 +94,7 @@ export default function CategoryProductGrid({
               const prodId = product.id || (product as any)._id || idx;
               const inStock = product.inStock === null || product.inStock === undefined || product.inStock > 0;
               const displayPrice = product.discountPrice ?? product.price;
-              const image = product.galleryImages?.[0] ?? "/tulsiveda-logo.png";
+              const image = getOptimizedImageUrl(product.galleryImages?.[0], { width: 600 });
 
               return (
                 <Link
@@ -112,6 +113,7 @@ export default function CategoryProductGrid({
                         src={image}
                         alt={translateText(product.title || product.name)}
                         fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         className={cn(
                           "object-cover transition-transform group-hover:scale-105",
                           !inStock && "blur-sm",

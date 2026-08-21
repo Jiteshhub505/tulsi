@@ -271,7 +271,7 @@ export const Header = () => {
           <div className="absolute left-1/2 -translate-x-1/2 flex items-center select-none">
             <Link href="/">
               <img
-                src="/tulsiveda-logo.png"
+                src="/tulsiveda-logo.webp"
                 alt="Tulsiveda Logo"
                 className="h-14 md:h-16 w-auto object-contain transition-transform duration-300 hover:scale-105"
               />
