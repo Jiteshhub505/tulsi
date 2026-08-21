@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
-
 import { useLanguage } from "@/context/language-context";
 
 const slides = [
@@ -50,14 +49,17 @@ const slides = [
 const slideVariants = {
   enter: (direction: number) => ({
     x: direction > 0 ? "100%" : "-100%",
+    opacity: 1,
   }),
   center: {
     zIndex: 1,
     x: 0,
+    opacity: 1,
   },
   exit: (direction: number) => ({
     zIndex: 0,
     x: direction < 0 ? "100%" : "-100%",
+    opacity: 1,
   }),
 };
 
@@ -69,14 +71,23 @@ export default function Hero() {
     setPage(([prev]) => [prev === slides.length - 1 ? 0 : prev + 1, 1]);
   }, []);
 
-  const prevSlide = () => {
+  const prevSlide = useCallback(() => {
     setPage(([prev]) => [prev === 0 ? slides.length - 1 : prev - 1, -1]);
-  };
+  }, []);
 
   const goToSlide = (index: number) => {
     setPage(([prev]) => [index, index > prev ? 1 : -1]);
   };
 
+  // Continuous autoplay loop every 5 seconds (never stops)
+  useEffect(() => {
+    const timer = setInterval(() => {
+      nextSlide();
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [nextSlide]);
+
+  // Touch Swipe Handling
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const minSwipeDistance = 30;
@@ -100,12 +111,6 @@ export default function Hero() {
     }
   };
 
-  // Autoplay loop every 5 seconds
-  useEffect(() => {
-    const timer = setInterval(nextSlide, 5000);
-    return () => clearInterval(timer);
-  }, [nextSlide]);
-
   return (
     <section
       onTouchStart={handleTouchStart}
@@ -123,11 +128,12 @@ export default function Hero() {
           exit="exit"
           transition={{
             x: { type: "tween", ease: [0.25, 1, 0.5, 1], duration: 0.7 },
+            opacity: { duration: 0.2 },
           }}
           className="absolute inset-0 w-full h-full"
         >
           {/* Hero Banner Image - Desktop vs Mobile */}
-          <div className="relative w-full h-full">
+          <div className="relative w-full h-full bg-[#fafdfb]">
             {/* Desktop Image */}
             <div className="hidden md:block relative w-full h-full">
               <Image
@@ -135,8 +141,8 @@ export default function Hero() {
                 alt={slides[current].alt}
                 fill
                 priority
-                className="object-cover object-top"
                 sizes="100vw"
+                className="object-cover object-top"
               />
             </div>
             {/* Mobile/Tablet Image */}
@@ -146,14 +152,14 @@ export default function Hero() {
                 alt={slides[current].alt}
                 fill
                 priority
-                className="object-cover object-center scale-[1.3]"
                 sizes="100vw"
+                className="object-cover object-center scale-[1.3]"
               />
             </div>
           </div>
 
-          {/* Interactive Button Overlay - positioned on the image */}
-          <div className="absolute left-1/2 -translate-x-1/2 md:left-[8%] md:translate-x-0 bottom-[48%] sm:bottom-[22%] md:bottom-[calc(26%-8px)] flex flex-row items-center gap-3 sm:gap-4 md:gap-6 z-10 w-max">
+          {/* Interactive Button Overlay */}
+          <div className="absolute left-1/2 -translate-x-1/2 md:left-[8%] md:translate-x-0 bottom-[48%] sm:bottom-[22%] md:bottom-[calc(26%-8px)] flex flex-row items-center gap-3 sm:gap-4 md:gap-6 z-10 w-max pointer-events-auto">
             <Link href="/shop">
               <button className="group relative inline-flex items-center justify-center bg-[#7db73c] hover:bg-[#72a635] text-white font-semibold rounded-full shadow-[0_4px_12px_rgba(125,183,60,0.25)] hover:shadow-[0_6px_18px_rgba(125,183,60,0.35)] transition-all duration-300 transform active:scale-95 cursor-pointer text-xs xs:text-sm sm:text-sm md:text-base lg:text-lg py-2.5 xs:py-3 sm:py-2.5 md:py-3 lg:py-3.5 px-5 xs:px-7 sm:px-6 md:px-8 lg:px-10">
                 <span>{t("Shop Now")}</span>
@@ -193,14 +199,26 @@ export default function Hero() {
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`transition-all duration-300 rounded-full cursor-pointer ${index === current
-              ? "bg-emerald-700 w-5 sm:w-8 h-1 sm:h-1.5"
-              : "bg-emerald-900/30 w-1 sm:w-1.5 h-1 sm:h-1.5 hover:bg-emerald-900/50"
-              }`}
+            className={`transition-all duration-300 rounded-full cursor-pointer ${
+              index === current
+                ? "bg-emerald-700 w-5 sm:w-8 h-1 sm:h-1.5"
+                : "bg-emerald-900/30 w-1 sm:w-1.5 h-1 sm:h-1.5 hover:bg-emerald-900/50"
+            }`}
             aria-label={`Go to slide ${index + 1}`}
           />
+        ))}
+      </div>
+
+      {/* Invisible In-Memory Preload Container for all slides (Ensures 0ms decode & NO white screen) */}
+      <div aria-hidden="true" className="hidden">
+        {slides.map((s) => (
+          <React.Fragment key={`preload-${s.id}`}>
+            <Image src={s.desktopImage} alt="" width={1} height={1} priority sizes="100vw" />
+            <Image src={s.mobileImage} alt="" width={1} height={1} priority sizes="100vw" />
+          </React.Fragment>
         ))}
       </div>
     </section>
   );
 }
+
