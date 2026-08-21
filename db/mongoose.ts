@@ -6,12 +6,8 @@ declare global {
 }
 
 /**
- * Connects Mongoose to MongoDB, reusing the connection across hot reloads
- * and across serverless invocations. Call this at the top of every route
- * handler / server function before using any model, e.g.:
- *
- *   import connectDB from "@/db/mongoose";
- *   await connectDB();
+ * Connects Mongoose to MongoDB with optimized connection pooling
+ * and serverless lifecycle reuse.
  */
 export default async function connectDB() {
   const uri = process.env.MONGODB_URI;
@@ -21,7 +17,18 @@ export default async function connectDB() {
   }
 
   if (!global._mongooseConnPromise) {
-    global._mongooseConnPromise = mongoose.connect(uri);
+    global._mongooseConnPromise = mongoose
+      .connect(uri, {
+        bufferCommands: false,
+        maxPoolSize: 10,
+        minPoolSize: 1,
+        serverSelectionTimeoutMS: 5000,
+        socketTimeoutMS: 30000,
+      })
+      .catch((err) => {
+        global._mongooseConnPromise = undefined;
+        throw err;
+      });
   }
   return global._mongooseConnPromise;
 }

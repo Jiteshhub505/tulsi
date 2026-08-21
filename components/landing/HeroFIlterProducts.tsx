@@ -47,9 +47,7 @@ export default function HeroFIlterProducts() {
       }
       return [];
     },
-    staleTime: 10 * 1000,
-    refetchOnMount: "always",
-    refetchOnWindowFocus: true,
+    staleTime: 5 * 60 * 1000,
   });
 
   const categories = ["Health Disease", "Digestion", "Health & Fitness", "Stamina and Power"];

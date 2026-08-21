@@ -1,6 +1,6 @@
-import connectDB from "@/db/mongoose";
-import { Product } from "@/db/models";
 import { NextResponse } from "next/server";
+
+export const dynamic = "force-static";
 
 const ALLOWED_CATEGORIES = [
   "Digestion",
@@ -10,14 +10,15 @@ const ALLOWED_CATEGORIES = [
 ];
 
 export async function GET() {
-  try {
-    await connectDB();
-    return NextResponse.json({
+  return NextResponse.json(
+    {
       success: true,
       categories: ALLOWED_CATEGORIES,
-    });
-  } catch (error) {
-    console.error("Error getting product categories:", error);
-    return NextResponse.json({ success: true, categories: ALLOWED_CATEGORIES });
-  }
+    },
+    {
+      headers: {
+        "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+      },
+    }
+  );
 }

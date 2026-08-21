@@ -40,9 +40,7 @@ export default function Products() {
       }
       return [];
     },
-    staleTime: 10 * 1000,
-    refetchOnMount: "always",
-    refetchOnWindowFocus: true,
+    staleTime: 5 * 60 * 1000,
   });
 
   if (loading) {
