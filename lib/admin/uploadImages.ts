@@ -1,8 +1,8 @@
 /**
- * Helper to convert any image File to WebP format in the browser before upload.
+ * Helper to scale and convert any image File to WebP format in the browser before upload.
  */
 export async function convertFileToWebP(file: File): Promise<File> {
-  if (file.type === "image/webp" || !file.type.startsWith("image/")) {
+  if (!file.type.startsWith("image/")) {
     return file;
   }
 
@@ -12,16 +12,33 @@ export async function convertFileToWebP(file: File): Promise<File> {
 
     img.onload = () => {
       URL.revokeObjectURL(url);
+      
+      // Calculate optimal dimensions (max 1600px on longest side)
+      let { width, height } = img;
+      const maxDim = 1600;
+      if (width > maxDim || height > maxDim) {
+        if (width > height) {
+          height = Math.round((height * maxDim) / width);
+          width = maxDim;
+        } else {
+          width = Math.round((width * maxDim) / height);
+          height = maxDim;
+        }
+      }
+
       const canvas = document.createElement("canvas");
-      canvas.width = img.width;
-      canvas.height = img.height;
+      canvas.width = width;
+      canvas.height = height;
       const ctx = canvas.getContext("2d");
       if (!ctx) {
         resolve(file);
         return;
       }
 
-      ctx.drawImage(img, 0, 0);
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(img, 0, 0, width, height);
+
       canvas.toBlob(
         (blob) => {
           if (!blob) {
@@ -36,7 +53,7 @@ export async function convertFileToWebP(file: File): Promise<File> {
           resolve(webpFile);
         },
         "image/webp",
-        0.85
+        0.82
       );
     };
 

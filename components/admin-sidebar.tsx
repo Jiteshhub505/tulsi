@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/logo";
-import { LayoutDashboard, Menu, Receipt, ShoppingBag, Store, Star, X, LogOut, type LucideIcon } from "lucide-react";
+import { LayoutDashboard, Menu, Receipt, ShoppingBag, Store, Ticket, X, LogOut, Smartphone, type LucideIcon } from "lucide-react";
 
 type NavItem = { title: string; href: string; icon: LucideIcon };
 
@@ -15,8 +15,9 @@ const items: NavItem[] = [
   { title: "Dashboard", href: `${prefix}`, icon: LayoutDashboard },
   { title: "Add Product", href: `${prefix}/addproduct`, icon: ShoppingBag },
   { title: "Inventory", href: `${prefix}/inventory`, icon: Store },
-  { title: "Best Sellers", href: `${prefix}/bestsellers`, icon: Star },
+  { title: "Coupons", href: `${prefix}/coupons`, icon: Ticket },
   { title: "Orders", href: `${prefix}/orders`, icon: Receipt },
+  { title: "Numbers", href: `${prefix}/numbers`, icon: Smartphone },
 ];
 
 function NavLinks({

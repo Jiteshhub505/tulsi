@@ -9,7 +9,7 @@ export const POST = async (req: Request) => {
 
   try {
     const body = await req.json().catch(() => ({}));
-    const { couponCode = "" } = body;
+    const { couponCode = "", coinsToUse = 0, phone = "" } = body;
 
     const cart = await Cart.findOne({ userId, status: "active" });
     if (!cart) {
@@ -34,9 +34,66 @@ export const POST = async (req: Request) => {
     }, 0);
 
     const safeCoupon = typeof couponCode === "string" ? couponCode.trim().toUpperCase() : "";
-    const discount = safeCoupon === "KRISH10" ? subtotal * 0.1 : 0;
+    let discount = 0;
+    const cleanPhone = phone ? phone.toString().replace(/\D/g, "").slice(-10) : "";
+
+    if (safeCoupon && cleanPhone) {
+      const OrderModel = (await import("@/db/models")).Order;
+      const existingOrderWithCoupon = await OrderModel.findOne({
+        couponCode: safeCoupon,
+        "shippingDetails.phone": new RegExp(cleanPhone + "$"),
+        order_status: { $in: ["created", "paid"] },
+      });
+      if (existingOrderWithCoupon) {
+        return Response.json({
+          status: 400,
+          message: `Coupon '${safeCoupon}' has already been used on mobile number +91 ${cleanPhone}. Each coupon is valid only once per phone number.`,
+          success: false,
+        });
+      }
+    }
+
+    if (safeCoupon === "KRISH10") {
+      discount = Math.round(subtotal * 0.1);
+    } else if (safeCoupon) {
+      const CouponModel = (await import("@/db/models")).Coupon;
+      const foundCoupon = await CouponModel.findOne({ code: safeCoupon, isActive: true });
+      if (foundCoupon) {
+        if (cleanPhone && foundCoupon.usedPhones && foundCoupon.usedPhones.includes(cleanPhone)) {
+          return Response.json({
+            status: 400,
+            message: `Coupon '${safeCoupon}' has already been used on mobile number +91 ${cleanPhone}. Each coupon is valid only once per phone number.`,
+            success: false,
+          });
+        }
+        const notExpired = !foundCoupon.expiryDate || new Date(foundCoupon.expiryDate) >= new Date();
+        const minOrderMet = !foundCoupon.minOrderAmount || subtotal >= foundCoupon.minOrderAmount;
+        const limitNotReached = !foundCoupon.usageLimit || foundCoupon.usedCount < foundCoupon.usageLimit;
+        if (notExpired && minOrderMet && limitNotReached) {
+          if (foundCoupon.discountType === "percentage") {
+            let calc = (subtotal * foundCoupon.discountValue) / 100;
+            if (foundCoupon.maxDiscount && calc > foundCoupon.maxDiscount) {
+              calc = foundCoupon.maxDiscount;
+            }
+            discount = Math.round(calc);
+          } else {
+            discount = Math.min(subtotal, foundCoupon.discountValue);
+          }
+        }
+      }
+    }
     const subtotalAfterCoupon = subtotal - discount;
-    const amount = subtotalAfterCoupon;
+
+    let coinDiscount = 0;
+    if (coinsToUse > 0 && phone) {
+      const cleanPhone = phone.replace(/\D/g, "").slice(-10);
+      const wallet = await (await import("@/db/models")).CoinWallet.findOne({ phone: cleanPhone });
+      if (wallet && wallet.balance >= coinsToUse) {
+        coinDiscount = Math.min(coinsToUse, Math.floor(subtotalAfterCoupon * 0.5));
+      }
+    }
+
+    const amount = Math.max(1, subtotalAfterCoupon - coinDiscount);
 
     const keyId = process.env.RAZORPAY_KEY_ID || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
     const keySecret = process.env.RAZORPAY_KEY_SECRET;

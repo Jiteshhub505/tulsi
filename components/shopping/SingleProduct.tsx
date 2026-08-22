@@ -142,6 +142,10 @@ function getCategoryRichContent(categoryName: string, productName: string) {
       reviews: [
         { name: "Rajesh Sharma", location: "Delhi", locationHi: "दिल्ली", rating: 5, date: "2 days ago", dateHi: "2 दिन पहले", comment: "Pure Himalayan Shilajit Resin! Easy to dissolve in warm milk, gives incredible stamina and muscle recovery.", commentHi: "बेहतरीन शुद्ध शिलाजीत! गर्म दूध में आसानी से घुल जाता है, स्टैमिना में जबरदस्त सुधार हुआ।" },
         { name: "Vikram K.", location: "Mumbai", locationHi: "मुंबई", rating: 5, date: "1 week ago", dateHi: "1 सप्ताह पहले", comment: "Authentic resin with 60% Fulvic Acid. My energy and stress levels have improved dramatically.", commentHi: "असली राल! मेरी ऊर्जा बढ़ गई है और दैनिक तनाव काफी कम हो गया है।" },
+        { name: "Amit Verma", location: "Bangalore", locationHi: "बैंगलोर", rating: 5, date: "2 weeks ago", dateHi: "2 सप्ताह पहले", comment: "Best post-workout natural energy booster. Feel active throughout my long office shifts.", commentHi: "वर्कआउट के बाद का बेहतरीन प्राकृतिक ऊर्जा बूस्टर। दिनभर चुस्ती बनी रहती है।" },
+        { name: "Sanjay Patel", location: "Ahmedabad", locationHi: "अहमदाबाद", rating: 5, date: "3 weeks ago", dateHi: "3 सप्ताह पहले", comment: "Comes with certificate of purity. Dissolves completely in warm water without any residue.", commentHi: "शुद्धता के प्रमाण पत्र के साथ आता है। पानी में बिना किसी तलछट के पूरी तरह घुल जाता है।" },
+        { name: "Neeraj Joshi", location: "Dehradun", locationHi: "देहरादून", rating: 5, date: "1 month ago", dateHi: "1 महीना पहले", comment: "Remarkable difference in immunity and stamina within 15 days of daily use.", commentHi: "15 दिनों के नियमित सेवन से इम्यूनिटी और स्टैमिना में गजब का बदलाव महसूस हुआ।" },
+        { name: "Devendra Singh", location: "Jaipur", locationHi: "जयपुर", rating: 5, date: "1 month ago", dateHi: "1 महीना पहले", comment: "Top quality Himalayan Shilajit! Very authentic earthy aroma and high potency.", commentHi: "उच्च गुणवत्ता वाला हिमालयन शिलाजीत! बहुत ही शुद्ध और असरदार।" },
       ],
     };
   }
@@ -216,6 +220,10 @@ function getCategoryRichContent(categoryName: string, productName: string) {
       reviews: [
         { name: "Subhash Yadav", location: "Kanpur", locationHi: "कानपुर", rating: 5, date: "3 days ago", dateHi: "3 दिन पहले", comment: `Instant relief for my chronic knee pain! The warmth relaxes stiffness in 10 minutes.`, commentHi: "घुटनों के दर्द में तुरंत आराम मिला! 10 मिनट में गर्माहट से अकड़न दूर हो जाती है।" },
         { name: "Meena Gupta", location: "Indore", locationHi: "इंदौर", rating: 5, date: "1 week ago", dateHi: "1 सप्ताह पहले", comment: "My mother uses it daily for severe joint pain and backache. Best Ayurvedic massage oil!", commentHi: "मेरी माताजी जोड़ों और कमर दर्द के लिए रोज इस्तेमाल करती हैं। सबसे अच्छा तेल है।" },
+        { name: "Rameshwar Lal", location: "Varanasi", locationHi: "वाराणसी", rating: 5, date: "2 weeks ago", dateHi: "2 सप्ताह पहले", comment: "Relieved my sciatica nerve pain significantly after regular night massage.", commentHi: "रात को मालिश करने से साइटिका के दर्द में बहुत बड़ा आराम मिला।" },
+        { name: "Anita Deshmukh", location: "Nagpur", locationHi: "नागपुर", rating: 5, date: "3 weeks ago", dateHi: "3 सप्ताह पहले", comment: "Fast absorbing and non-sticky. Relieves cervical and shoulder tension within minutes.", commentHi: "जल्दी सोखने वाला और चिपचिपाहट रहित। गर्दन और कंधे के खिंचाव में तुरंत आराम देता है।" },
+        { name: "Harish Rawat", location: "Haridwar", locationHi: "हरिद्वार", rating: 5, date: "1 month ago", dateHi: "1 महीना पहले", comment: "Excellent warm herbal formulation. Great for elderly parents with knee stiffness.", commentHi: "बुजुर्गों के घुटनों के दर्द और अकड़न के लिए सबसे उत्तम गर्म तेल।" },
+        { name: "Balwant Singh", location: "Amritsar", locationHi: "अमृतसर", rating: 5, date: "1 month ago", dateHi: "1 महीना पहले", comment: "Very soothing herbal aroma and long-lasting joint comfort throughout the winter.", commentHi: "जोड़ों के दर्द को जड़ से शांत करता है, पूरे दिन चलना-फिरना आसान हो गया।" },
       ],
     };
   }
@@ -282,6 +290,10 @@ function getCategoryRichContent(categoryName: string, productName: string) {
       reviews: [
         { name: "Rajesh Sharma", location: "Delhi", locationHi: "दिल्ली", rating: 5, date: "2 days ago", dateHi: "2 दिन पहले", comment: `Best Ved Shakti formula! Noticeable boost in daily stamina, confidence, and energy within 5 days. Very satisfied!`, commentHi: "शानदार वेद शक्ति फॉर्मूला! 5 दिनों में स्टैमिना और आत्मविश्वास में गजब का सुधार हुआ।" },
         { name: "Vikram K.", location: "Mumbai", locationHi: "मुंबई", rating: 5, date: "1 week ago", dateHi: "1 सप्ताह पहले", comment: "Helped immensely with physical stamina and staying timing. Authentic classical Ayurvedic formulation!", commentHi: "शारीरिक शक्ति और टाइमिंग में बहुत मददगार साबित हुआ। असली आयुर्वेदिक उत्पाद!" },
+        { name: "Deepak Tiwari", location: "Lucknow", locationHi: "लखनऊ", rating: 5, date: "2 weeks ago", dateHi: "2 सप्ताह पहले", comment: "Great boost in physical energy and endurance. Zero side effects, feel completely rejuvenated.", commentHi: "शारीरिक ऊर्जा और सहनशक्ति में शानदार वृद्धि। बिना किसी साइड इफेक्ट के नया जोश मिला।" },
+        { name: "Rahul Choudhary", location: "Patna", locationHi: "पटना", rating: 5, date: "3 weeks ago", dateHi: "3 सप्ताह पहले", comment: "Safed Musli and Kaunch Beej blend is genuine. My performance confidence returned in 10 days.", commentHi: "सफेद मूसली और कौंच बीज का संयोजन असली है। 10 दिनों में आत्मविश्वास वापस आ गया।" },
+        { name: "Gaurav Saxena", location: "Bhopal", locationHi: "भोपाल", rating: 5, date: "1 month ago", dateHi: "1 महीना पहले", comment: "Helped reduce daily work exhaustion and improved relationship wellness drastically.", commentHi: "दिनभर की थकान दूर हुई और वाइटलिटी में बड़ा सुधार हुआ।" },
+        { name: "Arvind Kumar", location: "Chandigarh", locationHi: "चंडीगढ़", rating: 5, date: "1 month ago", dateHi: "1 महीना पहले", comment: "Highly recommended Ayurvedic vitality supplement. Safe, pure and very potent.", commentHi: "आयुर्वेदिक पौरुष शक्ति के लिए अत्यधिक अनुशंसित। पूरी तरह सुरक्षित और असरदार।" },
       ],
     };
   }
@@ -352,6 +364,10 @@ function getCategoryRichContent(categoryName: string, productName: string) {
       reviews: [
         { name: "Harish Chandra", location: "Delhi", locationHi: "दिल्ली", rating: 5, date: "3 days ago", dateHi: "3 दिन पहले", comment: `My 6mm kidney stone dissolved and passed out smoothly within 3 weeks of using ${productName}! Extremely effective.`, commentHi: "3 सप्ताह में मेरी 6mm की पथरी गलकर निकल गई! बहुत ही असरदार चूर्ण है।" },
         { name: "Savita Devi", location: "Kanpur", locationHi: "कानपुर", rating: 5, date: "1 week ago", dateHi: "1 सप्ताह पहले", comment: "Relieved my severe urinary burning and back pain in just 4 days. Highly recommended renal powder!", commentHi: "सिर्फ 4 दिनों में पेशाब की जलन और कमर दर्द में आराम मिला। बहुत बढ़िया उत्पाद।" },
+        { name: "Manoj Agrawal", location: "Agra", locationHi: "आगरा", rating: 5, date: "2 weeks ago", dateHi: "2 सप्ताह पहले", comment: "Very soothing herbal formulation. Flushed out urinary crystals without any unbearable pain.", commentHi: "यूरिनरी क्रिस्टल्स को बिना किसी असहनीय दर्द के आसानी से बाहर निकाल दिया।" },
+        { name: "Surendra Mishra", location: "Varanasi", locationHi: "वाराणसी", rating: 5, date: "3 weeks ago", dateHi: "3 सप्ताह पहले", comment: "Doctor advised surgery for stone, but this Ayurvedic powder dissolved it naturally in 25 days.", commentHi: "डॉक्टर ने सर्जरी की सलाह दी थी, लेकिन इस चूर्ण ने 25 दिनों में पथरी गला दी।" },
+        { name: "Geeta Rani", location: "Meerut", locationHi: "मेरठ", rating: 5, date: "1 month ago", dateHi: "1 महीना पहले", comment: "Instant relief from flank pain and burning micturition. Authentic Pashanbhed active.", commentHi: "पेशाब की तीव्र जलन और पसली के दर्द में तुरंत राहत मिली।" },
+        { name: "Prakash Jha", location: "Ranchi", locationHi: "रांची", rating: 5, date: "1 month ago", dateHi: "1 महीना पहले", comment: "Best renal detox powder. Regular use kept my uric acid levels completely normal.", commentHi: "किडनी डिटॉक्स के लिए सर्वश्रेष्ठ। यूरिक एसिड पूरी तरह सामान्य हो गया।" },
       ],
     };
   }
@@ -420,6 +436,10 @@ function getCategoryRichContent(categoryName: string, productName: string) {
       reviews: [
         { name: "Satish Verma", location: "Lucknow", locationHi: "लखनऊ", rating: 5, date: "3 days ago", dateHi: "3 दिन पहले", comment: `Unbelievable relief! My rectal bleeding stopped in just 4 days with ${productName}.`, commentHi: "अद्भुत राहत! सिर्फ 4 दिनों में खून आना बंद हो गया और पेट आसानी से साफ होने लगा।" },
         { name: "Mahesh Rao", location: "Hyderabad", locationHi: "हैदराबाद", rating: 5, date: "1 week ago", dateHi: "1 सप्ताह पहले", comment: "Piles Care capsules cured my constipation and swelling completely.", commentHi: "पाइल्स केयर कैप्सूल से मेरी पुरानी कब्ज और सूजन पूरी तरह ठीक हो गई।" },
+        { name: "Vinod Yadav", location: "Gorakhpur", locationHi: "गोरखपुर", rating: 5, date: "2 weeks ago", dateHi: "2 सप्ताह पहले", comment: "Shrank external pile mass within 2 weeks. Can sit and walk comfortably without stinging pain.", commentHi: "2 सप्ताह में मस्सों का आकार बहुत छोटा हो गया। अब बिना दर्द के आराम से बैठ पाता हूँ।" },
+        { name: "Rekha Sen", location: "Kolkata", locationHi: "कोलकाता", rating: 5, date: "3 weeks ago", dateHi: "3 सप्ताह पहले", comment: "Stool passing became completely smooth without any straining. Godsend for fissure pain.", commentHi: "बिना जोर लगाए पेट साफ होता है। फिशर के दर्द के लिए यह वरदान साबित हुआ।" },
+        { name: "Ashok Trivedi", location: "Ahmedabad", locationHi: "अहमदाबाद", rating: 5, date: "1 month ago", dateHi: "1 महीना पहले", comment: "100% natural and effective. Stopped painful itching and rectal discomfort in 5 days.", commentHi: "100% प्राकृतिक और असरदार। 5 दिनों में खुजली और जलन से मुक्ति मिल गई।" },
+        { name: "Dharmendra Singh", location: "Jaipur", locationHi: "जयपुर", rating: 5, date: "1 month ago", dateHi: "1 महीना पहले", comment: "No more bleeding or fear of morning bowel movements. Highly grateful for this medicine.", commentHi: "अब शौच के समय कोई खून या दर्द नहीं होता। बहुत ही उत्तम आयुर्वेदिक दवा।" },
       ],
     };
   }
@@ -482,6 +502,10 @@ function getCategoryRichContent(categoryName: string, productName: string) {
       reviews: [
         { name: "Pankaj Kumar", location: "Patna", locationHi: "पटना", rating: 5, date: "3 days ago", dateHi: "3 दिन पहले", comment: `My liver enzymes and digestive appetite improved significantly in 3 weeks with ${productName}!`, commentHi: "3 हफ्तों में मेरे लिवर एंजाइम और भूख में बहुत अच्छा सुधार हुआ! पेट का भारीपन खत्म हो गया।" },
         { name: "Pooja Sharma", location: "Jaipur", locationHi: "जयपुर", rating: 5, date: "1 week ago", dateHi: "1 सप्ताह पहले", comment: "Excellent natural formula for sluggish liver. Great appetite improvement!", commentHi: "कमजोर लिवर के लिए बहुत बढ़िया फॉर्मूला। भूख खुलकर लगने लगी है।" },
+        { name: "Alok Ranjan", location: "Bhubaneswar", locationHi: "भुवनेश्वर", rating: 5, date: "2 weeks ago", dateHi: "2 सप्ताह पहले", comment: "Fatty liver grade-1 symptoms reduced in ultrasound after 1 month course.", commentHi: "1 महीने के कोर्स के बाद अल्ट्रासाउंड में फैटी लिवर के लक्षणों में काफी सुधार आया।" },
+        { name: "Narendra Mohan", location: "Gwalior", locationHi: "ग्वालियर", rating: 5, date: "3 weeks ago", dateHi: "3 सप्ताह पहले", comment: "Milk Thistle and Kutki blend relieved chronic post-meal heaviness and bloating.", commentHi: "मिल्क थीस्ल और कुटकी के मिश्रण ने खाने के बाद का भारीपन पूरी तरह दूर कर दिया।" },
+        { name: "Sunita Rastogi", location: "Bareilly", locationHi: "बरेली", rating: 5, date: "1 month ago", dateHi: "1 महीना पहले", comment: "Restored natural hunger and energy after severe jaundice recovery.", commentHi: "पीलिया के बाद की कमजोरी दूर कर स्वाभाविक भूख और ऊर्जा लौटाई।" },
+        { name: "Tarun Chakraborty", location: "Kolkata", locationHi: "कोलकाता", rating: 5, date: "1 month ago", dateHi: "1 महीना पहले", comment: "Very gentle on stomach. Improves liver digestion and cleared skin dullness.", commentHi: "लिवर को डिटॉक्स कर पाचन दुरुस्त किया और चेहरे की चमक भी लौट आई।" },
       ],
     };
   }
@@ -545,6 +569,10 @@ function getCategoryRichContent(categoryName: string, productName: string) {
       reviews: [
         { name: "Ramesh P.", location: "Delhi", locationHi: "दिल्ली", rating: 5, date: "3 days ago", dateHi: "3 दिन पहले", comment: `Within 5 days of using ${productName}, my gut feels completely light and comfortable!`, commentHi: "5 दिनों में पेट की सारी गैस और भारीपन खत्म हो गया। बहुत आरामदायक महसूस हो रहा है।" },
         { name: "Sunita M.", location: "Pune", locationHi: "पुणे", rating: 5, date: "1 week ago", dateHi: "1 सप्ताह पहले", comment: "Very effective natural formula. No side effects, just pure digestion relief.", commentHi: "बहुत प्रभावी प्राकृतिक फॉर्मूला। बिना किसी साइड इफेक्ट के शुद्ध राहत।" },
+        { name: "Jagdish Prasad", location: "Varanasi", locationHi: "वाराणसी", rating: 5, date: "2 weeks ago", dateHi: "2 सप्ताह पहले", comment: "Cured my 2-year-old chronic acid reflux. No more sour burps or chest burning.", commentHi: "2 साल पुरानी एसिडिटी और खट्टी डकारों की समस्या हमेशा के लिए खत्म हो गई।" },
+        { name: "Kavita Nair", location: "Kochi", locationHi: "कोच्चि", rating: 5, date: "3 weeks ago", dateHi: "3 सप्ताह पहले", comment: "Triphala and Ajwain work wonders for post-dinner bloating and indigestion.", commentHi: "रात के खाने के बाद पेट फूलने और बदहजमी के लिए अद्भुत असरदार योग।" },
+        { name: "Mohit Goel", location: "Ghaziabad", locationHi: "गाजियाबाद", rating: 5, date: "1 month ago", dateHi: "1 महीना पहले", comment: "Non-habit forming and natural. Morning stomach clearance is completely effortless.", commentHi: "इसकी कोई आदत नहीं पड़ती, रोज सुबह आसानी से पेट साफ हो जाता है।" },
+        { name: "Anjali Saxena", location: "Noida", locationHi: "नोएडा", rating: 5, date: "1 month ago", dateHi: "1 महीना पहले", comment: "Light, refreshing and fast-acting. My entire family uses it for digestive comfort.", commentHi: "हल्का, ताज़ा और तुरंत असर करने वाला। पूरा परिवार इसका उपयोग करता है।" },
       ],
     };
   }
@@ -606,6 +634,11 @@ function getCategoryRichContent(categoryName: string, productName: string) {
       ],
       reviews: [
         { name: "Aman V.", location: "Chandigarh", locationHi: "चंडीगढ़", rating: 5, date: "4 days ago", dateHi: "4 दिन पहले", comment: `Gained clean muscle weight in 1 month with ${productName} without any digestive issues.`, commentHi: "1 महीने में प्राकृतिक वजन और ताकत में गजब का इजाफा हुआ, कोई पेट की खराबी नहीं हुई।" },
+        { name: "Rohit Bhati", location: "Gurugram", locationHi: "गुरुग्राम", rating: 5, date: "1 week ago", dateHi: "1 सप्ताह पहले", comment: "Gym stamina and bench press strength increased significantly in 3 weeks.", commentHi: "जिम में स्टैमिना और बेंच प्रेस की ताकत में 3 हफ्तों में उल्लेखनीय बढ़ोतरी हुई।" },
+        { name: "Sandeep Yadav", location: "Meerut", locationHi: "मेरठ", rating: 5, date: "2 weeks ago", dateHi: "2 सप्ताह पहले", comment: "Ashwagandha KSM-66 gives steady muscle pump and zero chemical crash.", commentHi: "अश्वगंधा KSM-66 से बेहतरीन मसल पंप मिलता है और कोई साइड इफेक्ट नहीं होता।" },
+        { name: "Vikas Rathore", location: "Indore", locationHi: "इंदौर", rating: 5, date: "3 weeks ago", dateHi: "3 सप्ताह पहले", comment: "Helped me gain 3kg healthy lean mass when paired with banana shake diet.", commentHi: "केले के शेक के साथ लेने से 3 किलो स्वस्थ वजन बढ़ाने में मदद मिली।" },
+        { name: "Karan Singhania", location: "Delhi", locationHi: "दिल्ली", rating: 5, date: "1 month ago", dateHi: "1 महीना पहले", comment: "Muscle soreness vanishes by next morning. Excellent natural recovery formula.", commentHi: "अगली सुबह तक वर्कआउट का सारा दर्द गायब हो जाता है। बहुत बढ़िया रिकवरी।" },
+        { name: "Harsh Vardhan", location: "Lucknow", locationHi: "लखनऊ", rating: 5, date: "1 month ago", dateHi: "1 महीना पहले", comment: "100% steroid free Ayurvedic muscle builder. Highly effective for lean gains.", commentHi: "100% स्टेरॉयड मुक्त आयुर्वेदिक मसल बिल्डर। प्राकृतिक ताकत के लिए सर्वश्रेष्ठ।" },
       ],
     };
   }
@@ -667,6 +700,11 @@ function getCategoryRichContent(categoryName: string, productName: string) {
       ],
       reviews: [
         { name: "Gurpreet K.", location: "Ludhiana", locationHi: "लुधियाना", rating: 5, date: "5 days ago", dateHi: "5 दिन पहले", comment: `My knee pain and morning stiffness have reduced significantly after using ${productName}.`, commentHi: "घुटनों का दर्द और सुबह की अकड़न बहुत कम हो गई है, अब मैं आसानी से सीढ़ियां चढ़ पाती हूँ!" },
+        { name: "Mohanlal Soni", location: "Jaipur", locationHi: "जयपुर", rating: 5, date: "1 week ago", dateHi: "1 सप्ताह पहले", comment: "Shallaki and Guggulu formula relieved my chronic arthritis swelling in 2 weeks.", commentHi: "शल्लकी और गुग्गुल के फॉर्मूले ने गठिया की सूजन में 2 हफ्तों में बड़ा आराम दिया।" },
+        { name: "Usha Shrivastava", location: "Bhopal", locationHi: "भोपाल", rating: 5, date: "2 weeks ago", dateHi: "2 सप्ताह पहले", comment: "Can do daily morning walks again without knee cracking sounds or pain.", commentHi: "अब घुटनों में बिना कट-कट आवाज और दर्द के रोज सुबह टहल पाती हूँ।" },
+        { name: "Ramakant Dwivedi", location: "Prayagraj", locationHi: "प्रयागराज", rating: 5, date: "3 weeks ago", dateHi: "3 सप्ताह पहले", comment: "Lubricated joint cartilage naturally. Very effective Ayurvedic treatment.", commentHi: "जोड़ों की ग्रीस और लचीलापन वापस लौट आया। बहुत असरदार दवा।" },
+        { name: "Jaswant Singh", location: "Amritsar", locationHi: "अमृतसर", rating: 5, date: "1 month ago", dateHi: "1 महीना पहले", comment: "Relieved lower back stiffness and hip joint pain in 15 days.", commentHi: "कमर और कूल्हे के जोड़ों की जकड़न 15 दिनों में खत्म हो गई।" },
+        { name: "Nirmala Ben", location: "Surat", locationHi: "सूरत", rating: 5, date: "1 month ago", dateHi: "1 महीना पहले", comment: "Doctor recommended painkillers were causing acidity, this herbal medicine healed my joints safely.", commentHi: "पेनकिलर से एसिडिटी होती थी, इस आयुर्वेदिक दवा ने जोड़ों को सुरक्षित ठीक किया।" },
       ],
     };
   }
@@ -724,11 +762,22 @@ function getCategoryRichContent(categoryName: string, productName: string) {
     ],
     reviews: [
       { name: "Rajesh Sharma", location: "Delhi", locationHi: "दिल्ली", rating: 5, date: "2 days ago", dateHi: "2 दिन पहले", comment: "Exceptional quality! Noticeable improvement in daily energy and well-being within a week.", commentHi: "उत्कृष्ट गुणवत्ता! एक सप्ताह के भीतर ऊर्जा और स्वास्थ्य में उल्लेखनीय सुधार हुआ।" },
+      { name: "Suman Lata", location: "Faridabad", locationHi: "फरीदाबाद", rating: 5, date: "5 days ago", dateHi: "5 दिन पहले", comment: "100% pure authentic Ayurvedic ingredients. Feel very active and refreshed.", commentHi: "100% शुद्ध आयुर्वेदिक घटक। दिनभर ताजगी और स्फूर्ति महसूस होती है।" },
+      { name: "Anand Swaroop", location: "Kanpur", locationHi: "कानपुर", rating: 5, date: "1 week ago", dateHi: "1 सप्ताह पहले", comment: "Great for balancing immunity and daily metabolism without any side effects.", commentHi: "बिना किसी दुष्प्रभाव के रोग प्रतिरोधक क्षमता और पाचन शक्ति बढ़ाने के लिए उत्तम।" },
+      { name: "Priya Mukherjee", location: "Kolkata", locationHi: "कोलकाता", rating: 5, date: "2 weeks ago", dateHi: "2 सप्ताह पहले", comment: "Packaging was premium and product efficacy is top notch. Very satisfied.", commentHi: "पैकेजिंग बहुत अच्छी थी और उत्पाद का असर बहुत शानदार है।" },
+      { name: "Naresh Kothari", location: "Udaipur", locationHi: "उदयपुर", rating: 5, date: "3 weeks ago", dateHi: "3 सप्ताह पहले", comment: "Doctor trusted formulation. Boosted whole family's general vitality.", commentHi: "वैद्यों द्वारा अनुशंसित योग। पूरे परिवार की सेहत और ऊर्जा में सुधार हुआ।" },
+      { name: "Hemant Choudhary", location: "Patna", locationHi: "पटना", rating: 5, date: "1 month ago", dateHi: "1 महीना पहले", comment: "Ayurveda at its purest. High potency herbs made a huge difference to my health.", commentHi: "आयुर्वेद का सबसे शुद्ध रूप। शक्तिशाली जड़ी-बूटियों ने स्वास्थ्य में बड़ा बदलाव लाया।" },
     ],
   };
 }
 
-export default function SingleProduct({ id }: { id: string }) {
+export default function SingleProduct({
+  id,
+  initialProduct,
+}: {
+  id: string;
+  initialProduct?: any;
+}) {
   const router = useRouter();
   const { t, language } = useLanguage();
   const { data: session } = useSession();
@@ -744,6 +793,7 @@ export default function SingleProduct({ id }: { id: string }) {
   } = useQuery({
     queryKey: ["product", id],
     queryFn: () => getproductdetails(id),
+    initialData: initialProduct,
     staleTime: 5 * 60 * 1000,
   });
 
@@ -774,10 +824,15 @@ export default function SingleProduct({ id }: { id: string }) {
     staleTime: 10 * 60 * 1000,
   });
 
-  const selectedImage = getOptimizedImageUrl(product?.galleryImages?.[0], { width: 1000 });
+  const selectedImage = getOptimizedImageUrl(
+    product?.galleryImages?.[0] || initialProduct?.galleryImages?.[0],
+    { width: 1000 }
+  );
 
   // ---------------- STATES ----------------
-  const [activeImage, setActiveImage] = useState<string>("");
+  const [activeImage, setActiveImage] = useState<string>(
+    initialProduct?.galleryImages?.[0] || ""
+  );
   const [quantity, setQuantity] = useState(1);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isZoomed, setIsZoomed] = useState(false);
@@ -786,8 +841,17 @@ export default function SingleProduct({ id }: { id: string }) {
   const [pincodeMsg, setPincodeMsg] = useState<string | null>(null);
   const [selectedPack, setSelectedPack] = useState(0);
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
-  const [imageLoaded, setImageLoaded] = useState(false);
   const [addingRelatedId, setAddingRelatedId] = useState<string | null>(null);
+  const [showAllReviews, setShowAllReviews] = useState(false);
+
+  useEffect(() => {
+    // Instantly snap to the absolute top on page load / product switch
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+    if (typeof document !== "undefined") {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
+  }, [id]);
 
   useEffect(() => {
     if (product?.galleryImages?.length) {
@@ -990,25 +1054,30 @@ export default function SingleProduct({ id }: { id: string }) {
           <div className="lg:col-span-6 flex flex-col-reverse md:flex-row gap-3.5 2xl:gap-5 items-start w-full lg:sticky lg:top-20">
             {/* Gallery Thumbnails */}
             <div className="flex md:flex-col gap-2.5 2xl:gap-3.5 overflow-x-auto md:overflow-y-auto max-w-full md:max-h-[540px] 2xl:max-h-[720px] md:w-20 2xl:w-24 shrink-0 pb-2 md:pb-0 scrollbar-none">
-              {(product.galleryImages.length > 0 ? product.galleryImages : [selectedImage]).map((img: string, i: number) => (
-                <button
-                  key={i}
-                  onClick={() => setActiveImage(img)}
-                  className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border-2 transition-all shrink-0 cursor-pointer bg-white ${
-                    (activeImage || selectedImage) === img
-                      ? "border-emerald-700 shadow-md ring-2 ring-emerald-700/20 scale-[1.02]"
-                      : "border-stone-200 hover:border-stone-400 opacity-85 hover:opacity-100"
-                  }`}
-                >
-                  <Image
-                    src={getOptimizedImageUrl(img, { width: 160 })}
-                    alt={`thumbnail-${i}`}
-                    fill
-                    sizes="80px"
-                    className="object-cover"
-                  />
-                </button>
-              ))}
+              {(product.galleryImages.length > 0 ? product.galleryImages : [selectedImage]).map((img: string, i: number) => {
+                const isSelected = (activeImage || selectedImage) === img || (!activeImage && i === 0);
+                return (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => setActiveImage(img)}
+                    onMouseEnter={() => setActiveImage(img)}
+                    className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border-2 transition-all shrink-0 cursor-pointer bg-white ${
+                      isSelected
+                        ? "border-emerald-700 shadow-md ring-2 ring-emerald-700/20 scale-[1.02]"
+                        : "border-stone-200 hover:border-stone-400 opacity-80 hover:opacity-100"
+                    }`}
+                  >
+                    <Image
+                      src={getOptimizedImageUrl(img, { width: 140, quality: "auto:eco" })}
+                      alt={`thumbnail-${i}`}
+                      fill
+                      sizes="80px"
+                      className="object-cover"
+                    />
+                  </button>
+                );
+              })}
             </div>
 
             {/* Main Product Display Card with Badges & Stamps */}
@@ -1029,20 +1098,27 @@ export default function SingleProduct({ id }: { id: string }) {
                 <span className="text-[8px] font-bold text-amber-900 tracking-tighter">AYURVEDA</span>
               </div>
 
-              {!imageLoaded && (
-                <div className="absolute inset-0 bg-stone-100 animate-pulse rounded-3xl flex items-center justify-center">
-                  <div className="w-16 h-16 rounded-full bg-stone-200 animate-pulse" />
-                </div>
-              )}
-              <Image
-                src={getOptimizedImageUrl(activeImage || selectedImage, { width: 1000 })}
-                alt={translateText(product.name, product.nameHi)}
-                fill
-                priority
-                sizes="(max-width: 768px) 100vw, 50vw"
-                onLoad={() => setImageLoaded(true)}
-                className={`object-cover transition-all duration-500 group-hover:scale-105 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
-              />
+              {/* Instant 0ms Layered Image Stack */}
+              {(product.galleryImages.length > 0 ? product.galleryImages : [selectedImage]).map((img: string, idx: number) => {
+                const isCurrent = (activeImage || selectedImage) === img || (!activeImage && idx === 0);
+                return (
+                  <div
+                    key={idx}
+                    className={`absolute inset-0 w-full h-full transition-opacity duration-200 ${
+                      isCurrent ? "opacity-100 z-1" : "opacity-0 z-0 pointer-events-none"
+                    }`}
+                  >
+                    <Image
+                      src={getOptimizedImageUrl(img, { width: 750, quality: "auto:good" })}
+                      alt={`${translateText(product.name, product.nameHi)} - view ${idx + 1}`}
+                      fill
+                      priority={true}
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                );
+              })}
             </div>
           </div>
 
@@ -1400,7 +1476,7 @@ export default function SingleProduct({ id }: { id: string }) {
             >
               <div className="relative aspect-4/3 w-full rounded-2xl overflow-hidden shadow-sm bg-stone-100 2xl:h-72">
                 <Image
-                  src={ben.image}
+                  src={getOptimizedImageUrl(ben.image, { width: 500, quality: "auto:good" })}
                   alt={translateText(ben.title)}
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1536px) 33vw, 450px"
@@ -1438,7 +1514,7 @@ export default function SingleProduct({ id }: { id: string }) {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {reviewsList.map((rev: any, idx: number) => (
+          {(showAllReviews ? reviewsList : reviewsList.slice(0, 3)).map((rev: any, idx: number) => (
             <div key={idx} className="bg-white border border-stone-200 p-6 rounded-2xl space-y-3.5 shadow-2xs">
               <div className="flex items-center justify-between">
                 <div className="flex text-amber-500">
@@ -1446,13 +1522,18 @@ export default function SingleProduct({ id }: { id: string }) {
                     <Star key={i} size={14} className="fill-amber-500" />
                   ))}
                 </div>
-                <span className="text-[11px] text-stone-400 font-medium">{rev.date}</span>
+                <span className="text-[11px] text-stone-400 font-medium">{translateText(rev.date, rev.dateHi)}</span>
               </div>
               <p className="text-xs sm:text-sm text-stone-700 leading-relaxed italic">
-                "{translateText(rev.comment)}"
+                "{translateText(rev.comment, rev.commentHi)}"
               </p>
               <div className="flex items-center justify-between pt-3 border-t border-stone-100">
-                <span className="text-xs font-bold text-stone-900">{rev.name}</span>
+                <div className="flex flex-col">
+                  <span className="text-xs font-bold text-stone-900">{rev.name}</span>
+                  {rev.location && (
+                    <span className="text-[10px] text-stone-400 font-medium">{translateText(rev.location, rev.locationHi)}</span>
+                  )}
+                </div>
                 <span className="text-[10px] bg-emerald-100 text-emerald-800 font-extrabold px-2 py-0.5 rounded-full flex items-center gap-1">
                   <BadgeCheck size={12} /> {t("Verified Buyer")}
                 </span>
@@ -1460,6 +1541,26 @@ export default function SingleProduct({ id }: { id: string }) {
             </div>
           ))}
         </div>
+
+        {reviewsList.length > 3 && (
+          <div className="text-center pt-2">
+            <button
+              onClick={() => setShowAllReviews(!showAllReviews)}
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-stone-300 bg-white hover:bg-stone-50 text-stone-800 font-bold text-xs sm:text-sm shadow-xs transition-all cursor-pointer active:scale-95"
+            >
+              <span>
+                {showAllReviews
+                  ? t("Show Less Reviews")
+                  : `${t("View More Reviews")} (${reviewsList.length - 3}+)`}
+              </span>
+              <ChevronDown
+                className={`size-4 transition-transform duration-300 ${
+                  showAllReviews ? "rotate-180 text-emerald-700" : ""
+                }`}
+              />
+            </button>
+          </div>
+        )}
       </section>
 
 

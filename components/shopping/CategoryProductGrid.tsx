@@ -100,6 +100,7 @@ export default function CategoryProductGrid({
                 <Link
                   key={prodId}
                   href={`/shop/${prodId}`}
+                  prefetch={true}
                 >
                   <Card
                     className={cn(

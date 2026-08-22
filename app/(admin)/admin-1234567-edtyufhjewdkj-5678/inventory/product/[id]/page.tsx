@@ -39,8 +39,16 @@ export default function EditProductPage() {
   useEffect(() => {
     if (!id) return;
     const fetchProduct = async () => {
-      const res = await axios.get(`/api/getproduct/${id}`);
-      setProduct(res.data.product);
+      try {
+        const res = await axios.get(`/api/getproduct/${id}?t=${Date.now()}`, {
+          headers: { "Cache-Control": "no-cache, no-store" },
+        });
+        if (res.data.success && res.data.product) {
+          setProduct(res.data.product);
+        }
+      } catch (err) {
+        console.error("Error fetching product:", err);
+      }
     };
     fetchProduct();
   }, [id]);
@@ -75,6 +83,7 @@ export default function EditProductPage() {
       const uploaded = await uploadImagesToCloudinary(files);
       setImageUrls((prev) => [...prev, ...uploaded].slice(0, 4));
       setFiles([]);
+      toast.success("Images uploaded! Click 'Update Product' to save changes.");
     } catch (error) {
       console.error(error);
       toast.error("Image upload failed. Please try again.");

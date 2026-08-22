@@ -115,6 +115,7 @@ export default function HeroFIlterProducts() {
                 <Link
                   key={prodId}
                   href={`/shop/${prodId}`}
+                  prefetch={true}
                   className="group flex flex-col bg-white rounded-2xl border border-stone-200/80 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
                 >
                   <div className="relative aspect-square w-full bg-stone-100 overflow-hidden">

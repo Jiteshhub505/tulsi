@@ -8,3 +8,5 @@ export { default as Ticket, TICKET_STATUSES } from "./Ticket";
 export { default as Chat } from "./Chat";
 export { default as Order, ORDER_STATUSES } from "./Order";
 export { default as OrderItem } from "./OrderItem";
+export { default as CoinWallet } from "./CoinWallet";
+export { default as Coupon } from "./Coupon";

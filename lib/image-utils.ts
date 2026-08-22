@@ -37,7 +37,7 @@ const LOCAL_WEBP_MAP: Record<string, string> = {
 
 /**
  * Normalizes and optimizes any image URL.
- * - Converts Cloudinary URLs to use auto format and auto quality with optional max width
+ * - Converts Cloudinary URLs to use dynamic auto format (AVIF/WebP), auto quality, and optimal width
  * - Replaces local PNG references with lightweight WebP counterparts
  * - Falls back to /tulsiveda-logo.webp if missing
  */
@@ -56,17 +56,26 @@ export function getOptimizedImageUrl(
     return LOCAL_WEBP_MAP[cleanUrl];
   }
 
+  // Auto-rewrite any standard local .png extension to .webp if available
+  if (cleanUrl.startsWith("/") && cleanUrl.endsWith(".png")) {
+    const webpCandidate = cleanUrl.replace(/\.png$/, ".webp");
+    if (LOCAL_WEBP_MAP[cleanUrl] || LOCAL_WEBP_MAP[webpCandidate]) {
+      return webpCandidate;
+    }
+  }
+
   // Cloudinary image URL optimization
   if (cleanUrl.includes("res.cloudinary.com") && cleanUrl.includes("/upload/")) {
-    const widthParam = options?.width ? `w_${options.width},` : "";
-    const qualityParam = options?.quality ? `q_${options.quality},` : "q_auto,";
-    const transform = `f_auto,${qualityParam}${widthParam}c_limit`;
+    const width = options?.width || 600;
+    const quality = options?.quality || "auto:good";
+    const transform = `f_auto,q_${quality},w_${width},c_limit,dpr_auto`;
 
-    // Replace if already has transformations or plain /upload/
-    if (cleanUrl.includes("/upload/f_auto")) {
-      return cleanUrl;
-    }
-    return cleanUrl.replace("/upload/", `/upload/${transform}/`);
+    // Replace upload path ensuring new optimal transformations are applied
+    const optimized = cleanUrl.replace(
+      /\/upload\/(?:[a-zA-Z0-9_:,]+(?:\/))?/,
+      `/upload/${transform}/`
+    );
+    return optimized;
   }
 
   return cleanUrl;

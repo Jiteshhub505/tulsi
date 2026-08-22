@@ -43,6 +43,15 @@ export type Order = {
   };
   paymentMethod?: string;
   couponCode?: string;
+  shiprocket?: {
+    orderId?: number;
+    shipmentId?: number;
+    awbCode?: string;
+    courierName?: string;
+    status?: string;
+    labelUrl?: string;
+    invoiceUrl?: string;
+  };
 };
 
 const fetchStats = async (): Promise<Stats> => {

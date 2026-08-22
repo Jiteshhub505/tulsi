@@ -8,9 +8,11 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const category = searchParams.get("category");
 
-  // Vercel Edge Cache: serve cached in 15ms, revalidate in background
+  // Real-time fresh data
   const cacheHeaders = {
-    "Cache-Control": "public, s-maxage=120, stale-while-revalidate=86400",
+    "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0",
+    Pragma: "no-cache",
+    Expires: "0",
   };
 
   try {

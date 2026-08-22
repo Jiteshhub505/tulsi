@@ -4,21 +4,29 @@ import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { Heart, ShoppingCart, Menu, X, Home, ShoppingBag, Info } from "lucide-react";
+import { ShoppingCart, Menu, X, Home, ShoppingBag, Info, User, LogOut } from "lucide-react";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import CartDrawer from "./CartDrawer";
 import axios from "axios";
 import { getFavorites } from "@/lib/favorites";
-
+import LoginModal from "./LoginModal";
 import { useLanguage } from "@/context/language-context";
 
 // ── Mobile Drawer rendered via Portal so it escapes nav's stacking context ──
 function MobileDrawer({
   open,
   onClose,
+  verifiedPhone,
+  walletBalance,
+  onLoginClick,
+  onLogoutClick,
 }: {
   open: boolean;
   onClose: () => void;
+  verifiedPhone: string | null;
+  walletBalance: number | null;
+  onLoginClick: () => void;
+  onLogoutClick: () => void;
 }) {
   const [mounted, setMounted] = useState(false);
   const { language, setLanguage, t } = useLanguage();
@@ -27,7 +35,6 @@ function MobileDrawer({
     setMounted(true);
   }, []);
 
-  // Lock body scroll when drawer is open
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -126,6 +133,34 @@ function MobileDrawer({
             gap: "4px",
           }}
         >
+          {/* User Account / Login in Drawer */}
+          {verifiedPhone ? (
+            <div className="p-3 mb-2 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between">
+              <div>
+                <p className="text-xs font-bold text-stone-900">+91 {verifiedPhone.slice(-10)}</p>
+                <p className="text-[11px] font-extrabold text-emerald-700">🪙 {walletBalance || 0} Coins</p>
+              </div>
+              <button
+                onClick={onLogoutClick}
+                className="p-1.5 text-stone-500 hover:text-red-600 rounded-lg"
+                title="Logout"
+              >
+                <LogOut size={16} />
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => {
+                onClose();
+                onLoginClick();
+              }}
+              className="w-full mb-3 flex items-center justify-center gap-2 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl font-bold text-sm shadow-xs"
+            >
+              <User size={16} />
+              Login
+            </button>
+          )}
+
           {[
             { href: "/", label: "Home", icon: <Home size={18} /> },
             { href: "/shop", label: "Shop", icon: <ShoppingBag size={18} /> },
@@ -207,6 +242,10 @@ export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   const [favoritesCount, setFavoritesCount] = useState(0);
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
+  const [verifiedPhone, setVerifiedPhone] = useState<string | null>(null);
+  const [wallet, setWallet] = useState<any>(null);
+  const [walletBalance, setWalletBalance] = useState<number | null>(null);
 
   const updateFavoritesCount = () => {
     setFavoritesCount(getFavorites().length);
@@ -229,14 +268,64 @@ export const Header = () => {
     }
   };
 
+  // Persistent user login check
+  const checkPersistentUser = () => {
+    if (typeof window === "undefined") return;
+    const phone = localStorage.getItem("tulsi_user_phone");
+    if (phone && phone.length === 10) {
+      setVerifiedPhone(phone);
+      axios
+        .get(`/api/rewards/wallet?phone=${phone}`)
+        .then((res) => {
+          if (res.data.success && res.data.found) {
+            setWallet(res.data.wallet);
+            setWalletBalance(res.data.wallet.balance);
+            localStorage.setItem("tulsi_wallet", JSON.stringify(res.data.wallet));
+          }
+        })
+        .catch(() => {});
+    } else {
+      setVerifiedPhone(null);
+      setWallet(null);
+      setWalletBalance(null);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("tulsi_user_phone");
+    localStorage.removeItem("tulsi_wallet");
+    setVerifiedPhone(null);
+    setWallet(null);
+    setWalletBalance(null);
+    window.dispatchEvent(new CustomEvent("wallet-updated", { detail: null }));
+  };
+
   useEffect(() => {
     fetchCartCount();
     updateFavoritesCount();
+    checkPersistentUser();
+
+    const handleWalletUpdate = (e: any) => {
+      if (e?.detail) {
+        setWallet(e.detail);
+        if (e.detail.phone) {
+          setVerifiedPhone(e.detail.phone);
+        }
+        if (e.detail.balance !== undefined) {
+          setWalletBalance(e.detail.balance);
+        }
+      } else {
+        checkPersistentUser();
+      }
+    };
+
     window.addEventListener("cart-updated", fetchCartCount);
     window.addEventListener("favorites-updated", updateFavoritesCount);
+    window.addEventListener("wallet-updated", handleWalletUpdate);
     return () => {
       window.removeEventListener("cart-updated", fetchCartCount);
       window.removeEventListener("favorites-updated", updateFavoritesCount);
+      window.removeEventListener("wallet-updated", handleWalletUpdate);
     };
   }, []);
 
@@ -283,14 +372,49 @@ export const Header = () => {
             {/* Language Switcher Button (Desktop & Tablet) */}
             <button
               onClick={() => setLanguage(language === "en" ? "hi" : "en")}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-100/80 hover:bg-emerald-200/80 text-emerald-800 border border-emerald-200 transition-colors cursor-pointer"
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-100/80 hover:bg-emerald-200/80 text-emerald-800 border border-emerald-200 transition-colors cursor-pointer"
               aria-label="Switch Language"
             >
               <span>🌐</span>
               <span>{language === "en" ? "हिन्दी" : "English"}</span>
             </button>
 
-
+            {/* Authentication / User Section */}
+            {verifiedPhone ? (
+              <div className="flex items-center gap-1.5 bg-emerald-100/90 hover:bg-emerald-200/90 border border-emerald-300 rounded-full pl-3 pr-1.5 py-1 text-emerald-950 text-xs font-bold shadow-xs transition">
+                <Link
+                  href="/profile"
+                  className="flex items-center gap-2 hover:text-emerald-800 transition"
+                  title="View Profile, Orders & Coins"
+                >
+                  <span className="text-amber-600">🪙</span>
+                  <span>{walletBalance !== null ? walletBalance : (wallet?.balance ?? 0)}</span>
+                  <div className="flex items-center justify-center size-6 rounded-full bg-emerald-800 text-white shadow-xs">
+                    <User size={13} />
+                  </div>
+                </Link>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleLogout();
+                  }}
+                  className="p-1 hover:bg-emerald-300/60 rounded-full text-stone-500 hover:text-red-700 transition cursor-pointer"
+                  title="Logout"
+                >
+                  <LogOut size={13} />
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setLoginModalOpen(true)}
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-xs transition cursor-pointer"
+                title="Login to TulsiVeda"
+              >
+                <User size={14} />
+                <span>Login</span>
+              </button>
+            )}
 
             {/* Cart — Sheet drawer for ALL screen sizes */}
             <Sheet>
@@ -315,8 +439,29 @@ export const Header = () => {
       </nav>
 
       {/* Mobile Drawer — rendered at document.body via Portal */}
-      <MobileDrawer open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
+      <MobileDrawer
+        open={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+        verifiedPhone={verifiedPhone}
+        walletBalance={walletBalance}
+        onLoginClick={() => setLoginModalOpen(true)}
+        onLogoutClick={handleLogout}
+      />
+
+      {/* Dedicated Login Modal */}
+      <LoginModal
+        isOpen={loginModalOpen}
+        onClose={() => setLoginModalOpen(false)}
+        onSuccess={(updatedWallet) => {
+          if (updatedWallet?.balance !== undefined) {
+            setWallet(updatedWallet);
+            setWalletBalance(updatedWallet.balance);
+            if (updatedWallet.phone) {
+              setVerifiedPhone(updatedWallet.phone);
+            }
+          }
+        }}
+      />
     </>
   );
 };
-

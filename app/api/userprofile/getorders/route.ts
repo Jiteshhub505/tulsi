@@ -5,14 +5,27 @@ import connectDB from "@/db/mongoose";
 import { Order, OrderItem, Product } from "@/db/models";
 import { GUEST_USER_ID } from "@/lib/constants";
 
-export async function GET() {
+export async function GET(req: Request) {
   await connectDB();
   try {
+    const { searchParams } = new URL(req.url);
+    const phoneParam = searchParams.get("phone")?.replace(/\D/g, "").slice(-10) || "";
     const session = await getServerSession(authOptions);
     //@ts-ignore
-    const id = session?.user?.id || GUEST_USER_ID;
+    const id = session?.user?.id;
 
-    const orders = await Order.find({ user_id: id }).sort({ createdAt: -1 });
+    const orConditions: any[] = [];
+    if (id && id !== GUEST_USER_ID) {
+      orConditions.push({ user_id: id });
+    }
+    if (phoneParam) {
+      orConditions.push({ "shippingDetails.phone": new RegExp(phoneParam + "$") });
+    }
+    if (orConditions.length === 0) {
+      orConditions.push({ user_id: GUEST_USER_ID });
+    }
+
+    const orders = await Order.find({ $or: orConditions }).sort({ createdAt: -1 });
 
     const result = [];
     for (const order of orders) {
@@ -24,6 +37,7 @@ export async function GET() {
           amount: order.amount,
           currency: order.currency,
           status: order.order_status,
+          shiprocket: order.shiprocket || null,
           createdAt: order.createdAt,
           productId: product?.id,
           productName: product?.name,

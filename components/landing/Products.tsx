@@ -104,6 +104,7 @@ export default function Products() {
               <Link 
                 key={productId} 
                 href={`/shop/${productId}`}
+                prefetch={true}
                 className="group flex flex-col bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl hover:shadow-emerald-900/5 transition-all duration-300 hover:-translate-y-1"
               >
                 {/* Image Container */}

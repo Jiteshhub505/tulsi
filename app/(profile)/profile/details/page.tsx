@@ -29,21 +29,43 @@ export default function UserProfile() {
   const fetchUser = async () => {
     setLoading(true);
     try {
+      const savedPhone = typeof window !== "undefined" ? localStorage.getItem("tulsi_user_phone") : null;
       const response = await axios.get("/api/userprofile/getuserdetails");
       if (response.data.user && response.data.user[0]) {
         const u = response.data.user[0];
         setUser({
-          name: u.name ?? "Guest User",
-          email: u.email ?? "guest@tulsiveda.com",
+          name: u.name ?? (savedPhone ? `User +91 ${savedPhone}` : "Guest User"),
+          email: u.email ?? (savedPhone ? `+91 ${savedPhone}` : "guest@tulsiveda.com"),
           image: u.image ?? null,
-          role: u.role,
-          phone: u.phone,
-          createdAt: u.createdAt ? new Date(u.createdAt).toLocaleString() : "",
+          role: u.role || "user",
+          phone: u.phone || savedPhone,
+          createdAt: u.createdAt ? new Date(u.createdAt).toLocaleString() : new Date().toLocaleDateString(),
+          lastLogin: new Date().toLocaleString(),
+        });
+      } else if (savedPhone) {
+        setUser({
+          name: `User +91 ${savedPhone}`,
+          email: `+91 ${savedPhone}`,
+          image: null,
+          role: "user",
+          phone: savedPhone,
+          createdAt: new Date().toLocaleDateString(),
           lastLogin: new Date().toLocaleString(),
         });
       }
     } catch (error) {
-      console.error(error);
+      const savedPhone = typeof window !== "undefined" ? localStorage.getItem("tulsi_user_phone") : null;
+      if (savedPhone) {
+        setUser({
+          name: `User +91 ${savedPhone}`,
+          email: `+91 ${savedPhone}`,
+          image: null,
+          role: "user",
+          phone: savedPhone,
+          createdAt: new Date().toLocaleDateString(),
+          lastLogin: new Date().toLocaleString(),
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -87,23 +109,24 @@ export default function UserProfile() {
           {/* Contact */}
           <section className="space-y-2">
             <h3 className="font-semibold">Contact</h3>
-            <p className="text-sm text-muted-foreground">
+            <div className="text-sm text-muted-foreground">
               {user?.phone ? (
-                <div>
-                  Phone: <p>{user?.phone}</p>
+                <div className="flex items-center gap-2">
+                  <span>Phone:</span>
+                  <span className="font-medium text-stone-900">+91 {user.phone.replace(/\D/g, "").slice(-10)}</span>
                 </div>
               ) : (
                 <div className="flex gap-2 items-center">
-                  No contact found:
+                  <span>No contact found:</span>
                   <PopoverDemo
                     //@ts-ignore
-                    id={session?.user.id}
+                    id={session?.user?.id}
                     setUser={setUser}
                     user={user}
                   />
                 </div>
               )}
-            </p>
+            </div>
           </section>
 
           <Separator />

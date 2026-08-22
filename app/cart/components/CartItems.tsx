@@ -8,9 +8,10 @@ import { useSession } from "next-auth/react";
 import { useDebouncedCallback } from "use-debounce";
 import axios from "axios";
 import EmptyCartPage from "./EmptyCart";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Sparkles, Truck, CheckCircle2, MapPin, Loader2, Coins, Gift, ShieldCheck } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import PlaceOrderButton from "@/components/payment/PlaceOrderButton";
+import LoginModal from "@/components/landing/LoginModal";
 import toast from "react-hot-toast";
 
 type PropType = {
@@ -26,6 +27,7 @@ export type Details = {
 export const CartItems = ({ loading, products, setProducts }: PropType) => {
   const [coupon, setCoupon] = useState<boolean>(false);
   const [modal, setModal] = useState<boolean>(false);
+  const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false);
   const [details, setDetails] = useState<Details>({
     cartItemId: "",
     productId: 0,
@@ -37,6 +39,26 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
   // Checkout flow states
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState<any>(null);
+
+  // Tulsi Coins & 2factor.in Reward states
+  const [coinModalOpen, setCoinModalOpen] = useState(false);
+  const [userWallet, setUserWallet] = useState<{
+    balance: number;
+    isPhoneVerified: boolean;
+    totalEarned: number;
+  } | null>(null);
+  const [useCoins, setUseCoins] = useState(false);
+
+  // Auto-fetch address & Shiprocket serviceability states
+  const [fetchingAddress, setFetchingAddress] = useState(false);
+  const [addressAutoFilled, setAddressAutoFilled] = useState(false);
+  const [serviceability, setServiceability] = useState<{
+    loading: boolean;
+    serviceable: boolean | null;
+    estimatedDays?: number;
+    courierName?: string;
+    count?: number;
+  }>({ loading: false, serviceable: null });
 
   // Form states
   const [shippingDetails, setShippingDetails] = useState({
@@ -52,12 +74,50 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
   const [paymentMethod, setPaymentMethod] = useState<"razorpay" | "cod">("razorpay");
   const [couponCode, setCouponCode] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
+  const [appliedCouponData, setAppliedCouponData] = useState<{
+    code: string;
+    discountAmount: number;
+    discountType?: string;
+    discountValue?: number;
+  } | null>(null);
   const [couponError, setCouponError] = useState("");
   const [placingOrder, setPlacingOrder] = useState(false);
 
+  const handleProceedToCheckout = () => {
+    const savedPhone = typeof window !== "undefined" ? localStorage.getItem("tulsi_user_phone") : null;
+    const cleanPhone = savedPhone?.replace(/\D/g, "").slice(-10) || "";
+    if (cleanPhone.length !== 10) {
+      toast.error("Please verify your mobile number to checkout");
+      setLoginModalOpen(true);
+      return;
+    }
+    setIsCheckingOut(true);
+  };
+
+  const handleLoginSuccess = (wallet: any) => {
+    const savedPhone = typeof window !== "undefined" ? localStorage.getItem("tulsi_user_phone") : null;
+    const cleanPhone = wallet?.phone || savedPhone?.replace(/\D/g, "").slice(-10) || "";
+    if (cleanPhone.length === 10) {
+      handlePhoneChange(cleanPhone);
+    }
+    if (wallet) {
+      setUserWallet(wallet);
+      if (wallet.balance > 0) {
+        setUseCoins(true);
+      }
+    }
+    setIsCheckingOut(true);
+  };
+
   useEffect(() => {
     if (searchParams.get("checkout") === "true") {
-      setIsCheckingOut(true);
+      const savedPhone = typeof window !== "undefined" ? localStorage.getItem("tulsi_user_phone") : null;
+      const cleanPhone = savedPhone?.replace(/\D/g, "").slice(-10) || "";
+      if (cleanPhone.length !== 10) {
+        setLoginModalOpen(true);
+      } else {
+        setIsCheckingOut(true);
+      }
     }
   }, [searchParams]);
 
@@ -70,21 +130,196 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
     }
   }, []);
 
-  const handleApplyCoupon = () => {
+  useEffect(() => {
+    // Check saved user phone from localStorage
+    const savedPhone = typeof window !== "undefined" ? localStorage.getItem("tulsi_user_phone") : null;
+    if (savedPhone && savedPhone.length === 10) {
+      setShippingDetails((prev) => ({ ...prev, phone: prev.phone || savedPhone }));
+      axios
+        .get(`/api/rewards/wallet?phone=${savedPhone}`)
+        .then((walletRes) => {
+          if (walletRes.data?.success && walletRes.data.wallet) {
+            setUserWallet(walletRes.data.wallet);
+            if (walletRes.data.wallet.balance > 0) {
+              setUseCoins(true);
+            }
+          }
+        })
+        .catch(() => {});
+    }
+
+    const handleWalletUpdate = (e: any) => {
+      if (e?.detail) {
+        setUserWallet(e.detail);
+        if (e.detail.phone) {
+          setShippingDetails((prev) => ({ ...prev, phone: prev.phone || e.detail.phone }));
+        }
+        if (e.detail.balance > 0) {
+          setUseCoins(true);
+        }
+      }
+    };
+    window.addEventListener("wallet-updated", handleWalletUpdate);
+    return () => window.removeEventListener("wallet-updated", handleWalletUpdate);
+  }, []);
+
+  const handleApplyCoupon = async () => {
     setCouponError("");
     const code = couponCode.trim().toUpperCase();
     if (code === "") {
       setAppliedCoupon(null);
+      setAppliedCouponData(null);
       return;
     }
-    if (code === "KRISH10") {
-      setAppliedCoupon("KRISH10");
-      toast.success("Coupon KRISH10 applied successfully! You got 10% off.");
-    } else {
-      setCouponError("Invalid coupon code. Try KRISH10!");
+    try {
+      const activePhone = shippingDetails.phone || (typeof window !== "undefined" ? localStorage.getItem("tulsiveda_user_phone") : "") || "";
+      const res = await axios.post("/api/coupons/validate", {
+        code,
+        subtotal,
+        phone: activePhone,
+      });
+      if (res.data.success) {
+        setAppliedCoupon(res.data.code);
+        setAppliedCouponData(res.data);
+        toast.success(res.data.message || `Coupon ${res.data.code} applied!`);
+      } else {
+        setCouponError(res.data.message || "Invalid coupon code");
+        setAppliedCoupon(null);
+        setAppliedCouponData(null);
+      }
+    } catch (err: any) {
+      const msg = err.response?.data?.message || "Invalid coupon code";
+      setCouponError(msg);
       setAppliedCoupon(null);
+      setAppliedCouponData(null);
+      toast.error(msg);
     }
   };
+
+  const handlePhoneChange = async (phoneVal: string) => {
+    setShippingDetails((prev) => ({ ...prev, phone: phoneVal }));
+    const cleanPhone = phoneVal.replace(/\D/g, "").slice(-10);
+
+    if (cleanPhone.length === 10) {
+      // Auto fetch Tulsi Coin wallet
+      axios
+        .get(`/api/rewards/wallet?phone=${cleanPhone}`)
+        .then((walletRes) => {
+          if (walletRes.data?.success && walletRes.data.wallet) {
+            setUserWallet(walletRes.data.wallet);
+            if (walletRes.data.wallet.balance > 0) {
+              setUseCoins(true);
+            }
+          }
+        })
+        .catch(() => {});
+
+      setFetchingAddress(true);
+      try {
+        const res = await axios.post("/api/checkout/fetch-address-by-phone", {
+          phone: cleanPhone,
+        });
+
+        if (res.data.success && res.data.found && res.data.address) {
+          const addr = res.data.address;
+          setShippingDetails((prev) => ({
+            ...prev,
+            fullName: prev.fullName || addr.fullName || "",
+            email: prev.email || addr.email || "",
+            phone: cleanPhone,
+            street: addr.street || prev.street || "",
+            city: addr.city || prev.city || "",
+            state: addr.state || prev.state || "",
+            pinCode: addr.pinCode || prev.pinCode || "",
+          }));
+          setAddressAutoFilled(true);
+          const isFromSr = res.data.source === "shiprocket_database";
+          toast.success(isFromSr ? "⚡ Address auto-filled from Shiprocket!" : "⚡ Saved address auto-filled!", {
+            id: "addr-autofill",
+            duration: 3500,
+          });
+
+          if (addr.pinCode && addr.pinCode.length === 6) {
+            checkPincodeService(addr.pinCode);
+          }
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setFetchingAddress(false);
+      }
+    } else {
+      setAddressAutoFilled(false);
+    }
+  };
+
+  const checkPincodeService = async (pin: string) => {
+    if (!pin || pin.length !== 6) return;
+    setServiceability({ loading: true, serviceable: null });
+    try {
+      const res = await axios.get(`/api/shiprocket/serviceability?pincode=${pin}`);
+      if (res.data.success && res.data.serviceable) {
+        setServiceability({
+          loading: false,
+          serviceable: true,
+          estimatedDays: res.data.estimatedDeliveryDays,
+          courierName: res.data.recommendedCourier,
+          count: res.data.availableCouriersCount,
+        });
+      } else {
+        setServiceability({ loading: false, serviceable: false });
+      }
+    } catch {
+      setServiceability({ loading: false, serviceable: null });
+    }
+  };
+
+  // 1️⃣ Calculate effective unit price & line total (10% OFF for 2+ quantity)
+  const getItemUnitPrice = (p: ProductType) => {
+    const base = p.discountPrice ?? p.price;
+    return p.quantity >= 2 ? Math.round(base * 0.9) : base;
+  };
+
+  const getItemLineTotal = (p: ProductType) => {
+    return getItemUnitPrice(p) * p.quantity;
+  };
+
+  // Price calculations
+  const totalItems = products.reduce((acc, item) => acc + item.quantity, 0);
+  const subtotal = products.reduce((sum, p) => sum + getItemLineTotal(p), 0);
+
+  // Multi-buy savings total (10% off on items with quantity >= 2)
+  const multiBuySavings = products.reduce((sum, p) => {
+    if (p.quantity >= 2) {
+      const base = p.discountPrice ?? p.price;
+      return sum + (base * p.quantity - getItemLineTotal(p));
+    }
+    return sum;
+  }, 0);
+
+  // Total discount (catalog discount)
+  const totalDiscount = products.reduce((sum, p) => {
+    if (!p.discountPrice) return sum;
+    return sum + (p.price - p.discountPrice) * p.quantity;
+  }, 0);
+
+  const total = subtotal;
+
+  const couponDiscount = appliedCouponData
+    ? appliedCouponData.discountAmount
+    : appliedCoupon === "KRISH10"
+    ? Math.round(subtotal * 0.1)
+    : 0;
+  const subtotalAfterCoupon = subtotal - couponDiscount;
+
+  const maxCoinsApplicable = Math.min(
+    userWallet?.balance || 0,
+    Math.floor(subtotalAfterCoupon * 0.5)
+  );
+  const coinDiscount = useCoins ? maxCoinsApplicable : 0;
+  const shippingFee = paymentMethod === "cod" ? 50 : 0;
+  const finalTotal = Math.max(1, subtotalAfterCoupon - coinDiscount + shippingFee);
+  const cashbackCoinsEarned = Math.round(finalTotal * 0.05);
 
   const handlePlaceOrder = async () => {
     const { fullName, email, phone, street, city, state, pinCode } = shippingDetails;
@@ -100,12 +335,18 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
           shippingDetails,
           paymentMethod: "cod",
           couponCode: appliedCoupon,
+          coinsToUse: coinDiscount,
         });
 
         if (response.data.success) {
           setOrderSuccess(response.data.order);
           setProducts([]);
           window.dispatchEvent(new Event("cart-updated"));
+          if (userWallet && coinDiscount > 0) {
+            setUserWallet((prev: any) =>
+              prev ? { ...prev, balance: Math.max(0, prev.balance - coinDiscount) } : null
+            );
+          }
         } else {
           toast.error(response.data.message || "Failed to place order");
         }
@@ -115,6 +356,8 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
         try {
           response = await axios.post("/api/orders/initiate-payment", {
             couponCode: appliedCoupon,
+            coinsToUse: coinDiscount,
+            phone: shippingDetails.phone,
           });
         } catch (err: any) {
           const errMsg = err.response?.data?.message || "Failed to initiate Razorpay payment. Please check API keys or use COD.";
@@ -154,12 +397,18 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
                 shippingDetails,
                 paymentMethod: "razorpay",
                 couponCode: appliedCoupon,
+                coinsToUse: coinDiscount,
               });
 
               if (verifyRes.data.success) {
                 setOrderSuccess(verifyRes.data.order);
                 setProducts([]);
                 window.dispatchEvent(new Event("cart-updated"));
+                if (userWallet && coinDiscount > 0) {
+                  setUserWallet((prev: any) =>
+                    prev ? { ...prev, balance: Math.max(0, prev.balance - coinDiscount) } : null
+                  );
+                }
               } else {
                 toast.error(verifyRes.data.message || "Payment verification failed");
               }
@@ -185,13 +434,12 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
           },
         };
 
-        const rzp = new (window as any).Razorpay(options);
-        rzp.on("payment.failed", function (resp: any) {
+        const razorpay = new (window as any).Razorpay(options);
+        razorpay.on("payment.failed", function (resp: any) {
           console.error("Razorpay Payment Failed:", resp.error);
           toast.error(resp.error?.description || "Payment failed or was cancelled.");
           setPlacingOrder(false);
         });
-        rzp.open();
       }
     } catch (error: any) {
       console.error(error);
@@ -202,36 +450,6 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
       }
     }
   };
-  // 1️⃣ Calculate effective unit price & line total (10% OFF for 2+ quantity)
-  const getItemUnitPrice = (p: ProductType) => {
-    const base = p.discountPrice ?? p.price;
-    return p.quantity >= 2 ? Math.round(base * 0.9) : base;
-  };
-
-  const getItemLineTotal = (p: ProductType) => {
-    return getItemUnitPrice(p) * p.quantity;
-  };
-
-  // Subtotal with multi-buy discount applied
-  const subtotal = products.reduce((sum, p) => sum + getItemLineTotal(p), 0);
-
-  // Multi-buy savings total (10% off on items with quantity >= 2)
-  const multiBuySavings = products.reduce((sum, p) => {
-    if (p.quantity >= 2) {
-      const base = p.discountPrice ?? p.price;
-      return sum + (base * p.quantity - getItemLineTotal(p));
-    }
-    return sum;
-  }, 0);
-
-  // Total discount (catalog discount)
-  const totalDiscount = products.reduce((sum, p) => {
-    if (!p.discountPrice) return sum;
-    return sum + (p.price - p.discountPrice) * p.quantity;
-  }, 0);
-
-  // 3️⃣ Final total
-  const total = subtotal;
 
   useEffect(() => {}, [products]);
 
@@ -359,10 +577,6 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
 
   if (isCheckingOut) {
     const totalItems = products.reduce((sum, p) => sum + p.quantity, 0);
-    const couponDiscount = appliedCoupon === "KRISH10" ? subtotal * 0.1 : 0;
-    const subtotalAfterCoupon = subtotal - couponDiscount;
-    const shippingFee = paymentMethod === "cod" ? 50 : 0;
-    const finalTotal = subtotalAfterCoupon + shippingFee;
 
     return (
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
@@ -380,10 +594,55 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
           {/* Left: Shipping details & Payment options */}
           <div className="lg:col-span-2 space-y-8">
             {/* Shipping Details */}
-            <div className="bg-white border border-stone-200/60 rounded-2xl p-6 shadow-xs space-y-4">
-              <h3 className="text-lg font-bold text-stone-900 border-b border-stone-100 pb-3">Shipping Details</h3>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="bg-white border border-stone-200/60 rounded-2xl p-6 shadow-xs space-y-5">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-stone-100 pb-3">
+                <h3 className="text-lg font-bold text-stone-900 flex items-center gap-2">
+                  <MapPin className="w-5 h-5 text-emerald-700" />
+                  Shipping Details
+                </h3>
+                {addressAutoFilled && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200 animate-in fade-in duration-300">
+                    <Sparkles className="w-3.5 h-3.5 text-emerald-700" /> Auto-Filled via Shiprocket
+                  </span>
+                )}
+              </div>
+
+              {/* Phone number field with 1-Click auto-fill assistant */}
+              <div className="p-4 rounded-xl bg-gradient-to-r from-emerald-50/70 to-teal-50/40 border border-emerald-200/80 space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-emerald-950 flex items-center gap-1.5">
+                    <span>Mobile Number</span>
+                    <span className="text-[10px] font-medium text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">
+                      Instant 1-Click Auto-Fill
+                    </span>
+                  </label>
+                  {fetchingAddress && (
+                    <span className="text-xs text-emerald-800 flex items-center gap-1 font-medium">
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" /> Looking up saved address...
+                    </span>
+                  )}
+                </div>
+
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-stone-500">
+                    +91
+                  </span>
+                  <input
+                    type="tel"
+                    required
+                    maxLength={10}
+                    placeholder="Enter 10-digit mobile number"
+                    value={shippingDetails.phone}
+                    onChange={(e) => handlePhoneChange(e.target.value)}
+                    className="w-full border border-emerald-300/80 bg-white rounded-xl pl-13 pr-4 py-3 text-sm font-semibold tracking-wider text-stone-900 focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/20 focus:outline-hidden"
+                  />
+                </div>
+                <p className="text-[11px] text-stone-500">
+                  Enter your number to instantly pull your saved delivery address and details.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
                 <div className="space-y-2">
                   <label className="text-xs font-semibold text-stone-700">Full Name</label>
                   <input
@@ -406,25 +665,12 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
                     className="w-full border border-stone-300 rounded-xl px-4 py-3 text-sm focus:border-emerald-600 focus:outline-hidden"
                   />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-semibold text-stone-700">Phone Number</label>
-                  <input
-                    type="tel"
-                    required
-                    pattern="[0-9]{10}"
-                    title="Please enter a valid 10-digit phone number"
-                    placeholder="Enter phone number"
-                    value={shippingDetails.phone}
-                    onChange={(e) => setShippingDetails({ ...shippingDetails, phone: e.target.value })}
-                    className="w-full border border-stone-300 rounded-xl px-4 py-3 text-sm focus:border-emerald-600 focus:outline-hidden"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-semibold text-stone-700">Street Address</label>
+                <div className="sm:col-span-2 space-y-2">
+                  <label className="text-xs font-semibold text-stone-700">Street / House / Area</label>
                   <input
                     type="text"
                     required
-                    placeholder="Enter street and house details"
+                    placeholder="Enter flat, house no., building, street and area"
                     value={shippingDetails.street}
                     onChange={(e) => setShippingDetails({ ...shippingDetails, street: e.target.value })}
                     className="w-full border border-stone-300 rounded-xl px-4 py-3 text-sm focus:border-emerald-600 focus:outline-hidden"
@@ -441,7 +687,7 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
                     className="w-full border border-stone-300 rounded-xl px-4 py-3 text-sm focus:border-emerald-600 focus:outline-hidden"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-2">
                     <label className="text-xs font-semibold text-stone-700">State</label>
                     <input
@@ -458,16 +704,52 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
                     <input
                       type="text"
                       required
+                      maxLength={6}
                       pattern="[0-9]{6}"
                       title="Please enter a valid 6-digit PIN code"
-                      placeholder="PIN"
+                      placeholder="6-digit PIN"
                       value={shippingDetails.pinCode}
-                      onChange={(e) => setShippingDetails({ ...shippingDetails, pinCode: e.target.value })}
-                      className="w-full border border-stone-300 rounded-xl px-4 py-3 text-sm focus:border-emerald-600 focus:outline-hidden"
+                      onChange={(e) => {
+                        const pin = e.target.value.replace(/\D/g, "").slice(0, 6);
+                        setShippingDetails({ ...shippingDetails, pinCode: pin });
+                        if (pin.length === 6) {
+                          checkPincodeService(pin);
+                        }
+                      }}
+                      className="w-full border border-stone-300 rounded-xl px-4 py-3 text-sm font-semibold tracking-wider focus:border-emerald-600 focus:outline-hidden"
                     />
                   </div>
                 </div>
               </div>
+
+              {/* Shiprocket Delivery ETA Live Badge */}
+              {serviceability.loading && (
+                <div className="p-3 bg-stone-50 rounded-xl border border-stone-200 text-xs text-stone-600 flex items-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin text-emerald-700 shrink-0" />
+                  Calculating fastest courier delivery route...
+                </div>
+              )}
+
+              {serviceability.serviceable && (
+                <div className="p-3.5 bg-emerald-50/80 rounded-xl border border-emerald-200 text-xs text-emerald-950 flex items-center justify-between gap-3 animate-in fade-in duration-300">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-1.5 bg-emerald-600 text-white rounded-lg">
+                      <Truck className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <p className="font-bold text-emerald-900">
+                        ⚡ Express Delivery in {serviceability.estimatedDays} Days
+                      </p>
+                      <p className="text-[11px] text-emerald-700 font-medium mt-0.5">
+                        Shipped via {serviceability.courierName} • Pincode {shippingDetails.pinCode} Serviceable
+                      </p>
+                    </div>
+                  </div>
+                  <span className="text-[10px] uppercase font-bold bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded">
+                    Shiprocket Fast
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Payment Method */}
@@ -524,6 +806,38 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
 
           {/* Right Column: Order Summary & Promo code */}
           <div className="space-y-6">
+            {/* Tulsi Coins Redemption (Only shown when customer has active coins) */}
+            {userWallet?.isPhoneVerified && userWallet.balance > 0 && (
+              <div className="bg-gradient-to-br from-emerald-50 to-emerald-100/40 border border-emerald-200/80 rounded-2xl p-4 shadow-xs space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-base">🪙</span>
+                    <h4 className="text-sm font-bold text-stone-900">Tulsi Coins</h4>
+                  </div>
+                  <span className="text-xs font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                    {userWallet.balance} Coins Available
+                  </span>
+                </div>
+
+                <label className="flex items-center gap-3 p-3 bg-white border border-emerald-200 rounded-xl cursor-pointer hover:border-emerald-400 transition">
+                  <input
+                    type="checkbox"
+                    checked={useCoins}
+                    onChange={(e) => setUseCoins(e.target.checked)}
+                    className="w-4 h-4 accent-emerald-700 rounded cursor-pointer"
+                  />
+                  <div className="text-xs">
+                    <p className="font-bold text-stone-900">
+                      Redeem {maxCoinsApplicable} Coins (-₹{maxCoinsApplicable})
+                    </p>
+                    <p className="text-[11px] text-emerald-700 font-medium">
+                      Applied instantly to this order
+                    </p>
+                  </div>
+                </label>
+              </div>
+            )}
+
             {/* Order Summary */}
             <div className="bg-white border border-stone-200/60 rounded-2xl p-6 shadow-xs space-y-4">
               <h3 className="text-lg font-bold text-stone-900 border-b border-stone-100 pb-3">Order Summary</h3>
@@ -537,10 +851,19 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
                   <span>Subtotal</span>
                   <span className="text-stone-950 font-bold">₹{subtotal.toLocaleString()}</span>
                 </li>
-                {appliedCoupon && (
-                  <li className="flex justify-between text-emerald-700">
-                    <span>Coupon Discount (10% OFF)</span>
+                {appliedCoupon && couponDiscount > 0 && (
+                  <li className="flex justify-between text-emerald-700 font-semibold">
+                    <span>
+                      Coupon ({appliedCoupon}
+                      {appliedCouponData?.discountType === "percentage" ? ` - ${appliedCouponData.discountValue}% OFF` : ""})
+                    </span>
                     <span>-₹{couponDiscount.toLocaleString()}</span>
+                  </li>
+                )}
+                {coinDiscount > 0 && (
+                  <li className="flex justify-between text-amber-800 font-semibold">
+                    <span className="flex items-center gap-1">🪙 Tulsi Coins Discount</span>
+                    <span>-₹{coinDiscount.toLocaleString()}</span>
                   </li>
                 )}
                 <li className="flex justify-between">
@@ -553,6 +876,10 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
                   <span className="text-emerald-800">₹{finalTotal.toLocaleString()}</span>
                 </li>
               </ul>
+
+              <div className="p-2.5 bg-emerald-50 rounded-xl border border-emerald-200 text-center text-xs font-bold text-emerald-900 flex items-center justify-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-emerald-700" /> Earn {cashbackCoinsEarned} Tulsi Coins (5% Cashback) on this order!
+              </div>
 
               <button
                 type="submit"
@@ -739,7 +1066,7 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
 
             <div className="mt-8 space-y-3">
               <button 
-                onClick={() => setIsCheckingOut(true)}
+                onClick={handleProceedToCheckout}
                 className="w-full bg-emerald-750 hover:bg-emerald-800 text-white font-semibold py-4 rounded-xl transition-all shadow-md shadow-emerald-700/10 cursor-pointer text-sm tracking-wider uppercase"
               >
                 PROCEED TO CHECKOUT
@@ -788,6 +1115,11 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
             setModal={setModal}
           />
         )}
+        <LoginModal
+          isOpen={loginModalOpen}
+          onClose={() => setLoginModalOpen(false)}
+          onSuccess={handleLoginSuccess}
+        />
       </div>
     </div>
   );
