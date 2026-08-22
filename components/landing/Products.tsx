@@ -9,9 +9,10 @@ import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/context/language-context";
 import { getOptimizedImageUrl } from "@/lib/image-utils";
 
-type Product = {
+export type Product = {
   id: string;
   name: string;
+  nameHi?: string | null;
   category: string;
   price: number;
   discountPrice: number | null;
@@ -20,7 +21,62 @@ type Product = {
   isBestSeller?: boolean;
 };
 
-export default function Products() {
+interface ProductsProps {
+  initialProducts?: Product[];
+}
+
+export function ProductsSkeleton() {
+  const { t } = useLanguage();
+
+  return (
+    <section
+      id="bestsellers"
+      className="w-full py-8 sm:py-12 md:py-20 bg-[#f9fcfb] px-3 sm:px-6 md:px-12 lg:px-16 border-t border-emerald-950/5"
+    >
+      <div className="max-w-7xl 2xl:max-w-[1536px] mx-auto space-y-8 sm:space-y-12">
+        {/* Section Heading */}
+        <div className="text-center space-y-2 sm:space-y-3 max-w-xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl 2xl:text-5xl font-extrabold tracking-tight text-slate-900">
+            {t("Our Products")}
+          </h2>
+          <p className="text-slate-600 text-xs sm:text-sm md:text-base 2xl:text-lg font-medium leading-relaxed">
+            {t("Best Sellers Subtitle")}
+          </p>
+        </div>
+
+        {/* 4-Product Responsive Skeleton Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8 2xl:gap-10">
+          {[1, 2, 3, 4].map((i) => (
+            <div
+              key={i}
+              className="flex flex-col bg-white rounded-xl sm:rounded-2xl lg:rounded-3xl border border-gray-100 overflow-hidden shadow-xs animate-pulse"
+            >
+              {/* Image Skeleton */}
+              <div className="relative aspect-square w-full bg-gradient-to-br from-slate-100 via-slate-200/70 to-slate-100" />
+
+              {/* Product Info Skeleton */}
+              <div className="flex flex-col flex-1 p-3 sm:p-5 lg:p-6 space-y-2.5">
+                <div className="h-3 w-16 sm:w-20 bg-emerald-100/70 rounded-full" />
+                <div className="space-y-1.5 min-h-[2.2rem] sm:min-h-[2.8rem]">
+                  <div className="h-3.5 sm:h-4 w-5/6 bg-slate-200 rounded" />
+                  <div className="h-3 sm:h-3.5 w-3/5 bg-slate-200/80 rounded" />
+                </div>
+
+                {/* Pricing & CTA */}
+                <div className="mt-auto pt-3 border-t border-gray-100 flex items-center justify-between gap-1.5">
+                  <div className="h-5 sm:h-6 w-16 sm:w-20 bg-slate-200 rounded" />
+                  <div className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 rounded-full bg-emerald-50 shrink-0" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export default function Products({ initialProducts = [] }: ProductsProps) {
   const { t, translateText } = useLanguage();
 
   const { data: products = [], isLoading: loading } = useQuery<Product[]>({
@@ -40,18 +96,25 @@ export default function Products() {
       }
       return [];
     },
+    initialData: initialProducts.length > 0 ? initialProducts : undefined,
     staleTime: 10 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
   });
 
-  if (loading || products.length === 0) {
+  if (loading && products.length === 0) {
+    return <ProductsSkeleton />;
+  }
+
+  if (!loading && products.length === 0) {
     return null;
   }
 
   return (
-    <section id="bestsellers" className="w-full py-8 sm:py-12 md:py-20 bg-[#f9fcfb] px-3 sm:px-6 md:px-12 lg:px-16 border-t border-emerald-950/5">
+    <section
+      id="bestsellers"
+      className="w-full py-8 sm:py-12 md:py-20 bg-[#f9fcfb] px-3 sm:px-6 md:px-12 lg:px-16 border-t border-emerald-950/5"
+    >
       <div className="max-w-7xl 2xl:max-w-[1536px] mx-auto space-y-8 sm:space-y-12">
-
         {/* Section Heading */}
         <div className="text-center space-y-2 sm:space-y-3 max-w-xl mx-auto">
           <h2 className="text-2xl sm:text-3xl md:text-4xl 2xl:text-5xl font-extrabold tracking-tight text-slate-900">
@@ -62,7 +125,7 @@ export default function Products() {
           </p>
         </div>
 
-        {/* 4-Product Responsive Grid (Clean medium size on mobile, scales up nicely on large screens) */}
+        {/* 4-Product Responsive Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8 2xl:gap-10">
           {products.map((product, index) => {
             const productId = product.id || (product as any)._id || `product-${index}`;
@@ -70,7 +133,10 @@ export default function Products() {
               ? Math.round(((product.price - product.discountPrice) / product.price) * 100)
               : null;
             const displayPrice = product.discountPrice ?? product.price;
-            const image = getOptimizedImageUrl(product.galleryImages?.[0], { width: 600, quality: "auto:good" });
+            const image = getOptimizedImageUrl(product.galleryImages?.[0], {
+              width: 600,
+              quality: "auto:good",
+            });
 
             return (
               <Link
@@ -132,7 +198,6 @@ export default function Products() {
             );
           })}
         </div>
-
       </div>
     </section>
   );

@@ -11,20 +11,24 @@ import HeroSlider from "../../components/landing/HeroSlider";
 import HeroFIlterProducts from "@/components/landing/HeroFIlterProducts";
 import WavyBanner from "@/components/landing/WavyBanner";
 import PromoBanner from "@/components/landing/PromoBanner";
+import { getLandingProducts } from "@/lib/products/getLandingProducts";
 
-export default function Home() {
+export const revalidate = 60; // ISR cache revalidation every 60s for ultra-fast production delivery
+
+export default async function Home() {
+  const products = await getLandingProducts();
+
   return (
     <div>
       <Hero />
       <WavyBanner />
-      <Products />
+      <Products initialProducts={products} />
       <TulsiCoinsBanner />
       <PromoBanner />
-      <HeroFIlterProducts />
+      <HeroFIlterProducts initialProducts={products} />
       <Features />
       <WhyChooseUs />
       <Testimonial />
     </div>
   );
 }
-

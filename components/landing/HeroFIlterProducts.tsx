@@ -21,7 +21,11 @@ type Product = {
   galleryImages: string[];
 };
 
-export default function HeroFIlterProducts() {
+interface HeroFIlterProductsProps {
+  initialProducts?: Product[];
+}
+
+export default function HeroFIlterProducts({ initialProducts = [] }: HeroFIlterProductsProps) {
   const { t, translateText } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<string>("Health Disease");
   const [favorites, setFavorites] = useState<string[]>([]);
@@ -46,6 +50,7 @@ export default function HeroFIlterProducts() {
       }
       return [];
     },
+    initialData: initialProducts.length > 0 ? initialProducts : undefined,
     staleTime: 10 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
   });
