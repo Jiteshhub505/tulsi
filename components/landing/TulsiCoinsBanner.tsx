@@ -71,10 +71,10 @@ export default function TulsiCoinsBanner() {
               {t("Step 1")}
             </span>
             <h4 className="text-lg sm:text-xl font-bold text-stone-900">
-              {t("5% Order Cashback")}
+              {t("Order Bonus Coins")}
             </h4>
             <p className="text-xs sm:text-sm text-stone-500 max-w-[260px] leading-relaxed font-medium">
-              {t("Earn 5 coins automatically for every ₹100 spent on your order.")}
+              {t("Earn 10 to 20 bonus Tulsi Coins automatically on every completed order.")}
             </p>
 
             {/* Desktop Horizontal Arrow Connector */}

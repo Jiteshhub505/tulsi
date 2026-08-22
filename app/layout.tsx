@@ -10,12 +10,14 @@ const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
   display: "swap",
+  preload: true,
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
   display: "swap",
+  preload: false, // Mono only used in admin/code blocks — don't preload globally
 });
 
 export const metadata: Metadata = {
@@ -34,7 +36,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Google Tag Manager */}
+        {/* Google Tag Manager — afterInteractive so it doesn't block FCP */}
         <Script
           id="google-tag-manager"
           strategy="afterInteractive"
@@ -46,14 +48,30 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-NQZLPW3D');`,
           }}
         />
-        <link rel="preconnect" href="https://res.cloudinary.com" />
-        <link rel="preconnect" href="https://cdn.britannica.com" />
-        <link rel="preconnect" href="https://5.imimg.com" />
-        <link rel="preconnect" href="https://thursd.com" />
-        <link rel="preconnect" href="https://images.saymedia-content.com" />
+
+        {/* CDN Preconnects — critical image origins */}
+        <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://cdn.britannica.com" crossOrigin="anonymous" />
+
+        {/* DNS Prefetch — secondary image origins */}
         <link rel="dns-prefetch" href="https://res.cloudinary.com" />
-        <link rel="dns-prefetch" href="https://cdn.britannica.com" />
         <link rel="dns-prefetch" href="https://5.imimg.com" />
+        <link rel="dns-prefetch" href="https://thursd.com" />
+        <link rel="dns-prefetch" href="https://images.saymedia-content.com" />
+
+        {/* Preload first hero slide images to improve LCP */}
+        <link
+          rel="preload"
+          as="image"
+          href="/tul-web2.webp"
+          media="(min-width: 768px)"
+        />
+        <link
+          rel="preload"
+          as="image"
+          href="/tul-mob1.webp"
+          media="(max-width: 767px)"
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}

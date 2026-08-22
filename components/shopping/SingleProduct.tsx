@@ -111,9 +111,9 @@ function getCategoryRichContent(categoryName: string, productName: string) {
         { name: "Pure Shilajit (Asphaltum)", botanical: "60% Fulvic Acid Purified Himalayan Resin", amount: "100% Pure Resin" },
       ],
       visualBenefits: [
-        { title: "Boost Immunity", titleHi: "प्रतिरोधक क्षमता वृद्धि", desc: "Contains >60% Fulvic Acid and 80+ minerals to strengthen natural daily immunity.", descHi: ">60% फुल्विक एसिड व 84+ मिनरल्स से रोग प्रतिरोधक क्षमता मजबूत होती है।", image: "/benefits/benefit_stamina.jpg" },
-        { title: "Improves Energy Levels", titleHi: "ऊर्जा स्तर में सुधार", desc: "High fulvic acid content fights low energy, fatigue, and daytime tiredness.", descHi: "दिनभर की सुस्ती, कमजोरी और थकान को दूर कर सक्रिय ऊर्जा बनाए रखता है।", image: "/benefits/benefit_stress.jpg" },
-        { title: "Increases Stamina", titleHi: "स्टैमिना और शक्ति", desc: "Helps improve cellular oxygen flow to keep you active without feeling drained.", descHi: "मांसपेशियों में ऑक्सीजन प्रवाह बढ़ाकर लंबे समय तक ताकत प्रदान करता है।", image: "/benefits/benefit_muscle.jpg" },
+        { title: "Boost Immunity", titleHi: "प्रतिरोधक क्षमता वृद्धि", desc: "Contains >60% Fulvic Acid and 80+ minerals to strengthen natural daily immunity.", descHi: ">60% फुल्विक एसिड व 84+ मिनरल्स से रोग प्रतिरोधक क्षमता मजबूत होती है।", image: "/benefits/benefit_stamina.webp" },
+        { title: "Improves Energy Levels", titleHi: "ऊर्जा स्तर में सुधार", desc: "High fulvic acid content fights low energy, fatigue, and daytime tiredness.", descHi: "दिनभर की सुस्ती, कमजोरी और थकान को दूर कर सक्रिय ऊर्जा बनाए रखता है।", image: "/benefits/benefit_stress.webp" },
+        { title: "Increases Stamina", titleHi: "स्टैमिना और शक्ति", desc: "Helps improve cellular oxygen flow to keep you active without feeling drained.", descHi: "मांसपेशियों में ऑक्सीजन प्रवाह बढ़ाकर लंबे समय तक ताकत प्रदान करता है।", image: "/benefits/benefit_muscle.webp" },
       ],
       benefits: [
         { icon: "⚡", title: "Boost Stamina & Energy", titleHi: "स्टैमिना और ऊर्जा में वृद्धि", desc: "Pure Himalayan Shilajit Resin containing 60% Fulvic Acid that helps to improve strength & stamina.", descHi: "60% फुल्विक एसिड युक्त शुद्ध शिलाजीत जो ताकत और सहनशक्ति बढ़ाता है।" },
@@ -190,9 +190,9 @@ function getCategoryRichContent(categoryName: string, productName: string) {
         { name: "Nilgiri Oil", botanical: "Eucalyptus Oil", amount: "0.25 ml" },
       ],
       visualBenefits: [
-        { title: "Deep Warmth & Fast Relief", titleHi: "गहरी गर्माहट और त्वरित राहत", desc: "Surjan Siri and Rasna penetrate deep to deliver soothing warmth to aching joints.", descHi: "सुरंजान शीरीं और रास्ना गहराई में जाकर दर्द वाले जोड़ों को तुरंत आराम देते हैं।", image: "/benefits/pain_warmth.jpg" },
-        { title: "Eases Joint Stiffness", titleHi: "जोड़ों की जकड़न में आराम", desc: "Medicated Til and Mustard oils lubricate knee joints and ease morning stiffness.", descHi: "औषधीय तिल व सरसों का तेल कार्टिलेज को पोषण देकर सुबह की अकड़न दूर करता है।", image: "/benefits/pain_flexibility.jpg" },
-        { title: "Active Daily Mobility", titleHi: "सहज दैनिक गतिशीलता", desc: "Soothes nerve tightness and back spasms so you can walk freely and comfortably.", descHi: "नसों के खिंचाव और कमर दर्द को शांत कर आपको स्वतंत्र गतिशीलता प्रदान करता है।", image: "/benefits/pain_movement.jpg" },
+        { title: "Deep Warmth & Fast Relief", titleHi: "गहरी गर्माहट और त्वरित राहत", desc: "Surjan Siri and Rasna penetrate deep to deliver soothing warmth to aching joints.", descHi: "सुरंजान शीरीं और रास्ना गहराई में जाकर दर्द वाले जोड़ों को तुरंत आराम देते हैं।", image: "/benefits/pain_warmth.webp" },
+        { title: "Eases Joint Stiffness", titleHi: "जोड़ों की जकड़न में आराम", desc: "Medicated Til and Mustard oils lubricate knee joints and ease morning stiffness.", descHi: "औषधीय तिल व सरसों का तेल कार्टिलेज को पोषण देकर सुबह की अकड़न दूर करता है।", image: "/benefits/pain_flexibility.webp" },
+        { title: "Active Daily Mobility", titleHi: "सहज दैनिक गतिशीलता", desc: "Soothes nerve tightness and back spasms so you can walk freely and comfortably.", descHi: "नसों के खिंचाव और कमर दर्द को शांत कर आपको स्वतंत्र गतिशीलता प्रदान करता है।", image: "/benefits/pain_movement.webp" },
       ],
       benefits: [
         { icon: "⚡", title: "Instant Deep Transdermal Warmth", titleHi: "त्वरित गहरी गर्माहट", desc: "Fast-absorbing warm herbal oil with Surjan Siri (2.25g) & Rasna for deep joint, muscle & nerve pain.", descHi: "सुरंजान शीरीं और रास्ना युक्त तेल जो जोड़ों और मांसपेशियों के दर्द में तुरंत गर्माहट देता है।" },
@@ -260,9 +260,9 @@ function getCategoryRichContent(categoryName: string, productName: string) {
         { name: "Maker Dhawaj", botanical: "Makardhwaj", amount: "10 mg" },
       ],
       visualBenefits: [
-        { title: "Enhances Male Power & Drive", titleHi: "पुरुष शक्ति और ड्राइव में वृद्धि", desc: "Safed Musli, Salam Panja and Makardhwaj elevate natural male vitality and performance.", descHi: "सफेद मूसली और मकरध्वज प्राकृतिक पुरुष वाइटलिटी और ऊर्जा को बढ़ाते हैं।", image: "/benefits/ved_male_power.jpg" },
-        { title: "Boosts Timing & Endurance", titleHi: "टाइमिंग और सहनशक्ति में सुधार", desc: "Kaunch Beej and Akarkara strengthen nerve response for staying power and lasting endurance.", descHi: "कौंच बीज और अकरकरा नसों को मजबूती देकर स्थायी शक्ति प्रदान करते हैं।", image: "/benefits/ved_male_timing.jpg" },
-        { title: "Restores Vital Vigor", titleHi: "गहन ऊर्जा और ताजगी की पुनर्स्थापना", desc: "Purified Shilajit and Bhasmas nourish deep reproductive tissues (Shukra Dhatu) to fight fatigue.", descHi: "शुद्ध शिलाजीत और भस्म शुक्र धातु को पोषण देकर थकान को खत्म करते हैं।", image: "/benefits/ved_male_vigor.jpg" },
+        { title: "Enhances Male Power & Drive", titleHi: "पुरुष शक्ति और ड्राइव में वृद्धि", desc: "Safed Musli, Salam Panja and Makardhwaj elevate natural male vitality and performance.", descHi: "सफेद मूसली और मकरध्वज प्राकृतिक पुरुष वाइटलिटी और ऊर्जा को बढ़ाते हैं।", image: "/benefits/ved_male_power.webp" },
+        { title: "Boosts Timing & Endurance", titleHi: "टाइमिंग और सहनशक्ति में सुधार", desc: "Kaunch Beej and Akarkara strengthen nerve response for staying power and lasting endurance.", descHi: "कौंच बीज और अकरकरा नसों को मजबूती देकर स्थायी शक्ति प्रदान करते हैं।", image: "/benefits/ved_male_timing.webp" },
+        { title: "Restores Vital Vigor", titleHi: "गहन ऊर्जा और ताजगी की पुनर्स्थापना", desc: "Purified Shilajit and Bhasmas nourish deep reproductive tissues (Shukra Dhatu) to fight fatigue.", descHi: "शुद्ध शिलाजीत और भस्म शुक्र धातु को पोषण देकर थकान को खत्म करते हैं।", image: "/benefits/ved_male_vigor.webp" },
       ],
       benefits: [
         { icon: "⚡", title: "Boosts Male Stamina & Power", titleHi: "पुरुष शक्ति में वृद्धि", desc: "Formulated with 150mg Safed Musli and Makardhwaj to power peak male vigor and endurance.", descHi: "सफेद मूसली और मकरध्वज से पौरुष शक्ति और ताकत बढ़ती है।" },
@@ -334,9 +334,9 @@ function getCategoryRichContent(categoryName: string, productName: string) {
         { name: "Pather ber", botanical: "Stone Plum", amount: "100 mg" },
       ],
       visualBenefits: [
-        { title: "Flushes Renal Toxins", titleHi: "किडनी टॉक्सिन्स बाहर निकाले", desc: "Stimulates healthy urine flow to naturally flush out excess uric acid and deposits.", descHi: "मूत्र प्रवाह को सुचारू कर यूरिक एसिड और जमा गंदगी को साफ करता है।", image: "/benefits/kidney_hydration.jpg" },
-        { title: "Prevents Stone Buildup", titleHi: "पथरी बनने से रोके", desc: "Classical Pashanbhed and mineral salts help clear deposits and soothe pathways.", descHi: "पाषाणभेद और प्राकृतिक लवण जमाव को घोलकर मार्ग साफ करते हैं।", image: "/benefits/kidney_relief.jpg" },
-        { title: "Soothes Burning Sensation", titleHi: "पेशाब की जलन शांत करे", desc: "Natural alkaline cooling salts ease urinary discomfort and balance pH.", descHi: "प्राकृतिक क्षारीय लवण यूरिनरी पीएच को संतुलित कर ठंडक पहुंचाते हैं।", image: "/benefits/digest_gut.jpg" },
+        { title: "Flushes Renal Toxins", titleHi: "किडनी टॉक्सिन्स बाहर निकाले", desc: "Stimulates healthy urine flow to naturally flush out excess uric acid and deposits.", descHi: "मूत्र प्रवाह को सुचारू कर यूरिक एसिड और जमा गंदगी को साफ करता है।", image: "/benefits/kidney_hydration.webp" },
+        { title: "Prevents Stone Buildup", titleHi: "पथरी बनने से रोके", desc: "Classical Pashanbhed and mineral salts help clear deposits and soothe pathways.", descHi: "पाषाणभेद और प्राकृतिक लवण जमाव को घोलकर मार्ग साफ करते हैं।", image: "/benefits/kidney_relief.webp" },
+        { title: "Soothes Burning Sensation", titleHi: "पेशाब की जलन शांत करे", desc: "Natural alkaline cooling salts ease urinary discomfort and balance pH.", descHi: "प्राकृतिक क्षारीय लवण यूरिनरी पीएच को संतुलित कर ठंडक पहुंचाते हैं।", image: "/benefits/digest_gut.webp" },
       ],
       benefits: [
         { icon: "🛡️", title: "Prevents Renal Calculi & Stones", titleHi: "पथरी बनने से रोके", desc: "Helps in reducing the formation and size of kidney stones and gall bladder stones.", descHi: "गुर्दे और पित्ताशय की पथरी के आकार को कम करने में मदद करता है।" },
@@ -406,9 +406,9 @@ function getCategoryRichContent(categoryName: string, productName: string) {
         { name: "Mandur Bhasam", botanical: "Purified Iron Calx", amount: "10 mg" },
       ],
       visualBenefits: [
-        { title: "Relieves Swelling & Itching", titleHi: "सूजन व खुजली में राहत", desc: "Suran and Kanchnar Guggul soothe irritated anorectal tissue and reduce mass.", descHi: "सूरन और कांचनार गुग्गुल गुदा मार्ग की सूजन और खुजली को शांत करते हैं।", image: "/benefits/piles_comfort.jpg" },
-        { title: "Arrests Rectal Bleeding", titleHi: "खून आना तुरंत रोके", desc: "Natural astringent botanicals promote fast mucosal repair and stop bleeding.", descHi: "प्राकृतिक कषाय औषधियां अंदरूनी घाव भरकर खून आना बंद करती हैं।", image: "/benefits/kidney_relief.jpg" },
-        { title: "Pain-Free Bowel Movement", titleHi: "दर्द रहित पेट साफ", desc: "Triphala softens hard stools to eliminate painful straining every morning.", descHi: "त्रिफला कठोर मल को मुलायम कर बिना जोर लगाए पेट साफ करता है।", image: "/benefits/pain_movement.jpg" },
+        { title: "Relieves Swelling & Itching", titleHi: "सूजन व खुजली में राहत", desc: "Suran and Kanchnar Guggul soothe irritated anorectal tissue and reduce mass.", descHi: "सूरन और कांचनार गुग्गुल गुदा मार्ग की सूजन और खुजली को शांत करते हैं।", image: "/benefits/piles_comfort.webp" },
+        { title: "Arrests Rectal Bleeding", titleHi: "खून आना तुरंत रोके", desc: "Natural astringent botanicals promote fast mucosal repair and stop bleeding.", descHi: "प्राकृतिक कषाय औषधियां अंदरूनी घाव भरकर खून आना बंद करती हैं।", image: "/benefits/kidney_relief.webp" },
+        { title: "Pain-Free Bowel Movement", titleHi: "दर्द रहित पेट साफ", desc: "Triphala softens hard stools to eliminate painful straining every morning.", descHi: "त्रिफला कठोर मल को मुलायम कर बिना जोर लगाए पेट साफ करता है।", image: "/benefits/pain_movement.webp" },
       ],
       benefits: [
         { icon: "🛡️", title: "Pain, Swelling & Itching Relief", titleHi: "दर्द, सूजन व खुजली से मुक्ति", desc: "Soothes anorectal inflammation, itching, and swollen veins for daily comfort.", descHi: "गुदा मार्ग की नसों की सूजन, जलन और चुभन को शांत करता है।" },
@@ -472,9 +472,9 @@ function getCategoryRichContent(categoryName: string, productName: string) {
         { name: "Bhumi Amla Ext.", botanical: "Phyllanthus niruri", amount: "50 mg" },
       ],
       visualBenefits: [
-        { title: "Detoxifies Sluggish Liver", titleHi: "सुस्त लिवर को डिटॉक्स करे", desc: "Potent 300mg Milk Thistle (Silymarin) extract supports healthy liver cell renewal.", descHi: "300mg मिल्क थीस्ल सत्व लिवर कोशिकाओं के पुनर्निर्माण में मदद करता है।", image: "/benefits/liver_energy.jpg" },
-        { title: "Restores Natural Appetite", titleHi: "प्राकृतिक भूख लौटाए", desc: "Kutki and Bhumi Amla relieve heaviness and bring back healthy digestive hunger.", descHi: "कुटकी और भूमि आंवला पेट का भारीपन दूर कर स्वाभाविक भूख बढ़ाते हैं।", image: "/benefits/digest_gut.jpg" },
-        { title: "Promotes Bile Flow", titleHi: "पित्त रस प्रवाह सुधारे", desc: "Dandelion Root cleanses hepatic pathways for smooth fat and nutrient breakdown.", descHi: "पित्त नली को साफ कर वसा और पोषक तत्वों का पाचन सुगम बनाता है।", image: "/benefits/kidney_hydration.jpg" },
+        { title: "Detoxifies Sluggish Liver", titleHi: "सुस्त लिवर को डिटॉक्स करे", desc: "Potent 300mg Milk Thistle (Silymarin) extract supports healthy liver cell renewal.", descHi: "300mg मिल्क थीस्ल सत्व लिवर कोशिकाओं के पुनर्निर्माण में मदद करता है।", image: "/benefits/liver_energy.webp" },
+        { title: "Restores Natural Appetite", titleHi: "प्राकृतिक भूख लौटाए", desc: "Kutki and Bhumi Amla relieve heaviness and bring back healthy digestive hunger.", descHi: "कुटकी और भूमि आंवला पेट का भारीपन दूर कर स्वाभाविक भूख बढ़ाते हैं।", image: "/benefits/digest_gut.webp" },
+        { title: "Promotes Bile Flow", titleHi: "पित्त रस प्रवाह सुधारे", desc: "Dandelion Root cleanses hepatic pathways for smooth fat and nutrient breakdown.", descHi: "पित्त नली को साफ कर वसा और पोषक तत्वों का पाचन सुगम बनाता है।", image: "/benefits/kidney_hydration.webp" },
       ],
       benefits: [
         { icon: "🛡️", title: "Effective in Liver Disorders", titleHi: "लिवर विकारों में असरदार", desc: "Supports recovery in alcoholic liver, cirrhosis, hepatic stress, and hepatitis management.", descHi: "फैटी लिवर, शराब से प्रभावित लिवर और हेपेटिक तनाव में सुधार करता है।" },
@@ -539,9 +539,9 @@ function getCategoryRichContent(categoryName: string, productName: string) {
         { name: "Saunf Ext.", botanical: "Foeniculum vulgare", amount: "50 mg" },
       ],
       visualBenefits: [
-        { title: "Relieves Gas & Bloating", titleHi: "गैस व पेट फूलना दूर करे", desc: "Triphala and Ajwain quickly neutralize trapped gas and reduce abdominal fullness.", descHi: "त्रिफला और अजवाइन फंसी गैस को बाहर निकालकर पेट का तनाव खत्म करते हैं।", image: "/benefits/digest_gut.jpg" },
-        { title: "Prevents Acid Reflux", titleHi: "खट्टी डकारें व जलन शांत करे", desc: "Gentle cooling herbs balance stomach acid and protect the gastric mucosal lining.", descHi: "शीतल पाचक जड़ी-बूटियां पेट के एसिड को संतुलित कर सीने की जलन शांत करती हैं।", image: "/benefits/liver_energy.jpg" },
-        { title: "Daily Regularity", titleHi: "दैनिक पेट की सफाई", desc: "Sunthi ginger stimulates natural digestive fire for smooth morning elimination.", descHi: "सोंठ जठराग्नि को प्रदीप्त कर सुबह आसानी से पेट साफ करता है।", image: "/benefits/kidney_hydration.jpg" },
+        { title: "Relieves Gas & Bloating", titleHi: "गैस व पेट फूलना दूर करे", desc: "Triphala and Ajwain quickly neutralize trapped gas and reduce abdominal fullness.", descHi: "त्रिफला और अजवाइन फंसी गैस को बाहर निकालकर पेट का तनाव खत्म करते हैं।", image: "/benefits/digest_gut.webp" },
+        { title: "Prevents Acid Reflux", titleHi: "खट्टी डकारें व जलन शांत करे", desc: "Gentle cooling herbs balance stomach acid and protect the gastric mucosal lining.", descHi: "शीतल पाचक जड़ी-बूटियां पेट के एसिड को संतुलित कर सीने की जलन शांत करती हैं।", image: "/benefits/liver_energy.webp" },
+        { title: "Daily Regularity", titleHi: "दैनिक पेट की सफाई", desc: "Sunthi ginger stimulates natural digestive fire for smooth morning elimination.", descHi: "सोंठ जठराग्नि को प्रदीप्त कर सुबह आसानी से पेट साफ करता है।", image: "/benefits/kidney_hydration.webp" },
       ],
       benefits: [
         { icon: "🌿", title: "100% Herbal Gut Relief", titleHi: "प्राकृतिक पेट राहत", desc: "Soothes stomach lining, relieving acidity, gas, and abdominal bloating naturally.", descHi: "पेट की अंदरूनी परत को शांत कर गैस और एसिडिटी से राहत दिलाता है।" },
@@ -555,7 +555,7 @@ function getCategoryRichContent(categoryName: string, productName: string) {
         { percentage: 90, label: "Noticed significant reduction in post-meal bloating", labelHi: "भोजन के बाद पेट फूलने की समस्या में भारी कमी पाई" },
       ],
       ingredients: [
-        { name: "Triphala Extract", desc: "Classic 3-fruit Ayurvedic formula that gently cleanses the colon and restores digestion.", image: "/digestion.png" },
+        { name: "Triphala Extract", desc: "Classic 3-fruit Ayurvedic formula that gently cleanses the colon and restores digestion.", image: "/digestion.webp" },
       ],
       steps: [
         { step: 1, title: "Take 1 Dose 30 Mins After Meals", titleHi: "भोजन के 30 मिनट बाद 1 खुराक लें", desc: "Take 1 scoop or capsule 30 minutes after heavy meals or when feeling gas/heaviness.", descHi: "भारी भोजन के 30 मिनट बाद या गैस महसूस होने पर 1 कैप्सूल लें।" },
@@ -606,9 +606,9 @@ function getCategoryRichContent(categoryName: string, productName: string) {
         { name: "Gokshura", botanical: "Tribulus terrestris", amount: "50 mg" },
       ],
       visualBenefits: [
-        { title: "Boost Muscle Power", titleHi: "मांसपेशियों की शक्ति बढ़ाए", desc: "Nourishes muscle tissue (Mamsa Dhatu) for sustained gym strength and stamina.", descHi: "मांस धातु को पोषण देकर जिम वर्कआउट में ताकत और सहनशक्ति बढ़ाता है।", image: "/benefits/benefit_stamina.jpg" },
-        { title: "Accelerate Recovery", titleHi: "त्वरित रिकवरी", desc: "Reduces post-workout muscle soreness and restores physical stamina rapidly.", descHi: "कसरत के बाद मांसपेशियों के दर्द को कम कर तेजी से ऊर्जा लौटाता है।", image: "/benefits/benefit_stress.jpg" },
-        { title: "Clean Anabolic Gains", titleHi: "प्राकृतिक मसल गेन", desc: "Enhances nutrient and protein assimilation for natural, lean muscle growth.", descHi: "प्रोटीन और पोषक तत्वों के अवशोषण को बढ़ाकर प्राकृतिक रूप से वजन बढ़ाता है।", image: "/benefits/benefit_muscle.jpg" },
+        { title: "Boost Muscle Power", titleHi: "मांसपेशियों की शक्ति बढ़ाए", desc: "Nourishes muscle tissue (Mamsa Dhatu) for sustained gym strength and stamina.", descHi: "मांस धातु को पोषण देकर जिम वर्कआउट में ताकत और सहनशक्ति बढ़ाता है।", image: "/benefits/benefit_stamina.webp" },
+        { title: "Accelerate Recovery", titleHi: "त्वरित रिकवरी", desc: "Reduces post-workout muscle soreness and restores physical stamina rapidly.", descHi: "कसरत के बाद मांसपेशियों के दर्द को कम कर तेजी से ऊर्जा लौटाता है।", image: "/benefits/benefit_stress.webp" },
+        { title: "Clean Anabolic Gains", titleHi: "प्राकृतिक मसल गेन", desc: "Enhances nutrient and protein assimilation for natural, lean muscle growth.", descHi: "प्रोटीन और पोषक तत्वों के अवशोषण को बढ़ाकर प्राकृतिक रूप से वजन बढ़ाता है।", image: "/benefits/benefit_muscle.webp" },
       ],
       benefits: [
         { icon: "⚡", title: "Anabolic Muscle Growth", titleHi: "प्राकृतिक मांसपेशी विकास", desc: "Nourishes muscle tissue (Mamsa Dhatu) for clean strength gain and stamina.", descHi: "शरीर को प्राकृतिक रूप से पुष्ट कर मांसपेशियों की ताकत बढ़ाता है।" },
@@ -672,9 +672,9 @@ function getCategoryRichContent(categoryName: string, productName: string) {
         { name: "Ashwagandha", botanical: "Withania somnifera", amount: "50 mg" },
       ],
       visualBenefits: [
-        { title: "Relieve Joint Pain", titleHi: "जोड़ों का दर्द दूर करे", desc: "Potent anti-inflammatory Shallaki protects joint cartilage and soothes aching knees.", descHi: "शल्लकी जोड़ों के कार्टिलेज की रक्षा कर घुटनों के दर्द में राहत देती है।", image: "/benefits/benefit_stamina.jpg" },
-        { title: "Reduce Morning Stiffness", titleHi: "सुबह की अकड़न घटाए", desc: "Nirgundi and Guggulu clear inflammatory toxins to restore joint flexibility.", descHi: "निर्गुंडी और गुग्गुल सूजन पैदा करने वाले टॉक्सिन्स को साफ कर लचीलापन लौटाते हैं।", image: "/benefits/benefit_stress.jpg" },
-        { title: "Strengthen Bone & Cartilage", titleHi: "हड्डियों व कार्टिलेज को मजबूती", desc: "Hadjod promotes bone mineral density and accelerates structural tissue repair.", descHi: "हड़जोड़ हड्डियों के घनत्व को बढ़ाकर जोड़ों को मजबूत करता है।", image: "/benefits/benefit_muscle.jpg" },
+        { title: "Relieve Joint Pain", titleHi: "जोड़ों का दर्द दूर करे", desc: "Potent anti-inflammatory Shallaki protects joint cartilage and soothes aching knees.", descHi: "शल्लकी जोड़ों के कार्टिलेज की रक्षा कर घुटनों के दर्द में राहत देती है।", image: "/benefits/benefit_stamina.webp" },
+        { title: "Reduce Morning Stiffness", titleHi: "सुबह की अकड़न घटाए", desc: "Nirgundi and Guggulu clear inflammatory toxins to restore joint flexibility.", descHi: "निर्गुंडी और गुग्गुल सूजन पैदा करने वाले टॉक्सिन्स को साफ कर लचीलापन लौटाते हैं।", image: "/benefits/benefit_stress.webp" },
+        { title: "Strengthen Bone & Cartilage", titleHi: "हड्डियों व कार्टिलेज को मजबूती", desc: "Hadjod promotes bone mineral density and accelerates structural tissue repair.", descHi: "हड़जोड़ हड्डियों के घनत्व को बढ़ाकर जोड़ों को मजबूत करता है।", image: "/benefits/benefit_muscle.webp" },
       ],
       benefits: [
         { icon: "🛡️", title: "Targeted Joint & Organ Relief", titleHi: "जोड़ों के दर्द में राहत", desc: "Soothes systemic inflammation, joint stiffness, and chronic bodily discomfort.", descHi: "जोड़ों की सूजन और शरीर की पुरानी जकड़न को शांत करता है।" },
@@ -688,7 +688,7 @@ function getCategoryRichContent(categoryName: string, productName: string) {
         { percentage: 90, label: "Reported improved daily walking mobility & flexibility", labelHi: "चलने-फिरने और सीढ़ियां चढ़ने में आसानी महसूस की" },
       ],
       ingredients: [
-        { name: "Shallaki (Boswellia)", desc: "Potent anti-inflammatory herb that protects joint cartilage and reduces pain.", image: "/healthdisease.png" },
+        { name: "Shallaki (Boswellia)", desc: "Potent anti-inflammatory herb that protects joint cartilage and reduces pain.", image: "/healthdisease.webp" },
       ],
       steps: [
         { step: 1, title: "Take 1-2 Capsules Twice Daily", titleHi: "दिन में 1-2 कैप्सूल लें", desc: "Consume after breakfast and dinner with lukewarm water.", descHi: "सुबह नाश्ते और रात के खाने के बाद गुनगुने पानी के साथ लें।" },
@@ -733,9 +733,9 @@ function getCategoryRichContent(categoryName: string, productName: string) {
       { name: "Standardized Ayurvedic Botanical Extracts", botanical: "Ayurvedic Pharmacopoeia Standard", amount: "100% Pure Active" },
     ],
     visualBenefits: [
-      { title: "Boost Daily Stamina", titleHi: "दैनिक स्टैमिना बढ़ाए", desc: "Purified herbal actives help elevate endurance, strength, and overall vitality naturally.", descHi: "शुद्ध जड़ी-बूटियों के सक्रिय घटक सहनशक्ति और शक्ति को प्राकृतिक रूप से बढ़ाते हैं।", image: "/benefits/benefit_stamina.jpg" },
-      { title: "Soothe Daily Stress", titleHi: "दैनिक तनाव शांत करे", desc: "Adaptogenic herbs lower cortisol, calming mind and body without inducing drowsiness.", descHi: "अडाप्टोजेनिक औषधियां कॉर्टिसोल घटाकर मन और शरीर को शांत रखती हैं।", image: "/benefits/benefit_stress.jpg" },
-      { title: "Enhance Physical Vitality", titleHi: "शारीरिक ऊर्जा में सुधार", desc: "Accelerates cellular recovery, tissue nourishment, and long-term health balance.", descHi: "ऊतकों के पोषण और सेलुलर रिकवरी को तेज कर स्वास्थ्य संतुलन बनाए रखता है।", image: "/benefits/benefit_muscle.jpg" },
+      { title: "Boost Daily Stamina", titleHi: "दैनिक स्टैमिना बढ़ाए", desc: "Purified herbal actives help elevate endurance, strength, and overall vitality naturally.", descHi: "शुद्ध जड़ी-बूटियों के सक्रिय घटक सहनशक्ति और शक्ति को प्राकृतिक रूप से बढ़ाते हैं।", image: "/benefits/benefit_stamina.webp" },
+      { title: "Soothe Daily Stress", titleHi: "दैनिक तनाव शांत करे", desc: "Adaptogenic herbs lower cortisol, calming mind and body without inducing drowsiness.", descHi: "अडाप्टोजेनिक औषधियां कॉर्टिसोल घटाकर मन और शरीर को शांत रखती हैं।", image: "/benefits/benefit_stress.webp" },
+      { title: "Enhance Physical Vitality", titleHi: "शारीरिक ऊर्जा में सुधार", desc: "Accelerates cellular recovery, tissue nourishment, and long-term health balance.", descHi: "ऊतकों के पोषण और सेलुलर रिकवरी को तेज कर स्वास्थ्य संतुलन बनाए रखता है।", image: "/benefits/benefit_muscle.webp" },
     ],
     benefits: [
       { icon: "🌿", title: "100% Ayurvedic Formula", titleHi: "100% आयुर्वेदिक योग", desc: "Time-honored classical Ayurvedic herbal formulation prepared under strict GMP standards.", descHi: "कड़े जीएमपी मानकों के तहत तैयार प्राचीन शास्त्रीय आयुर्वेदिक फॉर्मूला।" },
@@ -1023,7 +1023,7 @@ export default function SingleProduct({
 
   const packOptions = [
     { name: t("Single Pack (1 Bottle)"), price: basePrice, origPrice: originalPrice, isPopular: false, tag: "Standard" },
-    { name: t("Pack of 2 (SAVE EXTRA 10%)"), price: Math.round(basePrice * 2 * 0.9), origPrice: originalPrice * 2, isPopular: true, tag: "Most Popular" },
+    { name: t("Pack of 2 (SAVE EXTRA ₹100)"), price: Math.max(0, (basePrice * 2) - 100), origPrice: originalPrice * 2, isPopular: true, tag: "Most Popular" },
   ];
 
   const currentPack = packOptions[selectedPack] || packOptions[0];
@@ -1160,7 +1160,7 @@ export default function SingleProduct({
                   )}
                   {selectedPack === 1 && (
                     <span className="bg-rose-600 text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs flex items-center gap-1">
-                      <Flame size={12} className="fill-white" /> 10% {t("EXTRA OFF")}
+                      <Flame size={12} className="fill-white" /> ₹100 {t("EXTRA OFF")}
                     </span>
                   )}
                 </div>
@@ -1170,7 +1170,7 @@ export default function SingleProduct({
               </div>
               <p className="text-xs text-stone-500 font-medium mt-2">
                 {selectedPack === 1 ? (
-                  <span className="text-emerald-800 font-bold">{t("You save 10% extra on this 2-Pack value bundle!")}</span>
+                  <span className="text-emerald-800 font-bold">{t("You save ₹100 extra on this 2-Pack value bundle!")}</span>
                 ) : (
                   t("Inclusive of all taxes • Free Shipping on all Prepaid Orders")
                 )}
@@ -1681,7 +1681,7 @@ export default function SingleProduct({
             {/* Visual Photo Card on Left */}
             <div className="lg:col-span-5 relative aspect-4/3 rounded-3xl overflow-hidden shadow-md border border-stone-200 group">
               <Image
-                src="/benefits/how_to_use_universal.jpg"
+                src="/benefits/how_to_use_universal.webp"
                 alt="How to use Ayurveda Daily Regimen"
                 fill
                 sizes="(max-width: 1024px) 100vw, 40vw"

@@ -154,8 +154,8 @@ export default function UsersPage() {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  filteredUsers.map((user) => (
-                    <TableRow key={user.id}>
+                  filteredUsers.map((user, idx) => (
+                    <TableRow key={user.id || `user-${idx}`}>
                       {/* Avatar Column */}
                       <TableCell>
                         <Avatar className="h-10 w-10">

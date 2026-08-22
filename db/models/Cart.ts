@@ -12,4 +12,7 @@ const cartSchema = new Schema(
   { ...sharedOptions, _id: false },
 );
 
+// Index for fast active cart lookups
+cartSchema.index({ userId: 1, status: 1 });
+
 export default models.Cart || model("Cart", cartSchema, "cart");

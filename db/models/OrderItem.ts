@@ -12,4 +12,8 @@ const orderItemSchema = new Schema(
   { ...sharedOptions, _id: false },
 );
 
+// Index for fast batch order item lookups
+orderItemSchema.index({ order_id: 1 });
+orderItemSchema.index({ product_id: 1 });
+
 export default models.OrderItem || model("OrderItem", orderItemSchema, "order_items");

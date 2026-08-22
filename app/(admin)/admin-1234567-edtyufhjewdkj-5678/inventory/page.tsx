@@ -33,6 +33,7 @@ import Link from "next/link";
 import { Plus, Trash2 } from "lucide-react";
 
 export type ProductType = {
+  _id?: string;
   id: string;
 
   name: string;
@@ -63,6 +64,7 @@ export type ProductType = {
   goal: string;
 
   galleryImages: string[];
+  isBestSeller?: boolean;
 
   manufacturedDate: string; // ISO
   expiryDate: string; // ISO
@@ -89,7 +91,11 @@ const Page = () => {
     try {
       setLoading(true);
       const response = await axios.get("/api/admin/products/getallproducts");
-      setProducts(response.data.response ?? []);
+      const list = (response.data.response ?? []).map((p: any) => ({
+        ...p,
+        id: p.id || p._id?.toString() || p._id,
+      }));
+      setProducts(list);
     } catch (error) {
       toast.error("Failed to load products");
     } finally {
@@ -132,12 +138,49 @@ const Page = () => {
     });
   }, [products, search, category]);
 
+  const updateStock = async (productId: string, newStock: number) => {
+    try {
+      const res = await axios.put(`/api/admin/products/updateproduct/${productId}`, {
+        inStock: Math.max(0, newStock),
+      });
+      if (res.data.success) {
+        setProducts((prev) =>
+          prev.map((p) => (p.id === productId || p._id === productId ? { ...p, inStock: Math.max(0, newStock) } : p))
+        );
+        toast.success(`Stock updated to ${Math.max(0, newStock)}`);
+      } else {
+        toast.error("Failed to update stock");
+      }
+    } catch {
+      toast.error("Failed to update stock");
+    }
+  };
+
+  const toggleBestSeller = async (productId: string, currentVal?: boolean) => {
+    try {
+      const res = await axios.post("/api/admin/products/togglebestseller", {
+        productId,
+        isBestSeller: !currentVal,
+      });
+      if (res.data.success) {
+        setProducts((prev) =>
+          prev.map((p) => (p.id === productId || p._id === productId ? { ...p, isBestSeller: !currentVal } : p))
+        );
+        toast.success(res.data.message || "Best seller status updated");
+      } else {
+        toast.error(res.data.message || "Failed to update best seller status");
+      }
+    } catch {
+      toast.error("Failed to toggle best seller");
+    }
+  };
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-lg font-bold">Inventory</h2>
-          <p className="text-sm text-muted-foreground">Manage your product catalog</p>
+          <h2 className="text-lg font-bold">Inventory Management</h2>
+          <p className="text-sm text-muted-foreground">Monitor and manage product stock levels & best sellers</p>
         </div>
 
         <Link href="/admin-1234567-edtyufhjewdkj-5678/addproduct">
@@ -205,54 +248,98 @@ const Page = () => {
 
       {!loading && filteredProducts.length > 0 && (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {filteredProducts.map((product) => (
-            <Card key={product.id} className="overflow-hidden">
-              <img
-                src={product.galleryImages?.[0]}
-                alt={product.title}
-                className="h-48 w-full object-cover"
-              />
+          {filteredProducts.map((product, idx) => (
+            <Card key={product.id || product._id || `prod-${idx}`} className="overflow-hidden flex flex-col justify-between">
+              <div>
+                  <img
+                    src={product.galleryImages?.[0]}
+                    alt={product.title}
+                    className="h-44 w-full object-cover"
+                  />
 
-              <CardHeader className="space-y-1">
-                <div className="flex items-center justify-between gap-2">
-                  <Badge variant="secondary">{product.category}</Badge>
-                  {!product.inStock ? (
-                    <Badge variant="destructive">Out of stock</Badge>
-                  ) : (
-                    <span className="text-xs text-muted-foreground">In stock: {product.inStock}</span>
-                  )}
-                </div>
+                <CardHeader className="space-y-1.5 p-4">
+                  <div className="flex items-center justify-between gap-2">
+                    <Badge variant="secondary">{product.category}</Badge>
+                    <button
+                      type="button"
+                      onClick={() => updateStock(product.id || product._id!, product.inStock ? 0 : 50)}
+                      className="cursor-pointer"
+                    >
+                      {(!product.inStock || product.inStock <= 0) ? (
+                        <Badge variant="destructive">Out of Stock</Badge>
+                      ) : (
+                        <Badge className="bg-emerald-100 text-emerald-800 border-emerald-300 hover:bg-emerald-200">
+                          In Stock ({product.inStock})
+                        </Badge>
+                      )}
+                    </button>
+                  </div>
 
-                <CardTitle className="text-base line-clamp-2">{product.title || product.name}</CardTitle>
-                <CardDescription className="text-sm line-clamp-2">{product.description}</CardDescription>
-              </CardHeader>
+                  <CardTitle className="text-base line-clamp-2">{product.title || product.name}</CardTitle>
+                  <CardDescription className="text-xs line-clamp-2">{product.description}</CardDescription>
+                </CardHeader>
+              </div>
 
-              <CardContent>
-                <div className="flex items-baseline gap-2">
-                  {product.discountPrice ? (
-                    <>
-                      <span className="text-sm text-muted-foreground line-through">₹{product.price}</span>
-                      <span className="text-base font-semibold">₹{product.discountPrice}</span>
-                    </>
-                  ) : (
-                    <span className="text-base font-semibold">₹{product.price}</span>
-                  )}
-                </div>
-              </CardContent>
+              <div>
+                <CardContent className="p-4 pt-0 space-y-3">
+                  <div className="flex items-baseline gap-2">
+                    {product.discountPrice ? (
+                      <>
+                        <span className="text-sm text-muted-foreground line-through">₹{product.price}</span>
+                        <span className="text-base font-bold text-emerald-800">₹{product.discountPrice}</span>
+                      </>
+                    ) : (
+                      <span className="text-base font-bold text-emerald-800">₹{product.price}</span>
+                    )}
+                  </div>
 
-              <CardFooter className="flex items-center justify-between gap-2">
-                <Link href={`/admin-1234567-edtyufhjewdkj-5678/inventory/product/${product.id}`} className="flex-1">
-                  <Button size="sm" className="w-full">Edit</Button>
-                </Link>
-                <Button
-                  size="icon-sm"
-                  variant="outline"
-                  onClick={() => setPendingDelete(product)}
-                  aria-label="Delete product"
-                >
-                  <Trash2 className="size-4 text-destructive" />
-                </Button>
-              </CardFooter>
+                  {/* Stock Quantity Controls */}
+                  <div className="flex items-center justify-between gap-2 p-2 bg-stone-50 rounded-xl border border-stone-200">
+                    <span className="text-xs font-semibold text-stone-700">Stock Units:</span>
+                    <div className="flex items-center gap-1.5">
+                      <Button
+                        size="icon-sm"
+                        variant="outline"
+                        type="button"
+                        onClick={() => updateStock(product.id || product._id!, (product.inStock || 0) - 1)}
+                        className="h-7 w-7 text-xs font-bold cursor-pointer"
+                      >
+                        -
+                      </Button>
+                      <input
+                        type="number"
+                        min={0}
+                        value={product.inStock ?? 0}
+                        onChange={(e) => updateStock(product.id || product._id!, parseInt(e.target.value) || 0)}
+                        className="w-12 text-center text-xs font-bold border rounded-md py-1 bg-white"
+                      />
+                      <Button
+                        size="icon-sm"
+                        variant="outline"
+                        type="button"
+                        onClick={() => updateStock(product.id || product._id!, (product.inStock || 0) + 1)}
+                        className="h-7 w-7 text-xs font-bold cursor-pointer"
+                      >
+                        +
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+
+                <CardFooter className="flex items-center justify-between gap-2 p-4 pt-0">
+                  <Link href={`/admin-1234567-edtyufhjewdkj-5678/inventory/product/${product.id || product._id}`} className="flex-1">
+                    <Button size="sm" className="w-full">Edit Product</Button>
+                  </Link>
+                  <Button
+                    size="icon-sm"
+                    variant="outline"
+                    onClick={() => setPendingDelete(product)}
+                    aria-label="Delete product"
+                  >
+                    <Trash2 className="size-4 text-destructive" />
+                  </Button>
+                </CardFooter>
+              </div>
             </Card>
           ))}
         </div>

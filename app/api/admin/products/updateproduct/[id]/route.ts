@@ -7,41 +7,11 @@ export const PUT = async (
 ) => {
   await connectDB();
 
-  const {
-    name,
-    nameHi,
-    title,
-    titleHi,
-    category,
-    description,
-    descriptionHi,
-    price,
-    discountPrice,
-    inStock,
-    galleryImages,
-    form,
-    goal,
-    ingredients,
-    allergens,
-    warnings,
-    directions,
-    certifications,
-    expiryDate,
-    manufacturedDate,
-    createdAt,
-    isBestSeller,
-    benefits,
-    clinicalStats,
-    keyIngredients,
-    howToUseSteps,
-    faqs,
-    packOptions,
-  } = await req.json();
-  const newExpiryDate = expiryDate ? new Date(expiryDate) : undefined;
-  const newManufacturedDate = manufacturedDate ? new Date(manufacturedDate) : undefined;
-  const { id } = await context.params;
   try {
-    if (isBestSeller) {
+    const body = await req.json();
+    const { id } = await context.params;
+
+    if (body.isBestSeller === true) {
       const currentCount = await Product.countDocuments({
         isBestSeller: true,
         _id: { $ne: id },
@@ -55,49 +25,27 @@ export const PUT = async (
       }
     }
 
-    const updateFields: any = {
-      name,
-      nameHi: nameHi && nameHi.trim() ? nameHi.trim() : null,
-      title,
-      titleHi: titleHi && titleHi.trim() ? titleHi.trim() : null,
-      category,
-      description,
-      descriptionHi: descriptionHi && descriptionHi.trim() ? descriptionHi.trim() : null,
-      price,
-      discountPrice,
-      inStock,
-      galleryImages,
-      form,
-      goal,
-      ingredients,
-      allergens,
-      warnings,
-      directions,
-      certifications,
-      expiryDate: newExpiryDate,
-      manufacturedDate: newManufacturedDate,
-      createdAt,
-      benefits,
-      clinicalStats,
-      keyIngredients,
-      howToUseSteps,
-      faqs,
-      packOptions,
-    };
-
-    if (isBestSeller !== undefined) {
-      updateFields.isBestSeller = isBestSeller;
+    const updateFields: any = {};
+    for (const key of Object.keys(body)) {
+      if (key === "expiryDate") {
+        updateFields.expiryDate = body.expiryDate ? new Date(body.expiryDate) : null;
+      } else if (key === "manufacturedDate") {
+        updateFields.manufacturedDate = body.manufacturedDate ? new Date(body.manufacturedDate) : null;
+      } else {
+        updateFields[key] = body[key];
+      }
     }
 
     const update = await Product.findByIdAndUpdate(
       id,
-      updateFields,
-      { new: true },
+      { $set: updateFields },
+      { new: true }
     );
+
     return Response.json({
       update,
       product: update,
-      msg: "Succesfully updated",
+      msg: "Successfully updated",
       status: 200,
       success: true,
     });

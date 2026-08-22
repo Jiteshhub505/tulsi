@@ -474,18 +474,18 @@ export default function UserSpecificAction() {
             <CardDescription>Details for order #{tx.order_id}</CardDescription>
           </CardHeader>
 
-          <CardContent className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 pt-6">
+          <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-6 min-w-0">
             <Field label="Order ID" value={tx.order_id} mono />
             <Field
               label="Amount to Pay"
               value={formatCurrency(tx.amount, tx.currency)}
               big
             />
-            <div>
-              <p className="text-sm text-muted-foreground">Order Status</p>
+            <div className="min-w-0">
+              <p className="text-xs text-muted-foreground">Order Status</p>
               <div className="mt-1">
                 <span
-                  className={`px-3 py-1 text-xs font-bold rounded-full border uppercase tracking-wider ${
+                  className={`px-3 py-1 text-xs font-bold rounded-full border uppercase tracking-wider inline-block ${
                     tx.order_status === "paid"
                       ? "bg-green-100 text-green-700 border-green-200"
                       : tx.order_status === "created"
@@ -1029,13 +1029,13 @@ const Field = ({
   big?: boolean;
   danger?: boolean;
 }) => (
-  <div>
+  <div className="min-w-0 break-words">
     <p className="text-xs text-muted-foreground">{label}</p>
     <p
       className={[
-        "text-stone-900 mt-0.5",
-        mono && "font-mono font-semibold",
-        big && "text-2xl font-bold text-emerald-800",
+        "text-stone-900 mt-0.5 break-all",
+        mono && "font-mono font-semibold text-xs sm:text-sm",
+        big && "text-xl sm:text-2xl font-bold text-emerald-800",
         danger && "text-red-600 font-medium",
         !big && !mono && "font-semibold text-sm",
       ]

@@ -7,35 +7,34 @@ import { GUEST_USER_ID } from "@/lib/constants";
 export async function GET() {
   await connectDB();
 
-  const session = await getServerSession(authOptions);
-  //@ts-ignore
-  const userId = session?.user?.id || GUEST_USER_ID;
-
-  const totalOrders = await Order.countDocuments({ user_id: userId });
+  const totalOrders = await Order.countDocuments({});
   const cancelledOrders = await Order.countDocuments({
-    user_id: userId,
-    order_status: "cancelled",
+    $or: [
+      { order_status: { $in: ["cancelled", "CANCELED", "Cancelled"] } },
+      { "shiprocket.status": { $in: ["CANCELLED", "CANCELED", "cancelled"] } },
+    ],
+  });
+  const failedPayments = await Order.countDocuments({
+    order_status: { $in: ["failed", "FAILED", "Failed"] },
   });
   const createdOrders = await Order.countDocuments({
-    user_id: userId,
-    order_status: "created",
+    order_status: { $in: ["created", "pending", "CREATED", "PENDING"] },
   });
 
   const paidOrders = await Order.find({
-    user_id: userId,
-    order_status: "paid",
-  });
+    order_status: { $in: ["paid", "completed", "delivered", "PAID", "COMPLETED", "DELIVERED"] },
+  }).select("amount createdAt");
+
   const totalAmount = paidOrders.reduce(
     (sum: number, order: any) => sum + (order.amount || 0),
-    0,
+    0
   );
 
   const threeMonthsAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
   const recentPaidOrders = await Order.find({
-    user_id: userId,
-    order_status: "paid",
+    order_status: { $in: ["paid", "completed", "delivered", "PAID", "COMPLETED", "DELIVERED"] },
     createdAt: { $gte: threeMonthsAgo },
-  });
+  }).select("amount createdAt");
 
   const monthlyRevenueMap = new Map<string, number>();
   for (const order of recentPaidOrders) {
@@ -43,7 +42,7 @@ export async function GET() {
     const month = new Date(o.createdAt).toISOString().slice(0, 7);
     monthlyRevenueMap.set(
       month,
-      (monthlyRevenueMap.get(month) || 0) + (o.amount || 0),
+      (monthlyRevenueMap.get(month) || 0) + (o.amount || 0)
     );
   }
   const monthlyRevenue = Array.from(monthlyRevenueMap.entries())
@@ -54,8 +53,9 @@ export async function GET() {
     success: true,
     stats: {
       totalOrders: totalOrders || 0,
+      paidOrdersCount: paidOrders.length || 0,
       cancelledOrders: cancelledOrders || 0,
-      failedPayments: 0,
+      failedPayments: failedPayments || 0,
       createdOrders: createdOrders || 0,
       totalAmount: totalAmount || 0,
       monthlyRevenue: monthlyRevenue,

@@ -24,23 +24,23 @@ export default function SiteInitialLoader() {
       return;
     }
 
-    // Preload essential first hero slide images in background
+    // Preload essential first hero slide images AFTER the loader appears (non-blocking)
     if (typeof window !== "undefined") {
-      requestAnimationFrame(() => {
+      setTimeout(() => {
         HERO_IMAGES.forEach((src) => {
           const img = new window.Image();
           img.src = src;
         });
-      });
+      }, 200);
     }
 
-    // Smooth dismiss loader
+    // Minimal splash: 400ms is enough to perceive brand identity without hurting LCP
     const timer = setTimeout(() => {
       setLoading(false);
       if (typeof window !== "undefined") {
         sessionStorage.setItem("tulsiveda_loader_shown", "true");
       }
-    }, 1200);
+    }, 400);
 
     return () => clearTimeout(timer);
   }, []);

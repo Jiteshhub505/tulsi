@@ -25,21 +25,47 @@ export async function GET(req: Request) {
       orConditions.push({ user_id: GUEST_USER_ID });
     }
 
-    const orders = await Order.find({ $or: orConditions }).sort({ createdAt: -1 });
+    const orders = await Order.find({ $or: orConditions })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    if (orders.length === 0) {
+      return NextResponse.json([]);
+    }
+
+    // Batch fetch all order items in one query (no N+1)
+    const orderIds = orders.map((o: any) => o.order_id);
+    const allOrderItems = await OrderItem.find({ order_id: { $in: orderIds } }).lean();
+
+    // Batch fetch all products in one query (no N+1)
+    const productIds = [...new Set(allOrderItems.map((item: any) => item.product_id))];
+    const allProducts = await Product.find({ _id: { $in: productIds } })
+      .select("name nameHi galleryImages price discountPrice")
+      .lean();
+    const productsById = new Map(allProducts.map((p: any) => [p._id || p.id, p]));
+
+    // Group items by order
+    const itemsByOrderId = new Map<string, any[]>();
+    for (const item of allOrderItems) {
+      if (!itemsByOrderId.has(item.order_id)) {
+        itemsByOrderId.set(item.order_id, []);
+      }
+      itemsByOrderId.get(item.order_id)!.push(item);
+    }
 
     const result = [];
     for (const order of orders) {
-      const orderItems = await OrderItem.find({ order_id: order.order_id });
+      const orderItems = itemsByOrderId.get((order as any).order_id) || [];
       for (const orderItem of orderItems) {
-        const product = await Product.findById(orderItem.product_id);
+        const product: any = productsById.get(orderItem.product_id);
         result.push({
-          orderId: order.order_id,
-          amount: order.amount,
-          currency: order.currency,
-          status: order.order_status,
-          shiprocket: order.shiprocket || null,
-          createdAt: order.createdAt,
-          productId: product?.id,
+          orderId: (order as any).order_id,
+          amount: (order as any).amount,
+          currency: (order as any).currency,
+          status: (order as any).order_status,
+          shiprocket: (order as any).shiprocket || null,
+          createdAt: (order as any).createdAt,
+          productId: product?._id || product?.id,
           productName: product?.name,
           productImage: product?.galleryImages,
           price: orderItem.price,

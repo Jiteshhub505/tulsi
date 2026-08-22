@@ -108,4 +108,10 @@ if (models.Order) {
   delete (models as any).Order;
 }
 
+// Indexes for fast order lookups
+orderSchema.index({ user_id: 1, createdAt: -1 });
+orderSchema.index({ "shippingDetails.phone": 1 });
+orderSchema.index({ couponCode: 1 });
+orderSchema.index({ order_status: 1 });
+
 export default (models.Order || model("Order", orderSchema, "orders")) as any;

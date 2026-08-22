@@ -153,8 +153,8 @@ export const POST = async (req: Request) => {
             date: new Date(),
           });
         }
-        // 5% Cashback Coins on amount
-        const earnedCoins = Math.round(amount * 0.05);
+        // Random 10 to 20 bonus Tulsi Coins on order
+        const earnedCoins = Math.floor(Math.random() * 11) + 10;
         if (earnedCoins > 0) {
           wallet.balance += earnedCoins;
           wallet.totalEarned = (wallet.totalEarned || 0) + earnedCoins;
@@ -162,7 +162,7 @@ export const POST = async (req: Request) => {
             type: "order_earn",
             amount: earnedCoins,
             orderId,
-            description: `🌿 5% Cashback Coins on Order #${orderId}`,
+            description: `🌿 ${earnedCoins} Bonus Tulsi Coins on Order #${orderId}`,
             date: new Date(),
           });
         }
@@ -178,6 +178,15 @@ export const POST = async (req: Request) => {
         quantity: item.quantity,
       })),
     );
+
+    // Automatically decrement product inventory stock for placed items
+    for (const item of cartItems) {
+      if (item.productId && item.quantity > 0) {
+        await Product.findByIdAndUpdate(item.productId, {
+          $inc: { inStock: -item.quantity },
+        });
+      }
+    }
 
     cart.status = "completed";
     await cart.save();

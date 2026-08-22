@@ -3,7 +3,6 @@
 import Footer from "@/components/landing/Footer";
 import { Header } from "@/components/landing/Header";
 import SiteInitialLoader from "@/components/landing/SiteInitialLoader";
-import GlobalProductImagePreloader from "@/components/landing/GlobalProductImagePreloader";
 import FloatingSpinToWin from "@/components/rewards/FloatingSpinToWin";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
@@ -26,7 +25,6 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <SiteInitialLoader />
-      <GlobalProductImagePreloader />
       <Header />
       {children}
       <FloatingSpinToWin />

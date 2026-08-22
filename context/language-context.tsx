@@ -55,6 +55,7 @@ const uiTranslations: Record<string, Record<Language, string>> = {
   "Ancient Ayurvedic Wisdom": { en: "Ancient Ayurvedic Wisdom", hi: "प्राचीन आयुर्वेदिक ज्ञान" },
   "for Modern Wellness": { en: "for Modern Wellness", hi: "आधुनिक वेलनेस के लिए" },
   "Explore Our Products": { en: "Explore Our Products", hi: "हमारे उत्पाद देखें" },
+  "Best Sellers Subtitle": { en: "Handcrafted 100% natural Ayurvedic formulations for holistic daily health", hi: "पूर्ण स्वास्थ्य और दीर्घायु के लिए 100% प्रामाणिक आयुर्वेदिक उत्पाद" },
   "Get in Touch": { en: "Get in Touch", hi: "संपर्क करें" },
   "Years of Ayurvedic Wisdom": { en: "Years of Ayurvedic Wisdom", hi: "वर्षों का आयुर्वेदिक ज्ञान" },
   "Happy Customers": { en: "Happy Customers", hi: "संतुष्ट ग्राहक" },
@@ -104,10 +105,10 @@ const uiTranslations: Record<string, Record<Language, string>> = {
     en: "Earn cashback coins on every purchase and redeem them directly at checkout.",
     hi: "हर खरीदारी पर कॉइन्स कमाएं और चेकआउट पर सीधे छूट पाएं।",
   },
-  "5% Order Cashback": { en: "5% Order Cashback", hi: "5% ऑर्डर कैशबैक" },
-  "Earn 5 coins automatically for every ₹100 spent on your order.": {
-    en: "Earn 5 coins automatically for every ₹100 spent on your order.",
-    hi: "प्रत्येक ₹100 की खरीदारी पर पाएं 5 तुलसी कॉइन्स।",
+  "Order Bonus Coins": { en: "Order Bonus Coins", hi: "ऑर्डर बोनस कॉइन्स" },
+  "Earn 10 to 20 bonus Tulsi Coins automatically on every completed order.": {
+    en: "Earn 10 to 20 bonus Tulsi Coins automatically on every completed order.",
+    hi: "प्रत्येक ऑर्डर पर 10 से 20 बोनस तुलसी कॉइन्स प्राप्त करें।",
   },
   "Saved to Your Mobile": { en: "Saved to Your Mobile", hi: "मोबाइल नंबर पर सुरक्षित" },
   "Coins are safely stored on your verified phone with zero expiry.": {
@@ -392,7 +393,9 @@ const uiTranslations: Record<string, Record<Language, string>> = {
   "In Stock": { en: "In Stock", hi: "स्टॉक में उपलब्ध" },
   "Select Pack:": { en: "Select Pack:", hi: "पैक चुनें:" },
   "Single Pack (1 Bottle)": { en: "Single Pack (1 Bottle)", hi: "सिंगल पैक (1 बोतल)" },
-  "Pack of 2 (SAVE EXTRA 10%)": { en: "Pack of 2 (SAVE EXTRA 10%)", hi: "2 का पैक (10% अतिरिक्त बचत)" },
+  "Pack of 2 (SAVE EXTRA ₹100)": { en: "Pack of 2 (SAVE EXTRA ₹100)", hi: "2 का पैक (₹100 की अतिरिक्त बचत)" },
+  "Pack of 2 (SAVE EXTRA 10%)": { en: "Pack of 2 (SAVE EXTRA ₹100)", hi: "2 का पैक (₹100 की अतिरिक्त बचत)" },
+  "You save ₹100 extra on this 2-Pack value bundle!": { en: "You save ₹100 extra on this 2-Pack value bundle!", hi: "इस 2-पैक वैल्यू बंडल पर आप ₹100 की अतिरिक्त बचत करते हैं!" },
   "Adding...": { en: "Adding...", hi: "जोड़ा जा रहा है..." },
   "Add to Cart": { en: "Add to Cart", hi: "कार्ट में जोड़ें" },
   "Buy Now": { en: "Buy Now", hi: "अभी खरीदें" },

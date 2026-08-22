@@ -19,6 +19,7 @@ type MonthlyData = { month: string; total: number };
 type Stats = {
   totalAmount: number;
   totalOrders: number;
+  paidOrdersCount?: number;
   failedPayments: number;
   cancelledOrders: number;
   createdOrders: number;
@@ -95,24 +96,25 @@ export default function Dashboard() {
   }
 
   const totalOrdersCount = Number(stats.totalOrders) || 0;
+  const paidCount = stats.paidOrdersCount !== undefined ? Number(stats.paidOrdersCount) : Math.max(totalOrdersCount - Number(stats.failedPayments) - Number(stats.cancelledOrders) - Number(stats.createdOrders), 0);
   const failedCount = Number(stats.failedPayments) || 0;
   const cancelledCount = Number(stats.cancelledOrders) || 0;
   const createdCount = Number(stats.createdOrders) || 0;
-  const successfulPayments = Math.max(totalOrdersCount - failedCount - cancelledCount - createdCount, 0);
 
   const statsCards = [
     { title: "Paid Orders Value", value: `₹${Number(stats.totalAmount).toLocaleString("en-IN")}`, icon: ReceiptIndianRupee, tint: "bg-emerald-50 text-emerald-600" },
     { title: "Total Orders", value: totalOrdersCount, icon: ShoppingCart, tint: "bg-blue-50 text-blue-600" },
-    { title: "Total Paid Orders", value: successfulPayments, icon: ReceiptIndianRupee, tint: "bg-emerald-50 text-emerald-600" },
+    { title: "Total Paid Orders", value: paidCount, icon: ReceiptIndianRupee, tint: "bg-emerald-50 text-emerald-600" },
     { title: "Failed Payments", value: failedCount, icon: XCircle, tint: "bg-red-50 text-red-600" },
     { title: "Cancelled Orders", value: cancelledCount, icon: CreditCard, tint: "bg-amber-50 text-amber-600" },
     { title: "Pending Orders", value: createdCount, icon: CreditCard, tint: "bg-slate-100 text-slate-600" },
   ];
 
   const paymentStatusData = [
-    { name: "Successful", value: successfulPayments, color: "#10b981" },
-    { name: "Failed", value: failedCount, color: "#ef4444" },
+    { name: "Successful", value: paidCount, color: "#10b981" },
+    { name: "Pending", value: createdCount, color: "#f59e0b" },
     { name: "Cancelled", value: cancelledCount, color: "#64748b" },
+    { name: "Failed", value: failedCount, color: "#ef4444" },
   ].filter((i) => i.value > 0);
 
   const hasRevenueData = stats.monthlyRevenue?.length > 0;

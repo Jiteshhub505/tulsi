@@ -82,6 +82,7 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
   } | null>(null);
   const [couponError, setCouponError] = useState("");
   const [placingOrder, setPlacingOrder] = useState(false);
+  const [showCodConfirmModal, setShowCodConfirmModal] = useState(false);
 
   const handleProceedToCheckout = () => {
     const savedPhone = typeof window !== "undefined" ? localStorage.getItem("tulsi_user_phone") : null;
@@ -132,20 +133,15 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
 
   useEffect(() => {
     // Check saved user phone from localStorage
-    const savedPhone = typeof window !== "undefined" ? localStorage.getItem("tulsi_user_phone") : null;
-    if (savedPhone && savedPhone.length === 10) {
-      setShippingDetails((prev) => ({ ...prev, phone: prev.phone || savedPhone }));
-      axios
-        .get(`/api/rewards/wallet?phone=${savedPhone}`)
-        .then((walletRes) => {
-          if (walletRes.data?.success && walletRes.data.wallet) {
-            setUserWallet(walletRes.data.wallet);
-            if (walletRes.data.wallet.balance > 0) {
-              setUseCoins(true);
-            }
-          }
-        })
-        .catch(() => {});
+    const savedPhone =
+      typeof window !== "undefined"
+        ? localStorage.getItem("tulsi_user_phone") || localStorage.getItem("tulsiveda_user_phone")
+        : null;
+    if (savedPhone) {
+      const cleanPhone = savedPhone.replace(/\D/g, "").slice(-10);
+      if (cleanPhone.length === 10) {
+        handlePhoneChange(cleanPhone);
+      }
     }
 
     const handleWalletUpdate = (e: any) => {
@@ -321,133 +317,168 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
   const finalTotal = Math.max(1, subtotalAfterCoupon - coinDiscount + shippingFee);
   const cashbackCoinsEarned = Math.round(finalTotal * 0.05);
 
-  const handlePlaceOrder = async () => {
-    const { fullName, email, phone, street, city, state, pinCode } = shippingDetails;
-    if (!fullName || !email || !phone || !street || !city || !state || !pinCode) {
-      toast.error("Please fill in all shipping details");
-      return;
-    }
-
+  const executePlaceCodOrder = async () => {
+    setShowCodConfirmModal(false);
     setPlacingOrder(true);
     try {
-      if (paymentMethod === "cod") {
-        const response = await axios.post("/api/orders/place-cart", {
-          shippingDetails,
-          paymentMethod: "cod",
-          couponCode: appliedCoupon,
-          coinsToUse: coinDiscount,
-        });
+      const response = await axios.post("/api/orders/place-cart", {
+        shippingDetails,
+        paymentMethod: "cod",
+        couponCode: appliedCoupon,
+        coinsToUse: coinDiscount,
+      });
 
-        if (response.data.success) {
-          setOrderSuccess(response.data.order);
-          setProducts([]);
-          window.dispatchEvent(new Event("cart-updated"));
-          if (userWallet && coinDiscount > 0) {
-            setUserWallet((prev: any) =>
-              prev ? { ...prev, balance: Math.max(0, prev.balance - coinDiscount) } : null
-            );
-          }
-        } else {
-          toast.error(response.data.message || "Failed to place order");
+      if (response.data.success) {
+        setOrderSuccess(response.data.order);
+        setProducts([]);
+        window.dispatchEvent(new Event("cart-updated"));
+        if (userWallet && coinDiscount > 0) {
+          setUserWallet((prev: any) =>
+            prev ? { ...prev, balance: Math.max(0, prev.balance - coinDiscount) } : null
+          );
         }
       } else {
-        // Razorpay flow
-        let response;
-        try {
-          response = await axios.post("/api/orders/initiate-payment", {
-            couponCode: appliedCoupon,
-            coinsToUse: coinDiscount,
-            phone: shippingDetails.phone,
-          });
-        } catch (err: any) {
-          const errMsg = err.response?.data?.message || "Failed to initiate Razorpay payment. Please check API keys or use COD.";
-          toast.error(errMsg);
-          setPlacingOrder(false);
-          return;
-        }
-
-        if (!response.data?.success) {
-          toast.error(response.data?.message || "Failed to initiate payment");
-          setPlacingOrder(false);
-          return;
-        }
-
-        const { keyId, id, amount, currency } = response.data;
-
-        if (typeof window === "undefined" || !(window as any).Razorpay) {
-          toast.error("Razorpay SDK not loaded yet. Please refresh the page or select Cash on Delivery.");
-          setPlacingOrder(false);
-          return;
-        }
-
-        const options = {
-          key: keyId,
-          amount: amount,
-          currency: currency,
-          name: "TulsiVeda",
-          description: "Complete checkout payment",
-          order_id: id,
-          handler: async function (paymentResponse: any) {
-            setPlacingOrder(true);
-            try {
-              const verifyRes = await axios.post("/api/orders/verify-payment", {
-                razorpay_payment_id: paymentResponse.razorpay_payment_id,
-                razorpay_order_id: paymentResponse.razorpay_order_id,
-                razorpay_signature: paymentResponse.razorpay_signature,
-                shippingDetails,
-                paymentMethod: "razorpay",
-                couponCode: appliedCoupon,
-                coinsToUse: coinDiscount,
-              });
-
-              if (verifyRes.data.success) {
-                setOrderSuccess(verifyRes.data.order);
-                setProducts([]);
-                window.dispatchEvent(new Event("cart-updated"));
-                if (userWallet && coinDiscount > 0) {
-                  setUserWallet((prev: any) =>
-                    prev ? { ...prev, balance: Math.max(0, prev.balance - coinDiscount) } : null
-                  );
-                }
-              } else {
-                toast.error(verifyRes.data.message || "Payment verification failed");
-              }
-            } catch (err: any) {
-              console.error(err);
-              toast.error(err.response?.data?.message || "Payment verification failed");
-            } finally {
-              setPlacingOrder(false);
-            }
-          },
-          prefill: {
-            name: fullName,
-            email: email,
-            contact: phone,
-          },
-          theme: {
-            color: "#047857",
-          },
-          modal: {
-            ondismiss: function () {
-              setPlacingOrder(false);
-            },
-          },
-        };
-
-        const razorpay = new (window as any).Razorpay(options);
-        razorpay.on("payment.failed", function (resp: any) {
-          console.error("Razorpay Payment Failed:", resp.error);
-          toast.error(resp.error?.description || "Payment failed or was cancelled.");
-          setPlacingOrder(false);
-        });
+        toast.error(response.data.message || "Failed to place order");
       }
     } catch (error: any) {
       console.error(error);
       toast.error(error.response?.data?.message || "Failed to place order. Please try again.");
     } finally {
-      if (paymentMethod === "cod") {
+      setPlacingOrder(false);
+    }
+  };
+
+  const handlePlaceOrder = async () => {
+    const { fullName, email, phone, street, city, state, pinCode } = shippingDetails;
+    
+    if (!fullName || !fullName.trim()) {
+      toast.error("Please enter your Full Name in shipping details");
+      return;
+    }
+    const cleanPhone = phone ? phone.replace(/\D/g, "").slice(-10) : "";
+    if (cleanPhone.length !== 10) {
+      toast.error("Please enter a valid 10-digit Phone Number");
+      return;
+    }
+    if (!street || !street.trim()) {
+      toast.error("Please enter your Street Address");
+      return;
+    }
+    if (!city || !city.trim()) {
+      toast.error("Please enter your City");
+      return;
+    }
+    if (!state || !state.trim()) {
+      toast.error("Please select your State");
+      return;
+    }
+    if (!pinCode || pinCode.trim().length !== 6) {
+      toast.error("Please enter a valid 6-digit Pincode");
+      return;
+    }
+
+    if (paymentMethod === "cod") {
+      setShowCodConfirmModal(true);
+      return;
+    }
+
+    setPlacingOrder(true);
+    try {
+      // Razorpay flow
+      let response;
+      try {
+        response = await axios.post("/api/orders/initiate-payment", {
+          couponCode: appliedCoupon,
+          coinsToUse: coinDiscount,
+          phone: shippingDetails.phone,
+        });
+      } catch (err: any) {
+        const errMsg = err.response?.data?.message || "Failed to initiate Razorpay payment. Please check API keys or use COD.";
+        toast.error(errMsg);
         setPlacingOrder(false);
+        return;
       }
+
+      if (!response.data?.success) {
+        toast.error(response.data?.message || "Failed to initiate payment");
+        setPlacingOrder(false);
+        return;
+      }
+
+      const { keyId, id, amount, currency } = response.data;
+
+      if (typeof window === "undefined" || !(window as any).Razorpay) {
+        toast.error("Razorpay SDK not loaded yet. Please refresh the page or select Cash on Delivery.");
+        setPlacingOrder(false);
+        return;
+      }
+
+      const options = {
+        key: keyId,
+        amount: amount,
+        currency: currency,
+        name: "TulsiVeda",
+        description: "Complete checkout payment",
+        order_id: id,
+        handler: async function (paymentResponse: any) {
+          setPlacingOrder(true);
+          try {
+            const verifyRes = await axios.post("/api/orders/verify-payment", {
+              razorpay_payment_id: paymentResponse.razorpay_payment_id,
+              razorpay_order_id: paymentResponse.razorpay_order_id,
+              razorpay_signature: paymentResponse.razorpay_signature,
+              shippingDetails,
+              paymentMethod: "razorpay",
+              couponCode: appliedCoupon,
+              coinsToUse: coinDiscount,
+            });
+
+            if (verifyRes.data.success) {
+              setOrderSuccess(verifyRes.data.order);
+              setProducts([]);
+              window.dispatchEvent(new Event("cart-updated"));
+              if (userWallet && coinDiscount > 0) {
+                setUserWallet((prev: any) =>
+                  prev ? { ...prev, balance: Math.max(0, prev.balance - coinDiscount) } : null
+                );
+              }
+            } else {
+              toast.error(verifyRes.data.message || "Payment verification failed");
+            }
+          } catch (err: any) {
+            console.error(err);
+            toast.error(err.response?.data?.message || "Payment verification failed");
+          } finally {
+            setPlacingOrder(false);
+          }
+        },
+        prefill: {
+          name: fullName,
+          email: email,
+          contact: phone,
+        },
+        theme: {
+          color: "#047857",
+        },
+        modal: {
+          ondismiss: function () {
+            setPlacingOrder(false);
+          },
+        },
+      };
+
+      const razorpay = new (window as any).Razorpay(options);
+      razorpay.on("payment.failed", function (resp: any) {
+        console.error("Razorpay Payment Failed:", resp.error);
+        toast.error(resp.error?.description || "Payment failed or was cancelled.");
+        setPlacingOrder(false);
+      });
+      razorpay.open();
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.response?.data?.message || "Failed to place order. Please try again.");
+    } finally {
+      setPlacingOrder(false);
     }
   };
 
@@ -590,7 +621,7 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
           <h2 className="text-2xl font-bold text-stone-900">Checkout</h2>
         </div>
 
-        <form onSubmit={(e) => { e.preventDefault(); handlePlaceOrder(); }} className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+        <form noValidate onSubmit={(e) => { e.preventDefault(); handlePlaceOrder(); }} className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
           {/* Left: Shipping details & Payment options */}
           <div className="lg:col-span-2 space-y-8">
             {/* Shipping Details */}
@@ -612,9 +643,13 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
                 <div className="flex items-center justify-between">
                   <label className="text-xs font-bold text-emerald-950 flex items-center gap-1.5">
                     <span>Mobile Number</span>
-                    <span className="text-[10px] font-medium text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">
-                      Instant 1-Click Auto-Fill
-                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handlePhoneChange(shippingDetails.phone)}
+                      className="text-[10px] font-bold text-emerald-800 bg-emerald-100 hover:bg-emerald-200 border border-emerald-300 px-2.5 py-0.5 rounded-full cursor-pointer transition flex items-center gap-1"
+                    >
+                      ⚡ Instant 1-Click Auto-Fill
+                    </button>
                   </label>
                   {fetchingAddress && (
                     <span className="text-xs text-emerald-800 flex items-center gap-1 font-medium">
@@ -878,11 +913,12 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
               </ul>
 
               <div className="p-2.5 bg-emerald-50 rounded-xl border border-emerald-200 text-center text-xs font-bold text-emerald-900 flex items-center justify-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-emerald-700" /> Earn {cashbackCoinsEarned} Tulsi Coins (5% Cashback) on this order!
+                <Sparkles className="w-3.5 h-3.5 text-emerald-700" /> Earn 10 to 20 Tulsi Coins on this order!
               </div>
 
               <button
-                type="submit"
+                type="button"
+                onClick={handlePlaceOrder}
                 disabled={placingOrder}
                 className="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-4 rounded-xl transition shadow-md disabled:bg-stone-300 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer text-sm"
               >
@@ -918,6 +954,59 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
             </div>
           </div>
         </form>
+
+        {showCodConfirmModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+            <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl space-y-5 border border-stone-100">
+              <div className="flex items-center gap-3 border-b border-stone-100 pb-4">
+                <div className="size-12 rounded-2xl bg-amber-100/80 text-amber-800 flex items-center justify-center font-bold text-xl shrink-0">
+                  📦
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-stone-900 text-lg sm:text-xl">Confirm Cash on Delivery</h3>
+                  <p className="text-xs text-stone-500 font-medium">Please confirm your order details below</p>
+                </div>
+              </div>
+
+              <div className="bg-stone-50 rounded-2xl p-4 space-y-3 text-xs sm:text-sm">
+                <div className="flex justify-between items-center text-stone-600">
+                  <span>Recipient:</span>
+                  <span className="font-bold text-stone-900 text-right max-w-[200px] truncate">{shippingDetails.fullName}</span>
+                </div>
+                <p className="text-stone-500 text-right text-xs leading-tight">
+                  {shippingDetails.street}, {shippingDetails.city}, {shippingDetails.state} - {shippingDetails.pinCode}
+                </p>
+                <p className="text-stone-500 text-right text-xs font-mono">📱 +91 {shippingDetails.phone}</p>
+                <hr className="border-stone-200/80" />
+                <div className="flex justify-between items-center">
+                  <span className="font-semibold text-stone-700">Payable on Delivery:</span>
+                  <span className="font-extrabold text-emerald-800 text-base sm:text-lg">₹{finalTotal.toLocaleString()}</span>
+                </div>
+                <p className="text-[11px] text-amber-900 font-medium bg-amber-50 p-2.5 rounded-xl border border-amber-200/60 leading-snug">
+                  💵 You will pay exact cash to the delivery agent when your package arrives.
+                </p>
+              </div>
+
+              <div className="flex gap-3 pt-1">
+                <button
+                  type="button"
+                  onClick={() => setShowCodConfirmModal(false)}
+                  className="flex-1 py-3.5 px-4 rounded-xl border border-stone-300 text-stone-700 font-bold text-xs sm:text-sm hover:bg-stone-100 transition cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={executePlaceCodOrder}
+                  disabled={placingOrder}
+                  className="flex-1 py-3.5 px-4 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  {placingOrder ? "Placing..." : "Confirm & Place Order"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }

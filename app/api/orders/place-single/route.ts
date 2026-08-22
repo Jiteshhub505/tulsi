@@ -39,6 +39,11 @@ export async function POST(req: Request) {
       quantity: 1,
     });
 
+    // Automatically decrement product inventory stock
+    await Product.findByIdAndUpdate(productId, {
+      $inc: { inStock: -1 },
+    });
+
     return Response.json({
       order,
       success: true,

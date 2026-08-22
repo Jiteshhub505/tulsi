@@ -11,4 +11,8 @@ const cartItemSchema = new Schema(
   { ...sharedOptions, _id: false },
 );
 
+// Indexes for fast cart item lookups
+cartItemSchema.index({ cartId: 1 });
+cartItemSchema.index({ cartId: 1, productId: 1 });
+
 export default models.CartItem || model("CartItem", cartItemSchema, "cartItems");

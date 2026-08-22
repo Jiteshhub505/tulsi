@@ -13,10 +13,10 @@ const prefix = "/admin-1234567-edtyufhjewdkj-5678";
 
 const items: NavItem[] = [
   { title: "Dashboard", href: `${prefix}`, icon: LayoutDashboard },
-  { title: "Add Product", href: `${prefix}/addproduct`, icon: ShoppingBag },
+  { title: "Orders", href: `${prefix}/orders`, icon: Receipt },
   { title: "Inventory", href: `${prefix}/inventory`, icon: Store },
   { title: "Coupons", href: `${prefix}/coupons`, icon: Ticket },
-  { title: "Orders", href: `${prefix}/orders`, icon: Receipt },
+  { title: "Add Product", href: `${prefix}/addproduct`, icon: ShoppingBag },
   { title: "Numbers", href: `${prefix}/numbers`, icon: Smartphone },
 ];
 
@@ -28,7 +28,7 @@ function NavLinks({
   onNavigate?: () => void;
 }) {
   return (
-    <nav className="px-3 py-4 space-y-1">
+    <nav className="px-3.5 py-5 space-y-2">
       {items.map((item) => {
         const active = pathname === item.href;
         const Icon = item.icon;
@@ -38,11 +38,13 @@ function NavLinks({
             href={item.href}
             onClick={onNavigate}
             className={cn(
-              "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition",
-              active ? "bg-emerald-50 text-emerald-700" : "text-slate-600 hover:bg-slate-100",
+              "flex items-center gap-3.5 rounded-xl px-4 py-3 text-base font-semibold transition cursor-pointer",
+              active
+                ? "bg-emerald-50 text-emerald-700 shadow-xs"
+                : "text-slate-700 hover:bg-slate-100 hover:text-slate-900"
             )}
           >
-            <Icon className="h-4 w-4" />
+            <Icon className="h-5 w-5 shrink-0" />
             {item.title}
           </Link>
         );
@@ -107,9 +109,9 @@ const AdminSidebar = () => {
               localStorage.removeItem("admin_auth");
               window.location.reload();
             }}
-            className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition text-red-650 hover:bg-red-50 cursor-pointer"
+            className="flex w-full items-center gap-3.5 rounded-xl px-4 py-3 text-base font-semibold transition text-red-600 hover:bg-red-50 cursor-pointer"
           >
-            <LogOut className="h-4 w-4" />
+            <LogOut className="h-5 w-5 shrink-0" />
             Logout
           </button>
         </div>

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/db/mongoose";
-import { Order, OrderItem } from "@/db/models";
+import { Order, OrderItem, Product } from "@/db/models";
 
 export async function DELETE(req: Request) {
   await connectDB();
@@ -24,6 +24,18 @@ export async function DELETE(req: Request) {
         { success: false, message: "Order not found" },
         { status: 404 }
       );
+    }
+
+    const orderItems = await OrderItem.find({
+      $or: [{ order_id: orderId }, { order_id: deletedOrder.order_id }],
+    });
+
+    for (const item of orderItems) {
+      if (item.product_id && item.quantity > 0) {
+        await Product.findByIdAndUpdate(item.product_id, {
+          $inc: { inStock: item.quantity },
+        });
+      }
     }
 
     await OrderItem.deleteMany({

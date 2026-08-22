@@ -56,4 +56,9 @@ const productSchema = new Schema(
   { ...sharedOptions, _id: false },
 );
 
+// Indexes for fast product listing, filtering & lookup
+productSchema.index({ category: 1 });
+productSchema.index({ isBestSeller: -1 });
+productSchema.index({ category: 1, isBestSeller: -1 });
+
 export default models.Product || model("Product", productSchema, "products");

@@ -5,7 +5,11 @@ export const GET = async () => {
   await connectDB();
 
   try {
-    const response = await Product.find({});
+    // Only select fields needed by admin inventory/product list UI
+    const response = await Product.find({})
+      .select("name nameHi category price discountPrice inStock galleryImages isBestSeller medicineType createdAt")
+      .lean();
+
     return Response.json(
       {
         response,

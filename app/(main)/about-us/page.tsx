@@ -33,7 +33,7 @@ const sourcingRegions = [
     herb: "Grade-A Purified Shilajit Resin (60% Fulvic Acid)",
     herbHi: "ग्रेड-ए शुद्ध शिलाजीत राल (60% फुल्विक एसिड)",
     desc: "Naturally exuded from pristine Himalayan rock fissures during summer heat, packed with 84+ ionic trace minerals for deep cellular energy and stamina.",
-    image: "/benefits/benefit_stamina.jpg",
+    image: "/benefits/benefit_stamina.webp",
     badge: "100% Wild Sourced"
   },
   {
@@ -44,7 +44,7 @@ const sourcingRegions = [
     herb: "Organic Ashwagandha KSM-66 & Safed Musli",
     herbHi: "जैविक अश्वगंधा KSM-66 और सफेद मूसली",
     desc: "Cultivated in mineral-rich arid soils that naturally stimulate high concentrations of active withanolides and saponins for maximum stamina and vitality.",
-    image: "/benefits/ved_male_power.jpg",
+    image: "/benefits/ved_male_power.webp",
     badge: "Grade-A Potency"
   },
   {
@@ -55,7 +55,7 @@ const sourcingRegions = [
     herb: "Nirgundi, Rasna & Surjan Siri",
     herbHi: "निर्गुंडी, रास्ना और सुरंजान शीरीं",
     desc: "Harvested from dense tropical forest zones with high bioactive transdermal properties, specifically extracted for joint lubrication, warmth, and cartilage comfort.",
-    image: "/benefits/pain_warmth.jpg",
+    image: "/benefits/pain_warmth.webp",
     badge: "Forest Wildcrafted"
   },
   {
@@ -66,7 +66,7 @@ const sourcingRegions = [
     herb: "Rama & Krishna Holy Tulsi (Ocimum Sanctum)",
     herbHi: "रामा और कृष्णा पवित्र तुलसी (ऑसीमम सैंक्टम)",
     desc: "Fresh, unadulterated holy basil leaves hand-plucked at dawn to preserve essential volatile oils like Eugenol for immune defense and respiratory vigor.",
-    image: "/benefits/how_to_use_universal.jpg",
+    image: "/benefits/how_to_use_universal.webp",
     badge: "Pure Botanical Source"
   }
 ];
@@ -137,10 +137,10 @@ export default function AboutUsPage() {
       
       {/* ---------------- 1. MINIMALIST CLEAN HERO ---------------- */}
       <section className="relative py-16 sm:py-24 2xl:py-32 px-4 sm:px-6 lg:px-8 2xl:px-12 border-b border-stone-200/80 bg-stone-50/50">
-        <div className="max-w-4xl 2xl:max-w-6xl mx-auto text-center space-y-6 2xl:space-y-8">
+        <div className="max-w-5xl 2xl:max-w-7xl mx-auto text-center space-y-6 2xl:space-y-10">
           
-          <div className="inline-flex items-center gap-2 bg-white border border-stone-200 text-stone-800 text-xs 2xl:text-sm font-semibold px-4 2xl:px-5 py-1.5 2xl:py-2 rounded-full shadow-2xs">
-            <Leaf size={14} className="text-emerald-700 2xl:w-4 2xl:h-4" />
+          <div className="inline-flex items-center gap-2 bg-white border border-stone-200 text-stone-800 text-xs 2xl:text-base font-semibold px-4 2xl:px-6 py-1.5 2xl:py-2.5 rounded-full shadow-2xs">
+            <Leaf size={14} className="text-emerald-700 2xl:w-5 2xl:h-5" />
             <span className="tracking-wide uppercase">
               {language === "hi" ? "प्रामाणिक आयुष-प्रमाणित आयुर्वेद" : "AYUSH-Certified Classical Ayurveda"}
             </span>
@@ -154,7 +154,7 @@ export default function AboutUsPage() {
             )}
           </h1>
           
-          <p className="text-base sm:text-lg 2xl:text-2xl text-stone-600 max-w-2xl 2xl:max-w-4xl mx-auto leading-relaxed font-normal">
+          <p className="text-base sm:text-lg 2xl:text-2xl text-stone-600 max-w-3xl 2xl:max-w-5xl mx-auto leading-relaxed font-normal">
             {language === "hi" 
               ? "तुलसीवेद में हम 5,000 वर्षों के शास्त्रीय ग्रंथों के ज्ञान को आधुनिक वैज्ञानिक परीक्षणों के साथ लाते हैं। 100% शुद्ध जड़ी-बूटियाँ, शून्य मिलावट और प्रमाणित प्रभाव।"
               : "At Tulsi Veda, we bridge 5,000 years of classical Ayurvedic heritage with modern standardized botanical science. Zero synthetic chemicals, 100% pure Grade-A botanical extracts."}
@@ -163,9 +163,9 @@ export default function AboutUsPage() {
           {/* Action buttons */}
           <div className="flex flex-col sm:flex-row gap-3.5 2xl:gap-5 justify-center items-center pt-2">
             <Link href="/shop" className="w-full sm:w-auto">
-              <button className="w-full sm:w-auto bg-stone-900 hover:bg-black text-white font-bold px-8 2xl:px-10 py-3.5 2xl:py-4 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer text-sm sm:text-base 2xl:text-lg">
+              <button className="w-full sm:w-auto bg-stone-900 hover:bg-black text-white font-bold px-8 2xl:px-12 py-3.5 2xl:py-4.5 rounded-xl 2xl:rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer text-sm sm:text-base 2xl:text-xl">
                 <span>{language === "hi" ? "सभी उत्पाद देखें" : "Explore Formulations"}</span>
-                <ArrowRight size={16} className="2xl:w-5 2xl:h-5" />
+                <ArrowRight size={16} className="2xl:w-6 2xl:h-6" />
               </button>
             </Link>
             <a 
@@ -174,30 +174,30 @@ export default function AboutUsPage() {
               rel="noopener noreferrer"
               className="w-full sm:w-auto"
             >
-              <button className="w-full sm:w-auto bg-white hover:bg-stone-50 border border-stone-300 text-stone-900 font-bold px-8 2xl:px-10 py-3.5 2xl:py-4 rounded-xl transition-all shadow-2xs flex items-center justify-center gap-2 cursor-pointer text-sm sm:text-base 2xl:text-lg">
-                <MessageCircle size={16} className="text-emerald-700 2xl:w-5 2xl:h-5" />
+              <button className="w-full sm:w-auto bg-white hover:bg-stone-50 border border-stone-300 text-stone-900 font-bold px-8 2xl:px-12 py-3.5 2xl:py-4.5 rounded-xl 2xl:rounded-2xl transition-all shadow-2xs flex items-center justify-center gap-2 cursor-pointer text-sm sm:text-base 2xl:text-xl">
+                <MessageCircle size={16} className="text-emerald-700 2xl:w-6 2xl:h-6" />
                 <span>{language === "hi" ? "मुफ्त डॉक्टर परामर्श" : "Free Vaidya Consultation"}</span>
               </button>
             </a>
           </div>
 
           {/* Clean Stats Row */}
-          <div className="pt-10 2xl:pt-14 grid grid-cols-2 md:grid-cols-4 gap-4 2xl:gap-8 max-w-3xl 2xl:max-w-5xl mx-auto text-center border-t border-stone-200">
-            <div className="p-3 2xl:p-4">
+          <div className="pt-10 2xl:pt-16 grid grid-cols-2 md:grid-cols-4 gap-4 2xl:gap-8 max-w-4xl 2xl:max-w-6xl mx-auto text-center border-t border-stone-200">
+            <div className="p-3 2xl:p-5">
               <div className="text-2xl sm:text-3xl 2xl:text-5xl font-black text-stone-950">5,000+</div>
-              <div className="text-xs 2xl:text-sm text-stone-500 font-medium mt-1">{language === "hi" ? "वर्षों की परंपरा" : "Years Vedic Heritage"}</div>
+              <div className="text-xs 2xl:text-base text-stone-500 font-semibold mt-1">{language === "hi" ? "वर्षों की परंपरा" : "Years Vedic Heritage"}</div>
             </div>
-            <div className="p-3 2xl:p-4">
+            <div className="p-3 2xl:p-5">
               <div className="text-2xl sm:text-3xl 2xl:text-5xl font-black text-stone-950">2.5 Lakh+</div>
-              <div className="text-xs 2xl:text-sm text-stone-500 font-medium mt-1">{language === "hi" ? "संतुष्ट ग्राहक" : "Happy Families"}</div>
+              <div className="text-xs 2xl:text-base text-stone-500 font-semibold mt-1">{language === "hi" ? "संतुष्ट ग्राहक" : "Happy Families"}</div>
             </div>
-            <div className="p-3 2xl:p-4">
+            <div className="p-3 2xl:p-5">
               <div className="text-2xl sm:text-3xl 2xl:text-5xl font-black text-emerald-800">100%</div>
-              <div className="text-xs 2xl:text-sm text-stone-500 font-medium mt-1">{language === "hi" ? "लैब टेस्टेड शुद्धता" : "Heavy Metal Tested"}</div>
+              <div className="text-xs 2xl:text-base text-stone-500 font-semibold mt-1">{language === "hi" ? "लैब टेस्टेड शुद्धता" : "Heavy Metal Tested"}</div>
             </div>
-            <div className="p-3 2xl:p-4">
+            <div className="p-3 2xl:p-5">
               <div className="text-2xl sm:text-3xl 2xl:text-5xl font-black text-stone-950">AYUSH</div>
-              <div className="text-xs 2xl:text-sm text-stone-500 font-medium mt-1">{language === "hi" ? "मंत्रालय स्वीकृत" : "Govt. Approved GMP"}</div>
+              <div className="text-xs 2xl:text-base text-stone-500 font-semibold mt-1">{language === "hi" ? "मंत्रालय स्वीकृत" : "Govt. Approved GMP"}</div>
             </div>
           </div>
 
@@ -205,12 +205,12 @@ export default function AboutUsPage() {
       </section>
 
       {/* ---------------- 2. OUR STORY & FOUNDING MANIFESTO ---------------- */}
-      <section className="py-16 sm:py-24 2xl:py-32 px-4 sm:px-6 lg:px-8 2xl:px-12 max-w-6xl 2xl:max-w-screen-2xl mx-auto">
+      <section className="py-16 sm:py-24 2xl:py-32 px-4 sm:px-6 lg:px-8 2xl:px-12 max-w-7xl 2xl:max-w-[1536px] mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 2xl:gap-20 items-center">
           
           {/* Left Column: Story Text */}
           <div className="lg:col-span-7 space-y-6 2xl:space-y-8">
-            <span className="text-xs 2xl:text-sm font-black uppercase tracking-widest text-emerald-800 bg-emerald-50 border border-emerald-200/60 px-3 2xl:px-4 py-1 rounded-full">
+            <span className="text-xs 2xl:text-sm font-black uppercase tracking-widest text-emerald-800 bg-emerald-50 border border-emerald-200/60 px-3.5 2xl:px-4 py-1.5 rounded-full">
               {language === "hi" ? "हमारा संकल्प" : "OUR PHILOSOPHY"}
             </span>
 
@@ -265,7 +265,7 @@ export default function AboutUsPage() {
           <div className="lg:col-span-5">
             <div className="relative aspect-4/3 sm:aspect-square 2xl:aspect-4/3 rounded-3xl overflow-hidden shadow-md border border-stone-200 bg-stone-100">
               <Image
-                src="/benefits/how_to_use_universal.jpg"
+                src="/benefits/how_to_use_universal.webp"
                 alt="Tulsi Veda Herbal Regimen"
                 fill
                 sizes="(max-width: 1024px) 100vw, (max-width: 1536px) 40vw, 600px"
@@ -279,9 +279,9 @@ export default function AboutUsPage() {
 
       {/* ---------------- 3. BOTANICAL SOURCING LOCATIONS ---------------- */}
       <section className="py-16 sm:py-24 2xl:py-32 px-4 sm:px-6 lg:px-8 2xl:px-12 bg-stone-50/70 border-y border-stone-200/80">
-        <div className="max-w-6xl 2xl:max-w-screen-2xl mx-auto space-y-12 2xl:space-y-16">
+        <div className="max-w-7xl 2xl:max-w-[1536px] mx-auto space-y-12 2xl:space-y-16">
           
-          <div className="text-center max-w-2xl 2xl:max-w-3xl mx-auto space-y-2">
+          <div className="text-center max-w-2xl 2xl:max-w-4xl mx-auto space-y-2">
             <span className="text-xs 2xl:text-sm font-black uppercase tracking-widest text-emerald-800 bg-emerald-100/70 px-3.5 py-1 rounded-full">
               {language === "hi" ? "कच्चे माल के स्रोत" : "BOTANICAL ORIGINS"}
             </span>
@@ -294,7 +294,7 @@ export default function AboutUsPage() {
           </div>
 
           {/* Clean Region Switcher Tabs */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 2xl:gap-5">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 2xl:gap-6">
             {sourcingRegions.map((region) => (
               <button
                 key={region.id}
@@ -354,10 +354,10 @@ export default function AboutUsPage() {
       </section>
 
       {/* ---------------- 4. INTERACTIVE HEALTH GUIDE ---------------- */}
-      <section className="py-16 sm:py-24 2xl:py-32 px-4 sm:px-6 lg:px-8 2xl:px-12 max-w-5xl 2xl:max-w-6xl mx-auto">
+      <section className="py-16 sm:py-24 2xl:py-32 px-4 sm:px-6 lg:px-8 2xl:px-12 max-w-6xl 2xl:max-w-[1536px] mx-auto">
         <div className="bg-white border border-stone-200 rounded-3xl p-6 sm:p-12 2xl:p-16 shadow-sm space-y-8 2xl:space-y-10">
           
-          <div className="text-center max-w-xl 2xl:max-w-2xl mx-auto space-y-2">
+          <div className="text-center max-w-xl 2xl:max-w-3xl mx-auto space-y-2">
             <span className="text-xs 2xl:text-sm font-black uppercase tracking-widest text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
               {language === "hi" ? "स्वास्थ्य गाइड" : "INTERACTIVE HEALTH GUIDE"}
             </span>
@@ -369,7 +369,7 @@ export default function AboutUsPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 2xl:gap-4 max-w-3xl 2xl:max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 2xl:gap-5 max-w-4xl 2xl:max-w-5xl mx-auto">
             {healthGoals.map((opt, idx) => (
               <button
                 key={idx}
@@ -380,23 +380,23 @@ export default function AboutUsPage() {
                     : "bg-stone-50/70 hover:bg-stone-100 text-stone-800 border-stone-200"
                 }`}
               >
-                <span className="text-xs sm:text-sm 2xl:text-base font-bold">
+                <span className="text-xs sm:text-sm 2xl:text-lg font-bold">
                   {language === "hi" ? opt.labelHi : opt.label}
                 </span>
-                {selectedGoal?.label === opt.label && <Check size={16} className="shrink-0 2xl:w-5 2xl:h-5" />}
+                {selectedGoal?.label === opt.label && <Check size={16} className="shrink-0 2xl:w-6 2xl:h-6" />}
               </button>
             ))}
           </div>
 
           {selectedGoal && (
-            <div className="bg-stone-50 border border-stone-200 rounded-2xl p-6 2xl:p-8 text-center max-w-xl 2xl:max-w-2xl mx-auto space-y-4">
+            <div className="bg-stone-50 border border-stone-200 rounded-2xl p-6 2xl:p-10 text-center max-w-2xl 2xl:max-w-3xl mx-auto space-y-4">
               <div className="inline-flex items-center gap-1.5 text-xs 2xl:text-sm font-bold uppercase text-emerald-900 bg-emerald-100 px-3 py-1 rounded-full">
                 <Sparkles size={13} /> {language === "hi" ? "अनुशंसित फॉर्मूलेशन" : "Recommended Formulation"}
               </div>
               <h4 className="text-xl sm:text-2xl 2xl:text-3xl font-black text-stone-950">
                 {selectedGoal.rec}
               </h4>
-              <p className="text-xs sm:text-sm 2xl:text-base text-stone-600">
+              <p className="text-xs sm:text-sm 2xl:text-lg text-stone-600">
                 {language === "hi"
                   ? "यह शास्त्रीय योग शरीर के दोषों को संतुलित कर प्राकृतिक रूप से स्वास्थ्य व ऊर्जा प्रदान करता है।"
                   : "Targeted botanical formulation designed for optimal bioavailability and deep restorative relief."}
@@ -424,8 +424,8 @@ export default function AboutUsPage() {
       </section>
 
       {/* ---------------- 5. 5-STEP STANDARDIZATION PROCESS ---------------- */}
-      <section className="py-16 sm:py-24 2xl:py-32 px-4 sm:px-6 lg:px-8 2xl:px-12 max-w-6xl 2xl:max-w-screen-2xl mx-auto space-y-12 2xl:space-y-16">
-        <div className="text-center max-w-2xl 2xl:max-w-3xl mx-auto space-y-2">
+      <section className="py-16 sm:py-24 2xl:py-32 px-4 sm:px-6 lg:px-8 2xl:px-12 max-w-7xl 2xl:max-w-[1536px] mx-auto space-y-12 2xl:space-y-16">
+        <div className="text-center max-w-2xl 2xl:max-w-4xl mx-auto space-y-2">
           <span className="text-xs 2xl:text-sm font-black uppercase tracking-widest text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
             {language === "hi" ? "गुणवत्ता मानक" : "QUALITY STANDARDS"}
           </span>
@@ -471,7 +471,7 @@ export default function AboutUsPage() {
       </section>
 
       {/* ---------------- 6. FREQUENTLY ASKED QUESTIONS ---------------- */}
-      <section className="py-16 sm:py-24 2xl:py-32 px-4 sm:px-6 lg:px-8 2xl:px-12 max-w-4xl 2xl:max-w-5xl mx-auto space-y-8 2xl:space-y-10">
+      <section className="py-16 sm:py-24 2xl:py-32 px-4 sm:px-6 lg:px-8 2xl:px-12 max-w-5xl 2xl:max-w-6xl mx-auto space-y-8 2xl:space-y-10">
         <div className="text-center space-y-2">
           <span className="text-xs 2xl:text-sm font-black uppercase tracking-widest text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
             {language === "hi" ? "सामान्य प्रश्न" : "FAQS"}
@@ -505,7 +505,7 @@ export default function AboutUsPage() {
       </section>
 
       {/* ---------------- 7. CLEAN PROFESSIONAL BOTTOM CTA ---------------- */}
-      <section className="py-12 px-4 sm:px-6 max-w-4xl 2xl:max-w-5xl mx-auto text-center">
+      <section className="py-12 px-4 sm:px-6 max-w-5xl 2xl:max-w-6xl mx-auto text-center">
         <div className="bg-stone-900 text-white rounded-3xl p-8 sm:p-12 2xl:p-16 shadow-md space-y-6 2xl:space-y-8">
           <h2 className="text-2xl sm:text-4xl 2xl:text-5xl font-black tracking-tight text-white">
             {language === "hi" ? "प्राकृतिक स्वास्थ्य की ओर पहला कदम बढ़ाएं" : "Start Your Ayurvedic Wellness Journey"}
