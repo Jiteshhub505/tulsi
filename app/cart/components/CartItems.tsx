@@ -1,5 +1,5 @@
 "use client";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState, useRef } from "react";
 import { ProductType } from "../page";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -13,7 +13,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import PlaceOrderButton from "@/components/payment/PlaceOrderButton";
 import LoginModal from "@/components/landing/LoginModal";
 import toast from "react-hot-toast";
-import { trackPurchase } from "@/lib/gtm";
+import { trackPurchase, trackViewCart, trackBeginCheckout } from "@/lib/gtm";
 
 type PropType = {
   loading: boolean;
@@ -36,6 +36,9 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session, status } = useSession();
+
+  const hasTrackedCartView = useRef(false);
+  const hasTrackedBeginCheckout = useRef(false);
 
   // Checkout flow states
   const [isCheckingOut, setIsCheckingOut] = useState(false);
@@ -85,7 +88,55 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
   const [placingOrder, setPlacingOrder] = useState(false);
   const [showCodConfirmModal, setShowCodConfirmModal] = useState(false);
 
+  // 1️⃣ Calculate effective unit price & line total (10% OFF for 2+ quantity)
+  const getItemUnitPrice = (p: ProductType) => {
+    const base = p.discountPrice ?? p.price;
+    return p.quantity >= 2 ? Math.round(base * 0.9) : base;
+  };
+
+  const getItemLineTotal = (p: ProductType) => {
+    return getItemUnitPrice(p) * p.quantity;
+  };
+
+  // Price calculations
+  const totalItems = products.reduce((acc, item) => acc + item.quantity, 0);
+  const subtotal = products.reduce((sum, p) => sum + getItemLineTotal(p), 0);
+
+  // Multi-buy savings total (10% off on items with quantity >= 2)
+  const multiBuySavings = products.reduce((sum, p) => {
+    if (p.quantity >= 2) {
+      const base = p.discountPrice ?? p.price;
+      return sum + (base * p.quantity - getItemLineTotal(p));
+    }
+    return sum;
+  }, 0);
+
+  // Total discount (catalog discount)
+  const totalDiscount = products.reduce((sum, p) => {
+    if (!p.discountPrice) return sum;
+    return sum + (p.price - p.discountPrice) * p.quantity;
+  }, 0);
+
+  const total = subtotal;
+
+  const couponDiscount = appliedCouponData
+    ? appliedCouponData.discountAmount
+    : appliedCoupon === "KRISH10"
+    ? Math.round(subtotal * 0.1)
+    : 0;
+  const subtotalAfterCoupon = subtotal - couponDiscount;
+
+  const maxCoinsApplicable = Math.min(
+    userWallet?.balance || 0,
+    Math.floor(subtotalAfterCoupon * 0.5)
+  );
+  const coinDiscount = useCoins ? maxCoinsApplicable : 0;
+  const shippingFee = paymentMethod === "cod" ? 50 : 0;
+  const finalTotal = Math.max(1, subtotalAfterCoupon - coinDiscount + shippingFee);
+  const cashbackCoinsEarned = Math.round(finalTotal * 0.05);
+
   const handleProceedToCheckout = () => {
+    trackBeginCheckout(products, total);
     const savedPhone = typeof window !== "undefined" ? localStorage.getItem("tulsi_user_phone") : null;
     const cleanPhone = savedPhone?.replace(/\D/g, "").slice(-10) || "";
     if (cleanPhone.length !== 10) {
@@ -97,6 +148,7 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
   };
 
   const handleLoginSuccess = (wallet: any) => {
+    trackBeginCheckout(products, total);
     const savedPhone = typeof window !== "undefined" ? localStorage.getItem("tulsi_user_phone") : null;
     const cleanPhone = wallet?.phone || savedPhone?.replace(/\D/g, "").slice(-10) || "";
     if (cleanPhone.length === 10) {
@@ -111,8 +163,20 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
     setIsCheckingOut(true);
   };
 
+  // Track view_cart when products are loaded
+  useEffect(() => {
+    if (!loading && products.length > 0 && !hasTrackedCartView.current) {
+      hasTrackedCartView.current = true;
+      trackViewCart(products, total);
+    }
+  }, [loading, products, total]);
+
   useEffect(() => {
     if (searchParams.get("checkout") === "true") {
+      if (products.length > 0 && !hasTrackedBeginCheckout.current) {
+        hasTrackedBeginCheckout.current = true;
+        trackBeginCheckout(products, total);
+      }
       const savedPhone = typeof window !== "undefined" ? localStorage.getItem("tulsi_user_phone") : null;
       const cleanPhone = savedPhone?.replace(/\D/g, "").slice(-10) || "";
       if (cleanPhone.length !== 10) {
@@ -121,7 +185,7 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
         setIsCheckingOut(true);
       }
     }
-  }, [searchParams]);
+  }, [searchParams, products, total]);
 
   useEffect(() => {
     if (!document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]')) {
@@ -270,53 +334,6 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
       setServiceability({ loading: false, serviceable: null });
     }
   };
-
-  // 1️⃣ Calculate effective unit price & line total (10% OFF for 2+ quantity)
-  const getItemUnitPrice = (p: ProductType) => {
-    const base = p.discountPrice ?? p.price;
-    return p.quantity >= 2 ? Math.round(base * 0.9) : base;
-  };
-
-  const getItemLineTotal = (p: ProductType) => {
-    return getItemUnitPrice(p) * p.quantity;
-  };
-
-  // Price calculations
-  const totalItems = products.reduce((acc, item) => acc + item.quantity, 0);
-  const subtotal = products.reduce((sum, p) => sum + getItemLineTotal(p), 0);
-
-  // Multi-buy savings total (10% off on items with quantity >= 2)
-  const multiBuySavings = products.reduce((sum, p) => {
-    if (p.quantity >= 2) {
-      const base = p.discountPrice ?? p.price;
-      return sum + (base * p.quantity - getItemLineTotal(p));
-    }
-    return sum;
-  }, 0);
-
-  // Total discount (catalog discount)
-  const totalDiscount = products.reduce((sum, p) => {
-    if (!p.discountPrice) return sum;
-    return sum + (p.price - p.discountPrice) * p.quantity;
-  }, 0);
-
-  const total = subtotal;
-
-  const couponDiscount = appliedCouponData
-    ? appliedCouponData.discountAmount
-    : appliedCoupon === "KRISH10"
-    ? Math.round(subtotal * 0.1)
-    : 0;
-  const subtotalAfterCoupon = subtotal - couponDiscount;
-
-  const maxCoinsApplicable = Math.min(
-    userWallet?.balance || 0,
-    Math.floor(subtotalAfterCoupon * 0.5)
-  );
-  const coinDiscount = useCoins ? maxCoinsApplicable : 0;
-  const shippingFee = paymentMethod === "cod" ? 50 : 0;
-  const finalTotal = Math.max(1, subtotalAfterCoupon - coinDiscount + shippingFee);
-  const cashbackCoinsEarned = Math.round(finalTotal * 0.05);
 
   const executePlaceCodOrder = async () => {
     setShowCodConfirmModal(false);

@@ -22,6 +22,7 @@ export type ProductType = {
 };
 
 import { useLanguage } from "@/context/language-context";
+import { trackBeginCheckout, trackViewCart } from "@/lib/gtm";
 
 export default function CartDrawer() {
   const { t, translateText } = useLanguage();
@@ -271,7 +272,11 @@ export default function CartDrawer() {
 
             <div className="pt-2">
               <SheetClose asChild>
-                <Link href="/cart?checkout=true" className="w-full">
+                <Link
+                  href="/cart?checkout=true"
+                  className="w-full"
+                  onClick={() => trackBeginCheckout(products, total)}
+                >
                   <Button className="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-semibold py-6 rounded-xl transition-all shadow-md cursor-pointer text-sm tracking-wider uppercase">
                     {t("Proceed to Checkout")}
                   </Button>

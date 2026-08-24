@@ -115,7 +115,111 @@ export const trackAddToCart = (
 };
 
 /**
- * 4. Track Purchase (purchase)
+ * 4. Track Cart View (view_cart)
+ * Pushes view_cart ecommerce event when a user views their shopping cart.
+ */
+export const trackViewCart = (
+  cartItems: any[],
+  cartTotal?: number
+) => {
+  if (typeof window === "undefined" || !cartItems || cartItems.length === 0) return;
+
+  const formattedItems = cartItems.map((item: any) => {
+    const itemId =
+      item.productId ||
+      item.product_id ||
+      item.id ||
+      item._id ||
+      item.cartItemId ||
+      "";
+    const itemName = item.name || item.title || item.productName || "Product";
+    const itemPrice = Number(
+      item.discountPrice ?? item.price ?? item.unitPrice ?? 0
+    );
+    const quantity = Number(item.quantity ?? 1);
+
+    return {
+      item_id: String(itemId),
+      item_name: itemName,
+      price: itemPrice,
+      quantity: quantity,
+    };
+  });
+
+  const totalValue =
+    cartTotal !== undefined
+      ? Number(cartTotal)
+      : formattedItems.reduce(
+          (acc, item) => acc + item.price * item.quantity,
+          0
+        );
+
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ ecommerce: null });
+  window.dataLayer.push({
+    event: "view_cart",
+    ecommerce: {
+      currency: "INR",
+      value: totalValue,
+      items: formattedItems,
+    },
+  });
+};
+
+/**
+ * 5. Track Begin Checkout (begin_checkout)
+ * Pushes begin_checkout ecommerce event when a user proceeds to checkout.
+ */
+export const trackBeginCheckout = (
+  cartItems: any[],
+  cartTotal?: number
+) => {
+  if (typeof window === "undefined" || !cartItems || cartItems.length === 0) return;
+
+  const formattedItems = cartItems.map((item: any) => {
+    const itemId =
+      item.productId ||
+      item.product_id ||
+      item.id ||
+      item._id ||
+      item.cartItemId ||
+      "";
+    const itemName = item.name || item.title || item.productName || "Product";
+    const itemPrice = Number(
+      item.discountPrice ?? item.price ?? item.unitPrice ?? 0
+    );
+    const quantity = Number(item.quantity ?? 1);
+
+    return {
+      item_id: String(itemId),
+      item_name: itemName,
+      price: itemPrice,
+      quantity: quantity,
+    };
+  });
+
+  const totalValue =
+    cartTotal !== undefined
+      ? Number(cartTotal)
+      : formattedItems.reduce(
+          (acc, item) => acc + item.price * item.quantity,
+          0
+        );
+
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ ecommerce: null });
+  window.dataLayer.push({
+    event: "begin_checkout",
+    ecommerce: {
+      currency: "INR",
+      value: totalValue,
+      items: formattedItems,
+    },
+  });
+};
+
+/**
+ * 6. Track Purchase (purchase)
  * Pushes final purchase ecommerce event upon successful order placement (COD or Prepaid).
  */
 export const trackPurchase = (

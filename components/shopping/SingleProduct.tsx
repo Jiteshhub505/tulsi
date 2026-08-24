@@ -46,7 +46,7 @@ import toast from "react-hot-toast";
 import { isFavorite, toggleFavorite } from "@/lib/favorites";
 import { useLanguage } from "@/context/language-context";
 import SingleProductSkeleton from "./SingleProductSkeleton";
-import { trackViewItem, trackAddToCart } from "@/lib/gtm";
+import { trackViewItem, trackAddToCart, trackBeginCheckout } from "@/lib/gtm";
 
 // ---------------- TYPES ----------------
 export type Product = {
@@ -916,6 +916,15 @@ export default function SingleProduct({
 
       if (response.data.success) {
         trackAddToCart(product, totalQty);
+        trackBeginCheckout([
+          {
+            id: prodId,
+            productId: prodId,
+            name: product?.name || product?.title,
+            price: product?.discountPrice ?? product?.price,
+            quantity: totalQty,
+          },
+        ]);
         window.dispatchEvent(new Event("cart-updated"));
         router.push("/cart?checkout=true");
       } else {
