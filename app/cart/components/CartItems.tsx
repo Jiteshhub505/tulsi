@@ -13,6 +13,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import PlaceOrderButton from "@/components/payment/PlaceOrderButton";
 import LoginModal from "@/components/landing/LoginModal";
 import toast from "react-hot-toast";
+import { trackPurchase } from "@/lib/gtm";
 
 type PropType = {
   loading: boolean;
@@ -329,6 +330,7 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
       });
 
       if (response.data.success) {
+        trackPurchase(response.data.order, products);
         setOrderSuccess(response.data.order);
         setProducts([]);
         window.dispatchEvent(new Event("cart-updated"));
@@ -434,6 +436,7 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
             });
 
             if (verifyRes.data.success) {
+              trackPurchase(verifyRes.data.order, products);
               setOrderSuccess(verifyRes.data.order);
               setProducts([]);
               window.dispatchEvent(new Event("cart-updated"));

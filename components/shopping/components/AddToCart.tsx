@@ -5,8 +5,15 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
+import { trackAddToCart } from "@/lib/gtm";
 
-const AddToCart = ({ id }: { id: string }) => {
+const AddToCart = ({
+  id,
+  product,
+}: {
+  id: string;
+  product?: { name?: string; price?: number; discountPrice?: number };
+}) => {
   const { data: session, status } = useSession();
   const [loading, setLoading] = useState<boolean>();
   const router = useRouter();
@@ -17,6 +24,7 @@ const AddToCart = ({ id }: { id: string }) => {
       productId: id,
     });
     if (response.data.success) {
+      trackAddToCart(product || { id }, 1);
       console.log("Ok");
       window.dispatchEvent(new Event("cart-updated"));
       setLoading(false);

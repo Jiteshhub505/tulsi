@@ -46,6 +46,7 @@ import toast from "react-hot-toast";
 import { isFavorite, toggleFavorite } from "@/lib/favorites";
 import { useLanguage } from "@/context/language-context";
 import SingleProductSkeleton from "./SingleProductSkeleton";
+import { trackViewItem, trackAddToCart } from "@/lib/gtm";
 
 // ---------------- TYPES ----------------
 export type Product = {
@@ -857,6 +858,9 @@ export default function SingleProduct({
     if (product?.galleryImages?.length) {
       setActiveImage(product.galleryImages[0]);
     }
+    if (product) {
+      trackViewItem(product);
+    }
   }, [product]);
 
   const handleCheckPincode = () => {
@@ -886,6 +890,7 @@ export default function SingleProduct({
       });
 
       if (response.data.success) {
+        trackAddToCart(product, totalQty);
         toast.success(selectedPack === 1 ? "Added Pack of 2 to cart!" : "Added to cart!");
         window.dispatchEvent(new Event("cart-updated"));
       } else {
@@ -910,6 +915,7 @@ export default function SingleProduct({
       });
 
       if (response.data.success) {
+        trackAddToCart(product, totalQty);
         window.dispatchEvent(new Event("cart-updated"));
         router.push("/cart?checkout=true");
       } else {
@@ -932,6 +938,7 @@ export default function SingleProduct({
       });
 
       if (response.data.success) {
+        trackAddToCart(relatedProduct, 1);
         toast.success(`${translateText(relatedProduct.name, relatedProduct.nameHi)} added to cart!`);
         window.dispatchEvent(new Event("cart-updated"));
       } else {

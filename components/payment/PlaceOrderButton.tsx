@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { useState } from "react";
+import { trackPurchase } from "@/lib/gtm";
 
 type PlaceOrderButtonProps = {
   /** When provided, places an order for just this product ("Buy Now"). */
@@ -38,6 +39,10 @@ export default function PlaceOrderButton({
 
       if (!data?.success) {
         throw new Error(data?.message || "Order creation failed");
+      }
+
+      if (data?.order) {
+        trackPurchase(data.order);
       }
 
       alert("Order placed successfully!");
