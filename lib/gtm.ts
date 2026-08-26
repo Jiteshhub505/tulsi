@@ -289,3 +289,18 @@ export const trackPurchase = (
     },
   });
 };
+
+/**
+ * 7. Track User Verified (user_verified)
+ * Pushes user_verified event to DataLayer when user verifies their mobile number.
+ */
+export const trackUserVerified = (userId: string | number) => {
+  if (typeof window === "undefined" || !userId) return;
+
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({
+    event: "user_verified",
+    user_id: String(userId),
+  });
+};
+

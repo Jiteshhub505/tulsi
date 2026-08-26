@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Coins, Sparkles, X, ShieldCheck, CheckCircle2, Loader2, Gift, ArrowRight } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { trackUserVerified } from "@/lib/gtm";
 
 interface CoinRewardModalProps {
   isOpen: boolean;
@@ -89,6 +90,8 @@ export default function CoinRewardModal({
       if (res.data.success) {
         setWallet(res.data.wallet);
         setStep("success");
+        const customerId = res.data.wallet?.userId || res.data.wallet?.id || cleanPhone;
+        trackUserVerified(customerId);
         toast.success(res.data.message || "🎉 Phone verified!");
         if (onVerified) {
           onVerified(res.data.wallet);

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { X, ShieldCheck, CheckCircle2, Loader2, ArrowRight, Smartphone } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { trackUserVerified } from "@/lib/gtm";
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -65,6 +66,8 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
         if (res.data.wallet) {
           localStorage.setItem("tulsi_wallet", JSON.stringify(res.data.wallet));
         }
+        const customerId = res.data.wallet?.userId || res.data.wallet?.id || cleanPhone;
+        trackUserVerified(customerId);
         window.dispatchEvent(new CustomEvent("wallet-updated", { detail: res.data.wallet }));
         toast.success("Logged in successfully!");
         if (onSuccess) {

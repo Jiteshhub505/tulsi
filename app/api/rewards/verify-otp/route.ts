@@ -56,7 +56,9 @@ export async function POST(req: Request) {
       success: true,
       message: "✅ Mobile verified successfully!",
       wallet: {
+        id: String(wallet._id),
         phone: wallet.phone,
+        userId: wallet.userId ? String(wallet.userId) : wallet.phone,
         balance: wallet.balance,
         totalEarned: wallet.totalEarned,
         totalSpent: wallet.totalSpent,

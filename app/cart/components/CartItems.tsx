@@ -13,7 +13,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import PlaceOrderButton from "@/components/payment/PlaceOrderButton";
 import LoginModal from "@/components/landing/LoginModal";
 import toast from "react-hot-toast";
-import { trackPurchase, trackViewCart, trackBeginCheckout } from "@/lib/gtm";
+import { trackPurchase, trackViewCart, trackBeginCheckout, trackUserVerified } from "@/lib/gtm";
 
 type PropType = {
   loading: boolean;
@@ -262,6 +262,7 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
     const cleanPhone = phoneVal.replace(/\D/g, "").slice(-10);
 
     if (cleanPhone.length === 10) {
+      trackUserVerified(cleanPhone);
       // Auto fetch Tulsi Coin wallet
       axios
         .get(`/api/rewards/wallet?phone=${cleanPhone}`)

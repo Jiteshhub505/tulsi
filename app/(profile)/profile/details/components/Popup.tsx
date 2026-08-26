@@ -10,6 +10,7 @@ import axios from "axios";
 import { useState } from "react";
 import { UserProfileProps } from "../page";
 import { LoaderCircle } from "lucide-react";
+import { trackUserVerified } from "@/lib/gtm";
 
 type Props = {
   id: string;
@@ -32,6 +33,7 @@ export function PopoverDemo({ id, setUser, user }: Props) {
 
       if (response.data.success) {
         setUser((prev) => (prev ? { ...prev, phone } : prev));
+        trackUserVerified(id || phone);
         setLoading(false);
       }
     } else {

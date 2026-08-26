@@ -5,6 +5,7 @@ import Image from "next/image";
 import { X, Sparkles, ShieldCheck, CheckCircle2, Loader2, Coins, ArrowRight, Lock, User, LogOut } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { trackUserVerified } from "@/lib/gtm";
 
 interface SpinWheelModalProps {
   isOpen: boolean;
@@ -119,6 +120,8 @@ export default function SpinWheelModal({
         // Persist verified phone & wallet in localStorage
         localStorage.setItem("tulsi_user_phone", cleanPhone);
         localStorage.setItem("tulsi_wallet", JSON.stringify(res.data.wallet));
+        const customerId = res.data.wallet?.userId || res.data.wallet?.id || cleanPhone;
+        trackUserVerified(customerId);
         window.dispatchEvent(new CustomEvent("wallet-updated", { detail: res.data.wallet }));
 
         if (res.data.hasSpunWheel) {
