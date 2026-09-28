@@ -116,7 +116,7 @@ export default function Hero() {
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      className="relative w-full h-[calc(100vh-60px)] md:aspect-[16/9] md:h-auto xl:aspect-auto xl:h-[calc(100vh-70px)] overflow-hidden bg-[#fafdfb] shadow-xs touch-pan-y select-none cursor-grab active:cursor-grabbing"
+      className="relative w-full h-[calc(100vh-60px)] md:aspect-[16/9] md:h-auto overflow-hidden bg-[#fafdfb] shadow-xs touch-pan-y select-none cursor-grab active:cursor-grabbing"
     >
       <AnimatePresence initial={false} custom={direction}>
         <motion.div
@@ -159,7 +159,7 @@ export default function Hero() {
           </div>
 
           {/* Interactive Button Overlay */}
-          <div className="absolute left-1/2 -translate-x-1/2 md:left-[8%] md:translate-x-0 bottom-[48%] sm:bottom-[22%] md:bottom-[calc(26%-8px)] flex flex-row items-center gap-3 sm:gap-4 md:gap-6 z-10 w-max pointer-events-auto">
+          <div className="absolute left-1/2 -translate-x-1/2 md:left-[8%] md:translate-x-0 top-[52%] xs:top-[54%] sm:top-[58%] md:top-[63%] bottom-auto flex flex-row items-center gap-3 sm:gap-4 md:gap-6 z-10 w-max pointer-events-auto">
             <Link href="/shop">
               <button className="group relative inline-flex items-center justify-center bg-[#7db73c] hover:bg-[#72a635] text-white font-semibold rounded-full shadow-[0_4px_12px_rgba(125,183,60,0.25)] hover:shadow-[0_6px_18px_rgba(125,183,60,0.35)] transition-all duration-300 transform active:scale-95 cursor-pointer text-xs xs:text-sm sm:text-sm md:text-base lg:text-lg py-2.5 xs:py-3 sm:py-2.5 md:py-3 lg:py-3.5 px-5 xs:px-7 sm:px-6 md:px-8 lg:px-10">
                 <span>{t("Shop Now")}</span>
